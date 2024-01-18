@@ -8,35 +8,51 @@
         * {
             font-size: 1.5em;
         }
+
+        button {
+            height: 50px;
+            width: 100px;
+            font-size: 14pt;
+        }
     </style>
+    <script>
+        "use strict";
+        // 1 - get a reference to the button
+        // 2 - add a click event to button that calls a `sayHello` function
+        // 3 - create a `sayHello()` function
+        // 3A - get name of person from the <input>
+        // 3B - get a reference to the #output <p>
+        // 3C - update HTML of #output <p>
+        // Put Google <link> stuff before <style> or font CSS in a body selector 
+
+        function greet(greeting) {
+            let firstName = document.querySelector("#input-firstname").value;
+            if (!firstName.trim()) {
+                firstName = "Peter";
+            }
+            const lastName = document.querySelector("#input-lastname").value;
+            //document.querySelector("#output").innerHTML = "Hello " + firstName + " " + lastName;
+            document.querySelector("#output").innerHTML = `${greeting} ${firstName} ${lastName}!`;
+        }
+
+        function init() {
+            document.querySelector("button").addEventListener("click", () => { greet("Hello") });
+            document.querySelector("#button2").addEventListener("click", () => { greet("Bye") });
+            const output = document.querySelector("#output");
+            output.style.color = "red";
+            output.style.backgroundColor = "yellow";
+        }
+
+        window.onload = init;
+    </script>
 </head>
 
 <body>
     <button>Click Me!</button>
-    <input id="input-firstname" placeholder="Type in your name">
+    <button id="button2">Click Me!</button>
+    <input id="input-firstname" placeholder="Type in your first name">
+    <input id="input-lastname" placeholder="Type in your last name">
     <p id="output">???</p>
-    <script>
-        'use strict';
-        // 1 - get a reference to the button
-        let button = document.querySelector("button");
-
-        // 2 - add a click event to button that calls a `sayHello` function
-        button.addEventListener("click", sayHello);
-
-        // 3 - create a `sayHello()` function
-        function sayHello() {
-            console.log("Hello!");
-        }
-
-        // 3A - get name of person from the <input>
-        let name = document.querySelector("#input-firstname").value;
-
-        // 3B - get a reference to the #output <p>
-        let outputParagraph = document.querySelector("#output");
-
-        // 3C - update HTML of #output <p>
-        outputParagraph.innerHTML = name;    
-    </script>
 </body>
 
 </html>
