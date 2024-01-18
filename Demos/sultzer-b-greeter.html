@@ -10,6 +10,7 @@
         }
     </style>
 </head>
+
 <body>
     <button>Click Me!</button>
     <input id="input-firstname" placeholder="Type in your name">
@@ -18,18 +19,18 @@
         'use strict';
         // 1 - get a reference to the button
         let button = document.querySelector("button");
-    
+
         // 2 - add a click event to button that calls a `sayHello` function
         button.addEventListener("click", sayHello);
-    
+
         // 3 - create a `sayHello()` function
         function sayHello() {
             console.log("Hello!");
         }
-    
+
         // 3A - get name of person from the <input>
         let name = document.querySelector("#input-firstname").value;
-        
+
         // 3B - get a reference to the #output <p>
         let outputParagraph = document.querySelector("#output");
 
