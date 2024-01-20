@@ -4,16 +4,23 @@
 <head>
     <meta charset="utf-8" />
     <title>Technobabble Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <style>
-        #output {
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
+        body {
+            font-family: monospace;
         }
-
+        #output {
+            font-size: 200%;
+        }
         #myButton {
-            height: 50px;
-            width: 125px;
-            font-size: 9pt;
+            width: 200px;
+            height: 50pt;
+            font-size: 15pt;
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+                text-align: center;
+            }
         }
     </style>
     <script>
@@ -24,21 +31,13 @@
 
         const words3 = ["Chamber", "Interface", "Coil", "Polymer", "Biosphere", "Platform", "Thruster", "Deflector", "Replicator", "Tricorder", "Operation", "Array", "Matrix", "Grid", "Sensor", "Mode", "Panel", "Storage", "Conduit", "Pod", "Hatch", "Regulator", "Display", "Inverter", "Spectrum", "Generator", "Cloud", "Field", "Terminal", "Module", "Procedure", "System", "Diagnostic", "Device", "Beam", "Probe", "Bank", "Tie-In", "Facility", "Bay", "Indicator", "Cell"];
 
-        //console.log(words1[0]);
-
         // Get a random word from the given words array
-        let getRandomWord = (wordsArray, index) => { return wordsArray[Math.floor(index * wordsArray.length)]; }
+        let getRandomWord = (wordsArray) => { return wordsArray[Math.floor(Math.random() * wordsArray.length)]; }
 
         // Creates and displays the technobabble phrase
         let generateTechnobabble = () => {
-            // Get a random word from each of the 3 arrays
-            let randomIndex = Math.random();
-            let randomWord1 = getRandomWord(words1, randomIndex);
-            let randomWord2 = getRandomWord(words2, randomIndex);
-            let randomWord3 = getRandomWord(words3, randomIndex);
-
-            // Concatenate the random words together
-            let technobabblePhrase = randomWord1 + " " + randomWord2 + " " + randomWord3;
+            // Get a random word from each of the 3 arrays and concatenate the random words together
+            let technobabblePhrase = getRandomWord(words1) + " " + getRandomWord(words2) + " " + getRandomWord(words3);
 
             // Display the technobabble phrase on the page
             document.querySelector("#output").innerHTML = technobabblePhrase;
@@ -48,6 +47,9 @@
         let init = () => {
             // Display the technobabble phrase with a button click
             document.querySelector("#myButton").addEventListener("click", generateTechnobabble);
+
+            // Display a technobabble when the page first loads
+            generateTechnobabble();
         }
 
         // Set up technobabble generation
