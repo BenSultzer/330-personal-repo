@@ -14,8 +14,15 @@
             width: 100px;
             font-size: 14pt;
         }
+
+        button {
+            height: 50px;
+            width: 100px;
+            font-size: 14pt;
+        }
     </style>
     <script>
+        "use strict";
         "use strict";
         // 1 - get a reference to the button
         // 2 - add a click event to button that calls a `sayHello` function
@@ -23,6 +30,27 @@
         // 3A - get name of person from the <input>
         // 3B - get a reference to the #output <p>
         // 3C - update HTML of #output <p>
+        // Put Google <link> stuff before <style> or font CSS in a body selector 
+
+        function greet(greeting) {
+            let firstName = document.querySelector("#input-firstname").value;
+            if (!firstName.trim()) {
+                firstName = "Peter";
+            }
+            const lastName = document.querySelector("#input-lastname").value;
+            //document.querySelector("#output").innerHTML = "Hello " + firstName + " " + lastName;
+            document.querySelector("#output").innerHTML = `${greeting} ${firstName} ${lastName}!`;
+        }
+
+        function init() {
+            document.querySelector("button").addEventListener("click", () => { greet("Hello") });
+            document.querySelector("#button2").addEventListener("click", () => { greet("Bye") });
+            const output = document.querySelector("#output");
+            output.style.color = "red";
+            output.style.backgroundColor = "yellow";
+        }
+
+        window.onload = init;
         // Put Google <link> stuff before <style> or font CSS in a body selector 
 
         function greet(greeting) {
