@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="src/main.js" type="module"></script>
+  <!-- Don't need to import utils.js here anymore -->
+  <style>
+    body{
+      font-family: monospace;
+    }
+    textarea{
+      width: 80%;
+      height: 5rem;
+    }
+    button{
+      font-size: 1rem;
+      margin-right: .3rem;
+      padding: .5rem;
+    }
+    #output{
+      margin-top:1rem;
+      border: 1px solid black;
+      width: 80%;
+      height: 5rem;
+    }
+  </style>
+  <title>Statz App - ES6 Modules</title>
+</head>
+<body>
+  <h1>Statz App</h1>
+  <h2>Yer Data goez here</h2>
+  <p>Separate yer numberz with spacez</p>
+  <textarea></textarea>
+ 
+  <h2>Controlz</h2>
+  <button id="btn-sort-ascending">Sort low-to-hi</button>
+  <button id="btn-sort-descending">Sort hi-to-low</button>
+  <button id="btn-mean">Calculate Meen</button>
+
+  <div id="output"></div>
+</body>
+</html>
