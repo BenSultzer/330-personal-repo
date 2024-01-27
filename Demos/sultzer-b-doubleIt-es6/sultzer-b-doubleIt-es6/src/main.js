@@ -1,6 +1,7 @@
-"use strict";
+//"use strict"; NOT NEEDED! Modules run in strict mode by default
 
-const doubleIt = num => num * 2;
+// Gain access to the doubleIt function
+import { doubleIt } from "./utils.js";
 
 const init = () => {
   // hook up UI
@@ -17,7 +18,8 @@ const init = () => {
   };
 };
 
-window.onload = init;
+// When the page loads, set up the UI and output field
+init();
 
 
 /*
