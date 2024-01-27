@@ -34,6 +34,20 @@
                 console.log(`In onload - HTTP Status Code = ${e.target.status}`);
                 const text = e.target.responseText;
                 console.log(`Success - the file length is ${text.length}`);
+                const words = text.split(",");
+
+                // Turn array into HTML
+                // I. Long way
+                let html = "<ol>";
+                for (let w of words) {
+                    html += `<li>${w}</li>`;
+                }
+
+                html += "</ol>";
+                document.querySelector("#output").innerHTML = html;
+
+                // II. One-liner
+                document.querySelector("#output").innerHTML = "<ol>" + (words.map((w) => { return `<li>${w}</li>`; }).join()) + "</ol>";
             };
             xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
             xhr.open("GET", url);
