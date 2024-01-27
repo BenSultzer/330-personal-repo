@@ -18,8 +18,22 @@
             font-size: 14pt;
         }
 
-        button, input, body {
+        button,
+        input,
+        body {
             font-family: 'Merriweather', serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        #output {
+            color: red;
+            background-color: yellow;
+        }
+
+        hr {
+            color: white;
         }
 
         @media only screen and (min-width: 1024px) {
@@ -39,32 +53,46 @@
         // 3C - update HTML of #output <p>
         // Put Google <link> stuff before <style> or font CSS in a body selector 
 
+        // When a button is clicked, greet the user with the provided greeting
         function greet(greeting) {
+            // Get and clean up the user's first name from the "first name" input tag
             let firstName = document.querySelector("#input-firstname").value.trim();
+
+            // If no first name is provided, use a default of "Peter"
             if (!firstName) {
                 firstName = "Peter";
             }
-            const lastName = document.querySelector("#input-lastname").value;
-            //document.querySelector("#output").innerHTML = "Hello " + firstName + " " + lastName;
+
+            // Get and clean up the user's last name from the "last name" input tag
+            let lastName = document.querySelector("#input-lastname").value.trim();
+
+            // If no last name is provided, use a default of "Parker"
+            if (!lastName) {
+                lastName = "Parker";
+            }
+
+            // Display the greeting to the user
             document.querySelector("#output").innerHTML = `${greeting} ${firstName} ${lastName}!`;
         }
 
+        // Hook up the event listeners to each button for displaying the proper greeting when each
+        // button is clicked.
         function init() {
-            document.querySelector("button").addEventListener("click", () => { greet("Hello") });
-            document.querySelector("#button2").addEventListener("click", () => { greet("Bye") });
-            const output = document.querySelector("#output");
-            output.style.color = "red";
-            output.style.backgroundColor = "yellow";
+            document.querySelector("#btn-hello").addEventListener("click", () => { greet("Hello") });
+            document.querySelector("#btn-goodbye").addEventListener("click", () => { greet("Goodbye") });
         }
 
+        // Hook up the init function to when the page is done loading
         window.onload = init;
     </script>
 </head>
 
 <body>
-    <button>Click Me!</button>
-    <button id="button2">Click Me!</button>
+    <button id="btn-hello">Say Hello</button>
+    <button id="btn-goodbye">Say Goodbye</button>
+    <hr>
     <input id="input-firstname" placeholder="Type in your first name">
+    <br>
     <input id="input-lastname" placeholder="Type in your last name">
     <p id="output">???</p>
 </body>
