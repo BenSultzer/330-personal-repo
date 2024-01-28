@@ -36,6 +36,10 @@
             color: white;
         }
 
+        #shoutify-label {
+            font-size: 14pt;
+        }
+
         @media only screen and (min-width: 1024px) {
             body {
                 background-color: red;
@@ -53,8 +57,11 @@
         // 3C - update HTML of #output <p>
         // Put Google <link> stuff before <style> or font CSS in a body selector 
 
+        // Store whether or not the output text should be shoutified
+        let shoutify = false;
+
         // When a button is clicked, greet the user with the provided greeting
-        function greet(greeting) {
+        let greet = (greeting) => {
             // Get and clean up the user's first name from the "first name" input tag
             let firstName = document.querySelector("#input-firstname").value.trim();
 
@@ -71,15 +78,34 @@
                 lastName = "Parker";
             }
 
-            // Display the greeting to the user
-            document.querySelector("#output").innerHTML = `${greeting} ${firstName} ${lastName}!`;
+            // Store the output text
+            let outputText = `${greeting} ${firstName} ${lastName}!`;
+
+            // Does the output text need to be shoutified?
+            if (shoutify) {
+                // Display the greeting to the user in all capital letters
+                document.querySelector("#output").innerHTML = outputText.toUpperCase();
+            } else {
+                // Display the greeting to the user
+                document.querySelector("#output").innerHTML = outputText;
+            }
         }
 
-        // Hook up the event listeners to each button for displaying the proper greeting when each
-        // button is clicked.
-        function init() {
+        // If the checkbox is checked, the output text should be shoutified, otherwise, the output text should be kept as is
+        let checkShoutify = (e) => {
+            // If the checkbox is checked, change the shoutify Boolean to true, otherwise change the shoutify Boolean to false
+            if (e.target.checked) {
+                shoutify = true;
+            } else {
+                shoutify = false;
+            }
+        }
+
+        // Hook up the event listeners to each button for displaying the proper greeting when each button is clicked, as well as hook up the event listener for the checkbox to mark if the output text should be shoutified
+        let init = () => {
             document.querySelector("#btn-hello").addEventListener("click", () => { greet("Hello") });
             document.querySelector("#btn-goodbye").addEventListener("click", () => { greet("Goodbye") });
+            document.querySelector("#shoutify").addEventListener("change", checkShoutify);
         }
 
         // Hook up the init function to when the page is done loading
@@ -90,6 +116,8 @@
 <body>
     <button id="btn-hello">Say Hello</button>
     <button id="btn-goodbye">Say Goodbye</button>
+    <input type="checkbox" id="shoutify">
+    <label for="shoutify" id="shoutify-label">Shoutify!</label>
     <hr>
     <input id="input-firstname" placeholder="Type in your first name">
     <br>
