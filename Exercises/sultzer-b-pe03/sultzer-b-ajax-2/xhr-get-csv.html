@@ -28,17 +28,27 @@
         document.querySelector("#my-button").onclick = loadTextXHR;
 
         function loadTextXHR() {
-            const url = "../data/pet-names.txt";
+            const url = "../data/pet-names.csv";
             const xhr = new XMLHttpRequest();
             xhr.onload = (e) => {
                 console.log(`In onload - HTTP Status Code = ${e.target.status}`);
                 const text = e.target.responseText;
                 console.log(`Success - the file length is ${text.length}`);
-                const words = text.split(",");
+                const lines = text.split("\n");
+                const dogNames = lines[0].split(",");
+                const catNames = lines[1].split(",");
 
-                // Turn array into HTML ordered list of names
-                // One-liner method
-                document.querySelector("#output").innerHTML = "<ol>" + (words.map((w) => { return `<li>${w}</li>`; }).join("")) + "</ol>";
+                const dogHtml = `<ol>${dogNames.map(w => `<li>${w}</li>`).join("")}</ol>`;
+                const catHtml = `<ol>${catNames.map(w => `<li>${w}</li>`).join("")}</ol>`;
+
+                const html = `
+                    <h3>Dog Names</h3>
+                    ${dogHtml}
+                    <h3>Cat Names</h3>
+                    ${catHtml}
+                `;
+
+                document.querySelector("#output").innerHTML = html;
             };
             xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
             xhr.open("GET", url);
