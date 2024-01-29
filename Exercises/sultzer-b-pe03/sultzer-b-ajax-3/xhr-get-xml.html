@@ -25,7 +25,7 @@
         document.querySelector("#my-button").onclick = loadXmlXHR;
 
         function loadXmlXHR() {
-            const url = "../data/pet-names.xml";
+            const url = "data/pet-names.xml";
             const xhr = new XMLHttpRequest();
             xhr.onload = (e) => {
                 console.log(`In onload - HTTP Status Code = ${e.target.status}`);

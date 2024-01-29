@@ -25,7 +25,7 @@
         document.querySelector("#my-button").onclick = loadCSVXHR;
 
         function loadCSVXHR() {
-            const url = "../data/pet-names.csv";
+            const url = "data/pet-names.csv";
             const xhr = new XMLHttpRequest();
             xhr.onload = (e) => {
                 console.log(`In onload - HTTP Status Code = ${e.target.status}`);
