@@ -48,6 +48,9 @@
         }
     </style>
     <script>
+        // Overview: Practice Exercise 02
+        // Author: Ben Sultzer <bms3902@rit.edu>
+
         "use strict";
         // 1 - get a reference to the button
         // 2 - add a click event to button that calls a `sayHello` function
@@ -94,10 +97,10 @@
         }
 
         // If the checkbox is checked, the output text should be shoutified, otherwise, the output text should be kept as is
-        // "e" parameter: The Event object sent by the event listener for this function
+        // "e" parameter: The Event object passed into this function by the event listener for the detected event
         // Returns: Nothing
         let checkShoutify = (e) => {
-            // Sets the shoutify Boolean
+            // Sets the shoutify Boolean by testing for the current state of the checkbox
             if (e.target.checked) {
                 shoutify = true;
             } else {
@@ -105,7 +108,7 @@
             }
         }
 
-        // Hook up the event listeners to each button for displaying the proper greeting when each button is clicked, as well as hook up the event listener for the checkbox to mark if the output text should be shoutified
+        // Hook up the event listeners to the "Hello" and "Goodbye" buttons for displaying the proper greeting when each button is clicked, as well as hook up the event listener for the checkbox to mark if the output text should be shoutified
         // Parameters: None
         // Returns: Nothing
         let init = () => {
