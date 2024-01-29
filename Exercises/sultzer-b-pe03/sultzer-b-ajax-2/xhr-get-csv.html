@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>XHR - Load Text</title>
+    <title>XHR - Load CSV</title>
     <style>
         body {
             font-family: sans-serif;
@@ -14,20 +14,17 @@
 </head>
 
 <body>
-    <h2>XHR - Load Text File</h2>
-    <p>The <code>pet-names.txt</code> file contains popular dog and cat pet names, separated by commas.</p>
-    <p>Note that because XHR is loading a local file, this and the other examples will have to be run off a web server
-        rather than from your computer's hard drive (e.g. banjo.rit.edu or VSCode's liveserver etc)</p>
-
+    <h2>XHR - Load CSV File</h2>
+    
     <hr>
     <button id="my-button">Load Data</button>
     <p id="output">Click button to load</p>
 
 
     <script>
-        document.querySelector("#my-button").onclick = loadTextXHR;
+        document.querySelector("#my-button").onclick = loadCSVXHR;
 
-        function loadTextXHR() {
+        function loadCSVXHR() {
             const url = "../data/pet-names.csv";
             const xhr = new XMLHttpRequest();
             xhr.onload = (e) => {
