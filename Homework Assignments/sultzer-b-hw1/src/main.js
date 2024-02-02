@@ -11,15 +11,16 @@ let getRandomWord = (wordsArray) => { return wordsArray[Math.floor(Math.random()
 // Creates and displays the technobabble phrase
 let generateTechnobabble = (num) => {
     // Create a variable to store the set of technobabble phrases
-    let technobabblePhrase = "";
+    let technobabbleSet = "";
     
-    // Assemble the desired number of technobablle phrases, one on each line, according to the "num" parameter
+    // Assemble the desired number of technobabble phrases, one on each line, according to the "num" parameter
+    // USE TEMPLATE STRINGS AND CLEAR RESULTS TO ONE TB PHRASE WHEN GO BELOW 1408PX. LEFT OFF ON SECTION II -> BULLET POINT 5 IN MAIN INSTRUCTIONS.
     for (let i = 0; i < num; i++) {
-        technobabblePhrase += getRandomWord(words1) + " " + getRandomWord(words2) + " " + getRandomWord(words3) + "<br>";
+        technobabbleSet += getRandomWord(words1) + " " + getRandomWord(words2) + " " + getRandomWord(words3) + "<br>";
     }
 
     // Display the technobabble phrase on the page
-    document.querySelector("#output").innerHTML = technobabblePhrase;
+    document.querySelector("#output").innerHTML = technobabbleSet;
 }
 
 // Sets up the technobabble generation to trigger when the buttons are clicked
