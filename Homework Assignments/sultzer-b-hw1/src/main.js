@@ -12,7 +12,7 @@ const words3 = ["Chamber", "Interface", "Coil", "Polymer", "Biosphere", "Platfor
 const generateTechnobabble = (num) => {
     // Create a variable to store the set of technobabble phrases
     let technobabbleSet = "";
-    
+
     // Assemble the desired number of technobabble phrases, one on each line, according to the "num" parameter
     // CLEAR RESULTS TO ONE TB PHRASE WHEN GO BELOW 1408PX.
     for (let i = 0; i < num; i++) {
@@ -23,8 +23,32 @@ const generateTechnobabble = (num) => {
     document.querySelector("#output").innerHTML = technobabbleSet;
 }
 
-// Sets up the technobabble generation to trigger when the buttons are clicked
-const init = () => {
+// Gets the technobabble JSON data loaded from the XHR request and places it in the arrays for assembling the technobabble phrase(s). Also sets up the event listeners to generate technobabble when the buttons are pressed and generates/displays one technobabble phrase on start-up
+const babbleLoaded = (e) => {
+    // Log the current status to the console
+    console.log(`In onload - HTTP Status Code = ${e.target.status}`);
+
+    // Create a variable to store the raw JSON data
+    let json;
+
+    // Attempt to extract the data as a string from the JSON, logging an error to the technobabble output element if something fails
+    try {
+        json = JSON.parse(e.target.responseText);
+    } catch {
+        document.querySelector("#output").innerHTML = "BAD JSON!";
+        return;
+    }
+
+    const keys = Object.keys(json);
+    words1 = keys[0];
+    words2 = keys[1];
+    words3 = keys[2];
+    let obj;
+    for (let k of keys) {
+        //console.log(json[k]);
+        obj = json[k];
+    }
+
     // Display the desired number of technobabble phrases when each button is clicked
     document.querySelector("#single-tb").addEventListener("click", () => { generateTechnobabble(1) });
     document.querySelector("#multi-tb").addEventListener("click", () => { generateTechnobabble(5) });
@@ -33,5 +57,20 @@ const init = () => {
     generateTechnobabble(1);
 }
 
-// Set up technobabble generation
+// Sends an XHR request to get the technobabble words from the babble-data.json file
+const loadBabble = () => {
+    const url = "data/babble-data.json";
+    const xhr = new XMLHttpRequest();
+    xhr.onload = (e) => { babbleLoaded(e) };
+    xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
+    xhr.open("GET", url);
+    xhr.send();
+}
+
+// Initiates technobabble data loading from JSON using XHR
+const init = () => {
+    // Load in the technobabble words
+    loadBabble();
+}
+
 init();
