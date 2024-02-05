@@ -1,4 +1,6 @@
-// WILL DO ALL OF SECTION III AT END WHEN I'M DONE
+// Overview: Homework 1
+// Author: Ben Sultzer <bms3902@rit.edu>
+
 // Import function(s) from utils.js
 import { getRandomWord } from "./utils.js";
 
@@ -11,11 +13,13 @@ let words3;
 let fiveBabbleClicked = false;
 
 // Creates and displays the technobabble phrase
+// "num" parameter: How many technobabble phrases to generate
+// Returns: Nothing
 const generateTechnobabble = (num) => {
     // Create a variable to store the set of technobabble phrases
     let technobabbleSet = "";
 
-    // If num is euqal to five, indicate that the 5 technobabble phrases button has been clicked
+    // If num is equal to five, indicate that the 5 technobabble phrases button has been clicked
     if (num == 5) {
         fiveBabbleClicked = true;
     }
@@ -29,7 +33,9 @@ const generateTechnobabble = (num) => {
     document.querySelector("#output").innerHTML = technobabbleSet;
 }
 
-// Gets the technobabble JSON data loaded from the XHR request and places it in the arrays for assembling the technobabble phrase(s). Also sets up the event listeners to generate technobabble when the buttons are pressed and generates/displays one technobabble phrase on start-up
+// Gets the technobabble JSON data loaded from the XHR request and places it in the arrays for assembling the technobabble phrase(s). Also sets up the event listeners to generate technobabble when the buttons are pressed and generates/displays one technobabble phrase on start up
+// "e" parameter: The event object sent back by the XHR onload event handler
+// Returns: Nothing
 const babbleLoaded = (e) => {
     // Log the current status to the console
     console.log(`In onload - HTTP Status Code = ${e.target.status}`);
@@ -37,7 +43,7 @@ const babbleLoaded = (e) => {
     // Create a variable to store the raw JSON data
     let json;
 
-    // Attempt to extract the data as an object from the JSON, logging an error to the technobabble output element if something fails
+    // Attempt to extract the data as an object from the JSON file, logging an error to the technobabble output element if something fails
     try {
         json = JSON.parse(e.target.responseText);
     } catch {
@@ -62,16 +68,31 @@ const babbleLoaded = (e) => {
 }
 
 // Sends an XHR request to get the technobabble words from the babble-data.json file
+// Parameters: None
+// Returns: Nothing
 const loadBabble = () => {
+    // Set the path to the desired JSON file
     const url = "data/babble-data.json";
+
+    // Create the XHR object
     const xhr = new XMLHttpRequest();
+
+    // Tell the XHR object how it should handle data loading
     xhr.onload = (e) => { babbleLoaded(e) };
+
+    // Tell the XHR object what to do if a problem occurs
     xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
+
+    // Set up the data request
     xhr.open("GET", url);
+
+    // Send the request
     xhr.send();
 }
 
 // Prevents any technobabble phrases from cluttering the screen and causing strange formatting issues when the window is resized
+// Parameters: None
+// Returns: Nothing
 const fixTechnobabbleFormatting = () => {
     // If the window width is below 1408px and the 5 technobbabble phrases button was clicked, clear the technobabble output element to 1 technobabble phrase if the page is resized after clicking the button. Prevents undesirable formatting issues
     if (fiveBabbleClicked && (window.innerWidth < 1408)) {
@@ -82,7 +103,9 @@ const fixTechnobabbleFormatting = () => {
     }
 }
 
-// Initiates technobabble data loading from JSON using XHR
+// Initiates technobabble data loading from JSON using XHR, and initializes how to handle incorrect technobabble formatting
+// Parameters: None
+// Returns: Nothing
 const init = () => {
     // Load in the technobabble words
     loadBabble();
@@ -91,4 +114,5 @@ const init = () => {
     window.onresize = fixTechnobabbleFormatting;
 }
 
+// Begin the app!
 init();
