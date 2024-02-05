@@ -1,20 +1,26 @@
 // WILL DO ALL OF SECTION III AT END WHEN I'M DONE
-// Import the function(s) from utils.js
+// Import function(s) from utils.js
 import { getRandomWord } from "./utils.js";
 
-const words1 = ["Acute", "Aft", "Anti-matter", "Bipolar", "Cargo", "Command", "Communication", "Computer", "Deuterium", "Dorsal", "Emergency", "Engineering", "Environmental", "Flight", "Fore", "Guidance", "Heat", "Impulse", "Increased", "Inertial", "Infinite", "Ionizing", "Isolinear", "Lateral", "Linear", "Matter", "Medical", "Navigational", "Optical", "Optimal", "Optional", "Personal", "Personnel", "Phased", "Reduced", "Science", "Ship's", "Shuttlecraft", "Structural", "Subspace", "Transporter", "Ventral"];
+// The arrays to store the possible technobabble words
+let words1;
+let words2;
+let words3;
 
-const words2 = ["Propulsion", "Dissipation", "Sensor", "Improbability", "Buffer", "Graviton", "Replicator", "Matter", "Anti-matter", "Organic", "Power", "Silicon", "Holographic", "Transient", "Integrity", "Plasma", "Fusion", "Control", "Access", "Auto", "Destruct", "Isolinear", "Transwarp", "Energy", "Medical", "Environmental", "Coil", "Impulse", "Warp", "Phaser", "Operating", "Photon", "Deflector", "Integrity", "Control", "Bridge", "Dampening", "Display", "Beam", "Quantum", "Baseline", "Input"];
-
-const words3 = ["Chamber", "Interface", "Coil", "Polymer", "Biosphere", "Platform", "Thruster", "Deflector", "Replicator", "Tricorder", "Operation", "Array", "Matrix", "Grid", "Sensor", "Mode", "Panel", "Storage", "Conduit", "Pod", "Hatch", "Regulator", "Display", "Inverter", "Spectrum", "Generator", "Cloud", "Field", "Terminal", "Module", "Procedure", "System", "Diagnostic", "Device", "Beam", "Probe", "Bank", "Tie-In", "Facility", "Bay", "Indicator", "Cell"];
+// Store whether or not the 5 technobabble phrases button has been clicked
+let fiveBabbleClicked = false;
 
 // Creates and displays the technobabble phrase
 const generateTechnobabble = (num) => {
     // Create a variable to store the set of technobabble phrases
     let technobabbleSet = "";
 
+    // If num is euqal to five, indicate that the 5 technobabble phrases button has been clicked
+    if (num == 5) {
+        fiveBabbleClicked = true;
+    }
+
     // Assemble the desired number of technobabble phrases, one on each line, according to the "num" parameter
-    // CLEAR RESULTS TO ONE TB PHRASE WHEN GO BELOW 1408PX.
     for (let i = 0; i < num; i++) {
         technobabbleSet += `${getRandomWord(words1)} ${getRandomWord(words2)} ${getRandomWord(words3)}<br>`;
     }
@@ -31,7 +37,7 @@ const babbleLoaded = (e) => {
     // Create a variable to store the raw JSON data
     let json;
 
-    // Attempt to extract the data as a string from the JSON, logging an error to the technobabble output element if something fails
+    // Attempt to extract the data as an object from the JSON, logging an error to the technobabble output element if something fails
     try {
         json = JSON.parse(e.target.responseText);
     } catch {
@@ -39,17 +45,15 @@ const babbleLoaded = (e) => {
         return;
     }
 
+    // Get the set of keys from the technobabble words JSON object
     const keys = Object.keys(json);
-    words1 = keys[0];
-    words2 = keys[1];
-    words3 = keys[2];
-    let obj;
-    for (let k of keys) {
-        //console.log(json[k]);
-        obj = json[k];
-    }
 
-    // Display the desired number of technobabble phrases when each button is clicked
+    // Use the keys to assign the proper words array from the JSON object to each local words array
+    words1 = json[keys[0]];
+    words2 = json[keys[1]];
+    words3 = json[keys[2]];
+
+    // Hook up the button event listeners - Display the desired number of technobabble phrases when each button is clicked
     document.querySelector("#single-tb").addEventListener("click", () => { generateTechnobabble(1) });
     document.querySelector("#multi-tb").addEventListener("click", () => { generateTechnobabble(5) });
 
@@ -67,10 +71,24 @@ const loadBabble = () => {
     xhr.send();
 }
 
+// Prevents any technobabble phrases from cluttering the screen and causing strange formatting issues when the window is resized
+const fixTechnobabbleFormatting = () => {
+    // If the window width is below 1408px and the 5 technobbabble phrases button was clicked, clear the technobabble output element to 1 technobabble phrase if the page is resized after clicking the button. Prevents undesirable formatting issues
+    if (fiveBabbleClicked && (window.innerWidth < 1408)) {
+        generateTechnobabble(1);
+
+        // Formatting has been fixed. Indicate the 5 technobabble phrases button is no longer being treated as clicked
+        fiveBabbleClicked = false;
+    }
+}
+
 // Initiates technobabble data loading from JSON using XHR
 const init = () => {
     // Load in the technobabble words
     loadBabble();
+
+    // Hook up the technobabble formatting function to the event that indicates the window has been resized
+    window.onresize = fixTechnobabbleFormatting;
 }
 
 init();
