@@ -85,6 +85,31 @@
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
+
+            // Check Off Additions
+            // Eyes
+            ctx.fillStyle = "black";
+            ctx.strokeStyle = "black";
+            ctx.beginPath();
+            ctx.arc(305, 220, 5, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(335, 220, 5, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Line
+            ctx.strokeStyle = "turquoise";
+            ctx.lineWidth = 20;
+            ctx.beginPath();
+            ctx.moveTo(20, 360);
+            ctx.lineTo(620, 360);
+            ctx.closePath();
+            ctx.stroke();
         }
     </script>
 </head>
