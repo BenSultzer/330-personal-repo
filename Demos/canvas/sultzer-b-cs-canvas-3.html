@@ -112,22 +112,56 @@
             ctx.closePath();
             ctx.stroke();
 
+            // Hide everything under a screen-sized white rectangle
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, 640, 480);
+
             update();
         }
 
         function update() {
             requestAnimationFrame(update);
             drawRandomRect(ctx);
+            drawRandomLine(ctx);
         }
 
         function drawRandomRect(ctx) {
             ctx.fillStyle = getRandomColor();
-            ctx.strokeStyle = getRandomColor();
-            ctx.lineWidth = getRandomInt(2, 12);
             ctx.beginPath();
             ctx.rect(getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90));
             ctx.closePath();
             ctx.fill();
+        }
+
+        // Draws a random horizontal or vertical line across the canvas
+        function drawRandomLine(ctx) {
+            // Determine whether to draw a horizontal or vertical line (0 = horizontal, 1 = vertical)
+            let lineType = getRandomInt(0, 1);
+
+            // Get a random color of red, green, or blue to color the line
+            let color = getRandomInt(1, 3);
+
+            if (color == 1) {
+                ctx.strokeStyle = "red";
+            } else if (color == 2) {
+                ctx.strokeStyle = "green";
+            } else {
+                ctx.strokeStyle = "blue";
+            }
+            ctx.lineWidth = getRandomInt(12, 24);
+            ctx.beginPath();
+            if (lineType == 0) {
+                // Get a random value along the y-axis
+                let y = getRandomInt(0, 480)
+                ctx.moveTo(0, y);
+                ctx.lineTo(640, y);
+            } else {
+                // Get a random value along the x-axis
+                let x = getRandomInt(0, 640)
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, 480);
+            }
+            ctx.closePath();
             ctx.stroke();
         }
 
