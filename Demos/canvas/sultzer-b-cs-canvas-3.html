@@ -123,10 +123,20 @@
             requestAnimationFrame(update);
             drawRandomRect(ctx);
             drawRandomLine(ctx);
+            drawRandomCircle(ctx);
         }
 
         function drawRandomRect(ctx) {
-            ctx.fillStyle = getRandomColor();
+            // Get a random color of red, green, or blue to color the line
+            let color = getRandomInt(1, 3);
+
+            if (color == 1) {
+                ctx.fillStyle = "rgba(175, 0, 0, 0.2)";
+            } else if (color == 2) {
+                ctx.fillStyle = "rgba(175, 150, 0, 0.2)";
+            } else {
+                ctx.fillStyle = "rgba(0, 0, 175, 0.2)";
+            }
             ctx.beginPath();
             ctx.rect(getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90));
             ctx.closePath();
@@ -142,11 +152,11 @@
             let color = getRandomInt(1, 3);
 
             if (color == 1) {
-                ctx.strokeStyle = "red";
+                ctx.strokeStyle = "rgba(150, 0, 0, 0.2)";
             } else if (color == 2) {
-                ctx.strokeStyle = "green";
+                ctx.strokeStyle = "rgba(150, 125, 0, 0.2)";
             } else {
-                ctx.strokeStyle = "blue";
+                ctx.strokeStyle = "rgba(0, 0, 100, 0.2)";
             }
             ctx.lineWidth = getRandomInt(12, 24);
             ctx.beginPath();
@@ -165,10 +175,28 @@
             ctx.stroke();
         }
 
+        // Draws a randomly-sized circle 
+        function drawRandomCircle(ctx) {
+            // Get a random color of red, green, or blue to color the line
+            let color = getRandomInt(1, 3);
+
+            if (color == 1) {
+                ctx.fillStyle = "rgba(150, 0, 0, 0.2)";
+            } else if (color == 2) {
+                ctx.fillStyle = "rgba(150, 125, 0, 0.2)";
+            } else {
+                ctx.fillStyle = "rgba(0, 0, 100, 0.2)";
+            }
+            ctx.beginPath();
+            ctx.arc(getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+
         // handy helper functions!
         function getRandomColor() {
             function getByte() {
-                return 55 + Math.round(Math.random() * 200);
+                return 55 + Math.round(Math.random() * 150);
             }
             return "rgba(" + getByte() + "," + getByte() + "," + getByte() + ",.8)";
         }
