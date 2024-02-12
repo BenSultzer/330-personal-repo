@@ -168,7 +168,7 @@
                 drawRandomRect(ctx);
             }
             drawRandomLine(ctx);
-            drawRandomCircle(ctx);
+            drawRandomArc(ctx);
         }
 
         // Draws a randomly-sized and positioned rectangle
@@ -208,7 +208,7 @@
             } else {
                 color = "rgba(0, 0, 100, 0.2)";
             }
-            ctx.lineWidth = getRandomInt(12, 24);
+            
             if (lineType == 0) {
                 // Get a random value along the y-axis
                 let y = getRandomInt(0, 480);
@@ -221,21 +221,25 @@
         }
 
         // Draws a randomly-sized and positioned circle 
-        function drawRandomCircle(ctx) {
+        function drawRandomArc(ctx) {
             // Get a random color of red, gold, or blue to color the circle
-            let color = getRandomInt(1, 3);
+            let colorInt = getRandomInt(1, 3);
 
-            if (color == 1) {
-                ctx.fillStyle = "rgba(150, 0, 0, 0.2)";
-            } else if (color == 2) {
-                ctx.fillStyle = "rgba(150, 125, 0, 0.2)";
+            // Store the color
+            let color;
+
+            if (colorInt == 1) {
+                color = "rgba(150, 0, 0, 0.2)";
+            } else if (colorInt == 2) {
+                color = "rgba(150, 125, 0, 0.2)";
             } else {
-                ctx.fillStyle = "rgba(0, 0, 100, 0.2)";
+                color = "rgba(0, 0, 100, 0.2)";
             }
-            ctx.beginPath();
-            ctx.arc(getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.fill();
+            //ctx.beginPath();
+            //ctx.arc(getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), 0, Math.PI * 2);
+            //ctx.closePath();
+            //ctx.fill();
+            drawArc(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), color, 0, color, 0, Math.PI * 2);
         }
 
         // handy helper functions!
@@ -289,7 +293,6 @@
             ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
-            ctx.fill();
             ctx.stroke();
             ctx.closePath();
             ctx.restore();
