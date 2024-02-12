@@ -33,6 +33,8 @@
         let paused = false;
         let canvas;
         let createRectangles;
+        let createArcs;
+        let createLines;
 
         function init() {
             console.log("page loaded!");
@@ -136,6 +138,8 @@
             update();
 
             createRectangles = document.querySelector("#cbRectangles").checked;
+            createArcs = document.querySelector("#cbArcs").checked;
+            createLines = document.querySelector("#cbLines").checked;
         }
 
         function setupUI() {
@@ -155,6 +159,12 @@
             document.querySelector("#cbRectangles").onclick = function (e) {
                 createRectangles = e.target.checked;
             }
+            document.querySelector("#cbArcs").onclick = function (e) {
+                createArcs = e.target.checked;
+            }
+            document.querySelector("#cbLines").onclick = function (e) {
+                createLines = e.target.checked;
+            }
         }
 
         // Update function for constantly drawing to the screen
@@ -167,27 +177,17 @@
             if (createRectangles) {
                 drawRandomRect(ctx);
             }
-            drawRandomLine(ctx);
-            drawRandomArc(ctx);
+            if (createArcs) {
+                drawRandomArc(ctx);
+            }
+            if (createLines) {
+                drawRandomLine(ctx);
+            }
         }
 
         // Draws a randomly-sized and positioned rectangle
         function drawRandomRect(ctx) {
-            // Get a random color of red, gold, or blue to color the rectangle
-            let colorInt = getRandomInt(1, 3);
-
-            // Variable in which to store the color
-            let color;
-
-            if (colorInt == 1) {
-                color = "rgba(175, 0, 0, 0.2)";
-            } else if (colorInt == 2) {
-                color = "rgba(175, 150, 0, 0.2)";
-            } else {
-                color = "rgba(0, 0, 175, 0.2)";
-            }
-
-            drawRectangle(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90), color);
+            drawRectangle(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90), getRedGoldBlue("rect"));
         }
 
         // Draws a random horizontal or vertical line across the canvas
@@ -195,51 +195,20 @@
             // Determine whether to draw a horizontal or vertical line (0 = horizontal, 1 = vertical)
             let lineType = getRandomInt(0, 1);
 
-            // Get a random color of red, gold, or blue to color the line
-            let colorInt = getRandomInt(1, 3);
-
-            // Variable in which to store the color
-            let color;
-
-            if (colorInt == 1) {
-                color = "rgba(150, 0, 0, 0.2)";
-            } else if (colorInt == 2) {
-                color = "rgba(150, 125, 0, 0.2)";
-            } else {
-                color = "rgba(0, 0, 100, 0.2)";
-            }
-            
             if (lineType == 0) {
                 // Get a random value along the y-axis
                 let y = getRandomInt(0, 480);
-                drawLine(ctx, 0, 640, y, y, getRandomInt(12, 24), color);
+                drawLine(ctx, 0, 640, y, y, getRandomInt(12, 24), getRedGoldBlue("line"));
             } else {
                 // Get a random value along the x-axis
                 let x = getRandomInt(0, 640);
-                drawLine(ctx, x, x, 0, 480, getRandomInt(12, 24), color);
+                drawLine(ctx, x, x, 0, 480, getRandomInt(12, 24), getRedGoldBlue("line"));
             }
         }
 
         // Draws a randomly-sized and positioned circle 
         function drawRandomArc(ctx) {
-            // Get a random color of red, gold, or blue to color the circle
-            let colorInt = getRandomInt(1, 3);
-
-            // Store the color
-            let color;
-
-            if (colorInt == 1) {
-                color = "rgba(150, 0, 0, 0.2)";
-            } else if (colorInt == 2) {
-                color = "rgba(150, 125, 0, 0.2)";
-            } else {
-                color = "rgba(0, 0, 100, 0.2)";
-            }
-            //ctx.beginPath();
-            //ctx.arc(getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), 0, Math.PI * 2);
-            //ctx.closePath();
-            //ctx.fill();
-            drawArc(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), color, 0, color, 0, Math.PI * 2);
+            drawArc(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), getRedGoldBlue("arc"), 0, getRedGoldBlue("arc"), 0, Math.PI * 2);
         }
 
         // handy helper functions!
@@ -254,20 +223,8 @@
                 let y = getRandomInt(-100, 100) + mouseY;
                 let width = getRandomInt(20, 50);
                 let height = getRandomInt(20, 50);
-                // Get a random color of red, gold, or blue to color the rectangle
-                let colorInt = getRandomInt(1, 3);
 
-                // Variable in which to store the color
-                let color;
-
-                if (colorInt == 1) {
-                    color = "rgba(175, 0, 0, 0.2)";
-                } else if (colorInt == 2) {
-                    color = "rgba(175, 150, 0, 0.2)";
-                } else {
-                    color = "rgba(0, 0, 175, 0.2)";
-                }
-                drawRectangle(ctx, x, y, width, height, color);
+                drawRectangle(ctx, x, y, width, height, getRedGoldBlue("rect"));
             }
         }
 
@@ -313,6 +270,43 @@
             ctx.restore();
         }
 
+        // Gets a random color between red gold or blue to color the given shape and returns that color
+        function getRedGoldBlue(shape) {
+            // Get a random color of red, gold, or blue to color the shape
+            let colorInt = getRandomInt(1, 3);
+
+            // Variable in which to store the color
+            let color;
+
+            if (shape == "rect") {
+                if (colorInt == 1) {
+                    color = "rgba(175, 0, 0, 0.2)";
+                } else if (colorInt == 2) {
+                    color = "rgba(175, 150, 0, 0.2)";
+                } else {
+                    color = "rgba(0, 0, 175, 0.2)";
+                }
+            } else if (shape == "line") {
+                if (colorInt == 1) {
+                    color = "rgba(150, 0, 0, 0.2)";
+                } else if (colorInt == 2) {
+                    color = "rgba(150, 125, 0, 0.2)";
+                } else {
+                    color = "rgba(0, 0, 100, 0.2)";
+                }
+            } else {
+                if (colorInt == 1) {
+                    color = "rgba(150, 0, 0, 0.2)";
+                } else if (colorInt == 2) {
+                    color = "rgba(150, 125, 0, 0.2)";
+                } else {
+                    color = "rgba(0, 0, 100, 0.2)";
+                }
+            }
+
+            return color;
+        }
+
         function getRandomColor() {
             function getByte() {
                 return 55 + Math.round(Math.random() * 150);
@@ -338,6 +332,10 @@
         <span>
             <input type="checkbox" id="cbRectangles" checked>
             <label for="cbRectangles">Rectangles</label>
+            <input type="checkbox" id="cbArcs" checked>
+            <label for="cbArcs">Draw Arcs</label>
+            <input type="checkbox" id="cbLines" checked>
+            <label for="cbLines">Draw Lines</label>
         </span>
     </section>
     <section>
