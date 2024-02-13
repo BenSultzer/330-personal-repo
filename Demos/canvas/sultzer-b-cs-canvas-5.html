@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>First Canvas</title>
+    <title>Screensaver</title>
     <style>
         canvas {
             border: 1px solid gray;
@@ -50,39 +50,18 @@
             // ctx.fillStyle = "red";
             // ctx.fillStyle = "#ff0000";
             // ctx.fillStyle = "#f00";
-            ctx.fillStyle = "rgb(255, 0, 0)";
+            // ctx.fillStyle = "rgb(255, 0, 0)";
 
             // D - fill a rectangle with the current fill color
-            ctx.fillRect(20, 20, 600, 440);
-
-            ctx.strokeStyle = "blue";
-            ctx.lineWidth = 30;
-            // ctx.strokeRect(120, 120, 400, 300);
-
-            ctx.fillStyle = "yellow";
-            // ctx.fillRect(120, 120, 400, 300);
+            drawRectangle(ctx, 20, 20, 600, 440, "rgb(255, 0, 0)");            
 
             // Rect
-            ctx.beginPath();
-            ctx.rect(120, 120, 400, 300);
-            ctx.closePath();
-            ctx.stroke();
-            ctx.fillStyle = "green";
-            ctx.fill();
+            drawRectangle(ctx, 120, 120, 400, 300, "green", 30, "blue");
+            
 
             // Lines
-            ctx.strokeStyle = "purple";
-            ctx.beginPath();
-            ctx.moveTo(20, 20);
-            ctx.lineTo(620, 460);
-            ctx.closePath();
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(620, 20);
-            ctx.lineTo(20, 460);
-            ctx.closePath();
-            ctx.stroke();
+            drawLine(ctx, 20, 620, 20, 460, 30, "purple");
+            drawLine(ctx, 620, 20, 20, 460, 30, "purple");
 
             // Circle
             ctx.fillStyle = "yellow";
@@ -129,9 +108,9 @@
             ctx.closePath();
             ctx.stroke();
 
-            // Hide everything under a screen-sized white rectangle
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, 640, 480);
+            // Hide previous PE-05 work under a screen-sized white rectangle
+            //ctx.fillStyle = "white";
+            //ctx.fillRect(0, 0, 640, 480);
 
             setupUI();
 
@@ -165,6 +144,9 @@
             document.querySelector("#cbLines").onclick = function (e) {
                 createLines = e.target.checked;
             }
+
+            // Hook up the event to clear the screen when the "Clear Screen" button is clicked
+            document.querySelector("#btn-clear").onclick = clearScreen;
         }
 
         // Update function for constantly drawing to the screen
@@ -209,6 +191,12 @@
         // Draws a randomly-sized and positioned circle 
         function drawRandomArc(ctx) {
             drawArc(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), getRedGoldBlue("arc"), 0, getRedGoldBlue("arc"), 0, Math.PI * 2);
+        }
+
+        // Clear the screen to white with a screen-sized white rectangle
+        function clearScreen() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, 640, 480);
         }
 
         // handy helper functions!
@@ -327,11 +315,12 @@
     <section>
         <button id="btnPlay">Play</button>
         <button id="btnPause">Pause</button>
+        <button id="btn-clear">Clear Screen</button>
     </section>
     <section>
         <span>
             <input type="checkbox" id="cbRectangles" checked>
-            <label for="cbRectangles">Rectangles</label>
+            <label for="cbRectangles">Draw Rectangles</label>
             <input type="checkbox" id="cbArcs" checked>
             <label for="cbArcs">Draw Arcs</label>
             <input type="checkbox" id="cbLines" checked>
