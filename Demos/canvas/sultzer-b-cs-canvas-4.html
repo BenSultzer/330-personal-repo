@@ -27,11 +27,19 @@
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
         "use strict";
 
-        // #1 call the `init` function after the pages loads
+        // #1 call the `init` function after the page loads
         window.onload = init;
+
+        // Variable to store the "2D drawing context"
         let ctx;
+
+        // Boolean to track if the screensaver is paused
         let paused = false;
+
+        // Variable to store a reference to the canvas element
         let canvas;
+
+        // Boolean to track whether or not rectangles should be drawn
         let createRectangles;
 
         function init() {
@@ -44,6 +52,7 @@
             // B - the `ctx` variable points at a "2D drawing context"
             ctx = canvas.getContext("2d");
 
+            // Following along with demo work
             // C - all fill operations are now in red
             // ctx.fillStyle = "red";
             // ctx.fillStyle = "#ff0000";
@@ -131,18 +140,24 @@
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, 640, 480);
 
+            // Connect UI elements to their respective event handlers
             setupUI();
 
+            // Call the screensaver function
             update();
 
+            // Initialize the Boolean for drawing rectangles to the current value of the "Rectangles" checkbox so the state presists across page reloads
             createRectangles = document.querySelector("#cbRectangles").checked;
         }
 
+        // Function for making sure each UI element's event handler is hooked up properly
         function setupUI() {
+            // Stop the calls to update() when the "Pause" button is pressed to pause the screensaver
             document.querySelector("#btnPause").onclick = function () {
                 paused = true;
             }
 
+            // Resume the calls to update() when the "Play" button is pressed to start the screensaver again
             document.querySelector("#btnPlay").onclick = function () {
                 // If the game is already unpaused, don't continue to initiate the animation again as if it is continuously being unpaused (prevents stacking calls to requestAnimationFrame() for update())
                 if (paused) {
@@ -151,7 +166,10 @@
                 }
             }
 
+            // Gets the screen position relative to the top-left corner of the canvas for the spraypaint feature
             canvas.onclick = canvasClicked;
+
+            // Updates the state of the "Rectangles" checkbox when it is clicked
             document.querySelector("#cbRectangles").onclick = function (e) {
                 createRectangles = e.target.checked;
             }
@@ -163,7 +181,10 @@
                 return;
             }
 
+            // Hook up the update function to the canvas's "ticker"
             requestAnimationFrame(update);
+
+            // Draw a random instance of the three different shapes in the canvas (following the Boolean value for rectangles)
             if (createRectangles) {
                 drawRandomRect(ctx);
             }
@@ -173,21 +194,7 @@
 
         // Draws a randomly-sized and positioned rectangle
         function drawRandomRect(ctx) {
-            // Get a random color of red, gold, or blue to color the rectangle
-            let colorInt = getRandomInt(1, 3);
-
-            // Variable in which to store the color
-            let color;
-
-            if (colorInt == 1) {
-                color = "rgba(175, 0, 0, 0.2)";
-            } else if (colorInt == 2) {
-                color = "rgba(175, 150, 0, 0.2)";
-            } else {
-                color = "rgba(0, 0, 175, 0.2)";
-            }
-
-            drawRectangle(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90), color);
+            drawRectangle(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90), getRedGoldBlue("rect"));
         }
 
         // Draws a random horizontal or vertical line across the canvas
@@ -196,15 +203,8 @@
             let lineType = getRandomInt(0, 1);
 
             // Get a random color of red, gold, or blue to color the line
-            let color = getRandomInt(1, 3);
+            ctx.strokeStyle = getRedGoldBlue("line");
 
-            if (color == 1) {
-                ctx.strokeStyle = "rgba(150, 0, 0, 0.2)";
-            } else if (color == 2) {
-                ctx.strokeStyle = "rgba(150, 125, 0, 0.2)";
-            } else {
-                ctx.strokeStyle = "rgba(0, 0, 100, 0.2)";
-            }
             ctx.lineWidth = getRandomInt(12, 24);
             ctx.beginPath();
             if (lineType == 0) {
@@ -225,15 +225,8 @@
         // Draws a randomly-sized and positioned circle 
         function drawRandomCircle(ctx) {
             // Get a random color of red, gold, or blue to color the circle
-            let color = getRandomInt(1, 3);
+            ctx.fillStyle = getRedGoldBlue("arc");
 
-            if (color == 1) {
-                ctx.fillStyle = "rgba(150, 0, 0, 0.2)";
-            } else if (color == 2) {
-                ctx.fillStyle = "rgba(150, 125, 0, 0.2)";
-            } else {
-                ctx.fillStyle = "rgba(0, 0, 100, 0.2)";
-            }
             ctx.beginPath();
             ctx.arc(getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), 0, Math.PI * 2);
             ctx.closePath();
@@ -252,20 +245,8 @@
                 let y = getRandomInt(-100, 100) + mouseY;
                 let width = getRandomInt(20, 50);
                 let height = getRandomInt(20, 50);
-                // Get a random color of red, gold, or blue to color the rectangle
-                let colorInt = getRandomInt(1, 3);
-
-                // Variable in which to store the color
-                let color;
-
-                if (colorInt == 1) {
-                    color = "rgba(175, 0, 0, 0.2)";
-                } else if (colorInt == 2) {
-                    color = "rgba(175, 150, 0, 0.2)";
-                } else {
-                    color = "rgba(0, 0, 175, 0.2)";
-                }
-                drawRectangle(ctx, x, y, width, height, color);
+                
+                drawRectangle(ctx, x, y, width, height, getRedGoldBlue("rect"));
             }
         }
 
@@ -282,6 +263,43 @@
             }
             ctx.closePath();
             ctx.restore();
+        }
+
+        // Gets a random color between red gold or blue to color the given shape and returns that color
+        function getRedGoldBlue(shape) {
+            // Get a random color of red, gold, or blue to color the shape
+            let colorInt = getRandomInt(1, 3);
+
+            // Variable in which to store the color
+            let color;
+
+            if (shape == "rect") {
+                if (colorInt == 1) {
+                    color = "rgba(175, 0, 0, 0.2)";
+                } else if (colorInt == 2) {
+                    color = "rgba(175, 150, 0, 0.2)";
+                } else {
+                    color = "rgba(0, 0, 175, 0.2)";
+                }
+            } else if (shape == "line") {
+                if (colorInt == 1) {
+                    color = "rgba(150, 0, 0, 0.2)";
+                } else if (colorInt == 2) {
+                    color = "rgba(150, 125, 0, 0.2)";
+                } else {
+                    color = "rgba(0, 0, 100, 0.2)";
+                }
+            } else {
+                if (colorInt == 1) {
+                    color = "rgba(150, 0, 0, 0.2)";
+                } else if (colorInt == 2) {
+                    color = "rgba(150, 125, 0, 0.2)";
+                } else {
+                    color = "rgba(0, 0, 100, 0.2)";
+                }
+            }
+
+            return color;
         }
 
         function getRandomColor() {
