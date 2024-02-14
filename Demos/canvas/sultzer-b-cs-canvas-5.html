@@ -48,6 +48,7 @@
         // Boolean to track whether or not lines should be drawn
         let createLines;
 
+        // Initializes the various program features
         function init() {
             console.log("page loaded!");
             // #2 Now that the page has loaded, start drawing!
@@ -110,6 +111,7 @@
 
         // Update function for constantly drawing to the screen
         function update() {
+            // If the pause button has been pressed, return from update so the sreensaver isn't changed
             if (paused) {
                 return;
             }
@@ -129,20 +131,22 @@
             }
         }
 
-        // Draws a randomly-sized and positioned rectangle
+        // Draws a randomly-sized, colored, and positioned rectangle
         function drawRandomRect(ctx) {
             drawRectangle(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90), getRedGoldBlue("rect"));
         }
 
-        // Draws a random horizontal or vertical line across the canvas
+        // Draws a randomly-positioned and sized horizontal or vertical line across the canvas
         function drawRandomLine(ctx) {
             // Determine whether to draw a horizontal or vertical line (0 = horizontal, 1 = vertical)
             let lineType = getRandomInt(0, 1);
 
+            // Draw a horizontal line
             if (lineType == 0) {
                 // Get a random value along the y-axis
                 let y = getRandomInt(0, 480);
                 drawLine(ctx, 0, 640, y, y, getRandomInt(12, 24), getRedGoldBlue("line"));
+            // Draw a vertical line
             } else {
                 // Get a random value along the x-axis
                 let x = getRandomInt(0, 640);
@@ -150,7 +154,7 @@
             }
         }
 
-        // Draws a randomly-sized and positioned circle 
+        // Draws a randomly-sized, colored, and positioned arc
         function drawRandomArc(ctx) {
             drawArc(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), getRedGoldBlue("arc"), 0, getRedGoldBlue("arc"), 0, Math.PI * 2);
         }
@@ -162,23 +166,33 @@
         }
 
         // handy helper functions!
+        // Detects where the canvas was clicked and generates randomly-positioned, colored, and sized circles around that position
         function canvasClicked(e) {
+            // Gets information about the clicked area to convert into canvas space
             let rect = e.target.getBoundingClientRect();
+
+            // Calculates where the canvas was clicked relative to its own top-left corner
             let mouseX = e.clientX - rect.x;
             let mouseY = e.clientY - rect.y;
             console.log(mouseX, mouseY);
 
+            // Generates ten random circles around the calculated position
             for (let i = 0; i < 10; i++) {
                 let x = getRandomInt(-100, 100) + mouseX;
                 let y = getRandomInt(-100, 100) + mouseY;
                 let radius = getRandomInt(20, 50);
 
+                // Draws the next circle
                 drawArc(ctx, x, y, radius, getRedGoldBlue("arc"));
             }
         }
 
+        // Draws a rectangle with the specified position, size, fill, stroke, and stroke width (line width)
         function drawRectangle(ctx, x, y, width, height, fillStyle = "black", lineWidth = 0, strokeStyle = "black") {
+            // Save the previous drawing state so that this function is pure
             ctx.save();
+
+            // Set the various drawing state properties and draw the rectangle (fill and/or stroke)
             ctx.fillStyle = fillStyle;
             ctx.beginPath();
             ctx.rect(x, y, width, height);
@@ -189,11 +203,17 @@
                 ctx.stroke();
             }
             ctx.closePath();
+
+            // Get the drawing state back to the previous one
             ctx.restore();
         }
 
+        // Draws a line with the specified start position, end position, stroke, and stroke width (line width)
         function drawLine(ctx, x1, x2, y1, y2, lineWidth = 1, strokeStyle = "black") {
+            // Save the previous drawing state so that this function is pure
             ctx.save();
+
+            // Set the various drawing state properties and draw the line
             ctx.lineWidth = lineWidth;
             ctx.strokeStyle = strokeStyle;
             ctx.beginPath();
@@ -201,11 +221,17 @@
             ctx.lineTo(x2, y2);
             ctx.stroke();
             ctx.closePath();
+
+            // Get the drawing state back to the previous one
             ctx.restore();
         }
 
+        // Draws an arc with the specified position, radius, fill, stroke, stroke width (line width), start angle, and end angle
         function drawArc(ctx, x, y, radius, fillStyle = "black", lineWidth = 0, strokeStyle = "black", startAngle = 0, endAngle = Math.PI * 2) {
+            // Save the previous drawing state so that this function is pure
             ctx.save();
+
+            // Set the various drawing state properties and draw the arc (fill and/or stroke)
             ctx.fillStyle = fillStyle;
             ctx.beginPath();
             ctx.arc(x, y, radius, startAngle, endAngle);
@@ -216,10 +242,12 @@
                 ctx.stroke();
             }
             ctx.closePath();
+
+            // Get the drawing state back to the previous one
             ctx.restore();
         }
 
-        // Gets a random color between red gold or blue to color the given shape and returns that color
+        // Gets a random color between red, gold, or blue to color the given shape and returns that color
         function getRedGoldBlue(shape) {
             // Get a random color of red, gold, or blue to color the shape
             let colorInt = getRandomInt(1, 3);
@@ -227,6 +255,7 @@
             // Variable in which to store the color
             let color;
 
+            // Rectangles
             if (shape == "rect") {
                 if (colorInt == 1) {
                     color = "rgba(175, 0, 0, 0.2)";
@@ -235,6 +264,7 @@
                 } else {
                     color = "rgba(0, 0, 175, 0.2)";
                 }
+            // Lines
             } else if (shape == "line") {
                 if (colorInt == 1) {
                     color = "rgba(150, 0, 0, 0.2)";
@@ -243,6 +273,7 @@
                 } else {
                     color = "rgba(0, 0, 100, 0.2)";
                 }
+            // Circles
             } else {
                 if (colorInt == 1) {
                     color = "rgba(150, 0, 0, 0.2)";
@@ -256,13 +287,18 @@
             return color;
         }
 
+        // Gets a random color
         function getRandomColor() {
+            // Gets a color that ranges from slight strength to full strength (min value of 55 for red, green, and blue)
             function getByte() {
                 return 55 + Math.round(Math.random() * 150);
             }
+
+            // Returns color in CSS "rgba()" format
             return "rgba(" + getByte() + "," + getByte() + "," + getByte() + ",.8)";
         }
 
+        // Gets a random value between min and max inclusive
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
