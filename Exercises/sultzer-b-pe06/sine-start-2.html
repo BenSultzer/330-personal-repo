@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Sine Start</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        "use strict";
+        const canvasWidth = 400, canvasHeight = 300;
+        let ctx;
+        // x, y, and angle increment variables for the sine wave points
+        let x = 0;
+        let y = 0;
+        let angle = 0;
+
+        // Speed of animation
+        const fps = 12;
+
+        // Call the init function when the page loads
+        window.onload = init;
+
+        function init() {
+            ctx = canvas.getContext("2d");
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            loop();
+        }
+
+        // Creates a sine wave by calculating each point
+        const loop = () => {
+            // Run animation at 12 FPS
+            setTimeout(loop, 1000 / fps);
+
+            // Keep track of the drawing state for the sine wave
+            ctx.save();
+            ctx.fillStyle = "black";
+            ctx.globalAlpha = 1 / fps;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.restore();
+            
+            // 10 pixels between each point
+            x += 10;
+
+            // Increment the angle
+            angle += 0.1;
+
+            // White sine wave
+            // Scale y up and move down immediately so can see in canvas
+            y = Math.sin(angle) * 100 + canvasHeight / 2;
+
+            // Draw each point
+            drawCircle(ctx, x, y, 4, "white");
+
+            // Red cosine wave
+            // Scale y up and move down immediately so can see in canvas
+            y = Math.cos(angle) * 100 + canvasHeight / 2;
+
+            // Draw each point
+            drawCircle(ctx, x, y, 4, "red");
+
+            // Create an ocean-like wave
+            y = canvasHeight / 2 - Math.sqrt(x % 50) * 5;
+            drawCircle(ctx, x, y, 4, "cyan");
+
+            // Reset the sine wave when x reaches the right edge of the canvas
+            if (x > canvasWidth) {
+                x = 0;
+            }
+            
+            
+            // The angle increment for 100 values between 0 and 2pi
+            //let angle = 0;
+
+            // How much to increment by
+            //let increase = Math.PI * 2 / 100;
+
+            //for (let i = 0; i < 1; i += 0.01) {
+            //    x = i;
+            //    y = Math.sin(angle) / 2 + 0.5;
+            //    console.log(x, y);
+
+                // Draw a circle for each point, using canvas width/height to scale the sine wave to the size of the canvas
+            //    drawCircle(ctx, x * canvasWidth, canvasHeight / 2 + (y * 100), 2, "white");
+                
+            //    angle += increase;
+            //}
+        }
+
+
+        // helpers
+        function dtr(degrees) {
+            return degrees * (Math.PI / 180);
+        }
+
+        function drawCircle(ctx, x, y, radius, color) {
+            ctx.save();
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+
+    </script>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+</body>
+
+</html>
