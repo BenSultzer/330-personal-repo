@@ -17,6 +17,12 @@
         const c = 4;
         const divergence = 137.5;
 
+        // The FPS of the app
+        let fps = 60;
+
+        // The radius of each circle that makes up the "flower"
+        let radius = 2;
+
         // Call init when the page loads
         window.onload = init;
 
@@ -29,7 +35,7 @@
         }
 
         function loop() {
-            setTimeout(loop, 1000 / 30);
+            setTimeout(loop, 1000 / fps);
 
             // each frame draw a new dot
             // `a` is the angle
@@ -43,14 +49,21 @@
             let y = r * Math.sin(a) + canvasHeight / 2;
             //console.log(x, y);
 
+            // Shades of purple
+            //let color = `rgb(${n % 256},0,255)`;
+
+            // Spiraled shades of purple
             //let aDegrees = (n * divergence) % 256;
             //let color = `rgb(${aDegrees},0,255)`;
 
-            //let aDegrees = (n * divergence) % 361;
-            //let color = `hsl(${aDegrees},100%,50%)`;
+            // Mac spinning wheel of death!
+            let aDegrees = (n * divergence) % 361;
+            let color = `hsl(${aDegrees},100%,50%)`;
 
-            let color = `hsl(${n/5 % 361},100%,50%)`;
-            drawCircle(ctx, x, y, 2, color);
+            // Rainbow
+            //let color = `hsl(${n/5 % 361},100%,50%)`;
+
+            drawCircle(ctx, x, y, radius, color);
 
             n++;
         }
