@@ -11,40 +11,66 @@
     </style>
     <script>
         "use strict";
+        // The canvas size and canvas 2D drawing context variable
         const canvasWidth = 400, canvasHeight = 300;
         let ctx;
+
+        // The generation of the current "flower" circle element
         let n = 0;
+
+        // The padding between each "flower" circle element
         const c = 4;
+
+        // The constant angle between position vectors of any two "flower" circle elements
         const divergence = 137.5;
 
         // The FPS of the app
         let fps = 60;
 
+        // Tracks the total running time of the app
+        let totalTime = 0;
+
         // The radius of each circle that makes up the "flower"
-        let radius = 2;
+        let radius;
+
+        // Variable to adjust the possible range of trig values for the radius
+        let radiusScale = 1;
 
         // Call init when the page loads
         window.onload = init;
 
+        // Clears the screen and restarts the "flower"
+        const restart = () => { 
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            n = 0;
+        }
+
+        // Set up the canvas for drawing, hook up the restart button, and begin the drawing loop
         function init() {
             ctx = canvas.getContext("2d");
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            document.querySelector("#restart").addEventListener("click", restart);
             loop();
         }
 
+        // Looping function for drawing the "flower"
         function loop() {
+            // Set the delay between calls to loop() (set the FPS)
             setTimeout(loop, 1000 / fps);
 
-            // each frame draw a new dot
+            // Update total time
+            totalTime += 1 / fps;
+
+            // Each frame draw a new dot
             // `a` is the angle
-            // `r` is the radius from the center (e.g. "Pole") of the flower
+            // `r` is the radius from the center (e.g. "Pole") of the "flower"
             // `c` is the "padding/spacing" between the dots
             let a = n * dtr(divergence);
             let r = c * Math.sqrt(n);
 
-            // now calculate the `x` and `y`
+            // Now calculate the `x` and `y`
             let x = r * Math.cos(a) + canvasWidth / 2;
             let y = r * Math.sin(a) + canvasHeight / 2;
             //console.log(x, y);
@@ -63,32 +89,46 @@
             // Rainbow
             //let color = `hsl(${n/5 % 361},100%,50%)`;
 
+            // Update the radius so it fluctuates with a sine wave
+            radius = (Math.sin(totalTime) + 2) * radiusScale;
+
+            console.log(radius);
+
+            // Draw the current circle element of the "flower"
             drawCircle(ctx, x, y, radius, color);
 
+            // Go to the next "flower" circle element
             n++;
         }
 
 
-        // helpers
+        // Helper functions
+        // Converts from degrees to radians
         function dtr(degrees) {
             return degrees * (Math.PI / 180);
         }
 
+        // Draws a circle with the specified position, radius, and color
         function drawCircle(ctx, x, y, radius, color) {
+            // Save the previous drawing state so that this function is pure 
             ctx.save();
+
+            // Set the various drawing state properties and draw the arc 
             ctx.fillStyle = color;
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.closePath();
             ctx.fill();
+
+            // Get the drawing state back to the previous one
             ctx.restore();
         }
-
     </script>
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas"></canvas><br><br>
+    <button id="restart">Restart</button>
 
 </body>
 
