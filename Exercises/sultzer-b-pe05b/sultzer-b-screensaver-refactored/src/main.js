@@ -1,5 +1,9 @@
-// Import the random color and random int util functions
-import { getRandomColor, getRandomInt } from "./utils.js";
+// Overview: Practice Exercise 05B
+// Author: Ben Sultzer <bms3902@rit.edu>
+
+// Import the random color and random int util functions, as well as the draw rectangle, arc, and line canvas util functions
+import { getRandomInt } from "./utils.js";
+import { drawRectangle, drawArc, drawLine } from "./canvas-utils.js";
 
 // Variable to store the "2D drawing context"
 let ctx;
@@ -19,28 +23,9 @@ let createArcs;
 // Boolean to track whether or not lines should be drawn
 let createLines;
 
-// Draws a rectangle with the specified position, size, fill, stroke, and stroke width (line width)
-const drawRectangle = (ctx, x, y, width, height, fillStyle = "black", lineWidth = 0, strokeStyle = "black") => {
-    // Save the previous drawing state so that this function is pure
-    ctx.save();
-
-    // Set the various drawing state properties and draw the rectangle (fill and/or stroke)
-    ctx.fillStyle = fillStyle;
-    ctx.beginPath();
-    ctx.rect(x, y, width, height);
-    ctx.fill();
-    if (lineWidth > 0) {
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = strokeStyle;
-        ctx.stroke();
-    }
-    ctx.closePath();
-
-    // Get the drawing state back to the previous one
-    ctx.restore();
-}
-
 // Gets a random color between red, gold, or blue to color the given shape and returns that color
+// "shape" parameter: The type of shape to be colored
+// Returns: The color of the shape
 const getRedGoldBlue = (shape) => {
     // Get a random color of red, gold, or blue to color the shape
     let colorInt = getRandomInt(1, 3);
@@ -57,7 +42,7 @@ const getRedGoldBlue = (shape) => {
         } else {
             color = "rgba(0, 0, 175, 0.2)";
         }
-        // Lines
+    // Lines
     } else if (shape == "line") {
         if (colorInt == 1) {
             color = "rgba(150, 0, 0, 0.2)";
@@ -66,7 +51,7 @@ const getRedGoldBlue = (shape) => {
         } else {
             color = "rgba(0, 0, 100, 0.2)";
         }
-        // Circles
+    // Circles
     } else {
         if (colorInt == 1) {
             color = "rgba(150, 0, 0, 0.2)";
@@ -81,29 +66,15 @@ const getRedGoldBlue = (shape) => {
 }
 
 // Draws a randomly-sized, colored, and positioned rectangle
+// Parameters: None
+// Returns: Nothing
 const drawRandomRect = (ctx) => {
     drawRectangle(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 90), getRandomInt(10, 90), getRedGoldBlue("rect"));
 }
 
-// Draws a line with the specified start position, end position, stroke, and stroke width (line width)
-const drawLine = (ctx, x1, x2, y1, y2, lineWidth = 1, strokeStyle = "black") => {
-    // Save the previous drawing state so that this function is pure
-    ctx.save();
-
-    // Set the various drawing state properties and draw the line
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = strokeStyle;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    ctx.closePath();
-
-    // Get the drawing state back to the previous one
-    ctx.restore();
-}
-
 // Draws a randomly-positioned and sized horizontal or vertical line across the canvas
+// "ctx" parameter: the 2D drawing context object for drawing a line
+// Returns: Nothing
 const drawRandomLine = (ctx) => {
     // Determine whether to draw a horizontal or vertical line (0 = horizontal, 1 = vertical)
     let lineType = getRandomInt(0, 1);
@@ -113,7 +84,7 @@ const drawRandomLine = (ctx) => {
         // Get a random value along the y-axis
         let y = getRandomInt(0, 480);
         drawLine(ctx, 0, 640, y, y, getRandomInt(12, 24), getRedGoldBlue("line"));
-        // Draw a vertical line
+    // Draw a vertical line
     } else {
         // Get a random value along the x-axis
         let x = getRandomInt(0, 640);
@@ -121,33 +92,16 @@ const drawRandomLine = (ctx) => {
     }
 }
 
-// Draws an arc with the specified position, radius, fill, stroke, stroke width (line width), start angle, and end angle
-const drawArc = (ctx, x, y, radius, fillStyle = "black", lineWidth = 0, strokeStyle = "black", startAngle = 0, endAngle = Math.PI * 2) => {
-    // Save the previous drawing state so that this function is pure
-    ctx.save();
-
-    // Set the various drawing state properties and draw the arc (fill and/or stroke)
-    ctx.fillStyle = fillStyle;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, startAngle, endAngle);
-    ctx.fill();
-    if (lineWidth > 0) {
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = strokeStyle;
-        ctx.stroke();
-    }
-    ctx.closePath();
-
-    // Get the drawing state back to the previous one
-    ctx.restore();
-}
-
 // Draws a randomly-sized, colored, and positioned arc
+// Parameters: None
+// Returns: Nothing
 const drawRandomArc = (ctx) => {
     drawArc(ctx, getRandomInt(0, 640), getRandomInt(0, 480), getRandomInt(10, 50), getRedGoldBlue("arc"), 0, getRedGoldBlue("arc"), 0, Math.PI * 2);
 }
 
 // Update function for constantly drawing to the screen
+// Parameters: None
+// Returns: Nothing
 const update = () => {
     // If the pause button has been pressed, return from update so the sreensaver isn't changed
     if (paused) {
@@ -170,12 +124,16 @@ const update = () => {
 }
 
 // Clear the screen to white with a screen-sized white rectangle
+// Parameters: None
+// Returns: Nothing
 const clearScreen = () => {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, 640, 480);
 }
 
 // Function for detecting where the canvas was clicked, generating randomly-positioned, colored, and sized circles around that position
+// "e" parameter: The event object sent back by the click event listener
+// Returns: Nothing
 const canvasClicked = (e) => {
     // Gets information about the clicked area to convert into canvas space
     let rect = e.target.getBoundingClientRect();
@@ -197,6 +155,8 @@ const canvasClicked = (e) => {
 }
 
 // Function for making sure each UI element's event handler is hooked up properly
+// Parameters: None
+// Returns: Nothing
 const setupUI = () => {
     // Stop the calls to update() when the "Pause" button is pressed to pause the screensaver
     document.querySelector("#btn-pause").addEventListener("click", () => { paused = true; });
@@ -227,9 +187,12 @@ const setupUI = () => {
 }
 
 // Initializes the various program features
+// Parameters: None
+// Returns: Nothing
 const init = () => {
     console.log("page loaded!");
-    // #2 Now that the page has loaded, start drawing!
+
+    // Now that the page has loaded, start drawing!
 
     // A - `canvas` variable points at <canvas> tag
     canvas = document.querySelector("canvas");
@@ -237,16 +200,22 @@ const init = () => {
     // B - the `ctx` variable points at a "2D drawing context"
     ctx = canvas.getContext("2d");
 
-    // Connect UI elements to their respective event handlers
-    setupUI();
+    // Make sure the 2D drawing context object was created successfully
+    if (ctx == null) {
+        console.log("There was a problem getting the 2D drawing context!");
+        return 0;
+    } else {
+        // Connect UI elements to their respective event handlers
+        setupUI();
 
-    // Call the screensaver function
-    update();
+        // Call the screensaver function
+        update();
 
-    // Initialize the Boolean, for drawing each type of shape, to the current value of the respective "Draw" checkbox so the state presists across page reloads
-    createRectangles = document.querySelector("#cb-rectangles").checked;
-    createArcs = document.querySelector("#cb-arcs").checked;
-    createLines = document.querySelector("#cb-lines").checked;
+        // Initialize the Boolean (for whether or not to draw each type of shape) to the current value of the respective "Draw" checkbox so the state presists across page reloads
+        createRectangles = document.querySelector("#cb-rectangles").checked;
+        createArcs = document.querySelector("#cb-arcs").checked;
+        createLines = document.querySelector("#cb-lines").checked;
+    }
 }
 
 // Start the program when the window loads
