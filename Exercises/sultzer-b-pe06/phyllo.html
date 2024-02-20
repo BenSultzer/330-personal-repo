@@ -8,6 +8,14 @@
         canvas {
             border: 1px solid black;
         }
+
+        #restart {
+            margin-left: 10px;
+        }
+
+        #algorithm-label {
+            font-weight: bold;
+        }
     </style>
     <script>
         "use strict";
@@ -40,9 +48,15 @@
         window.onload = init;
 
         // Clears the screen and restarts the "flower"
-        const restart = () => { 
+        const restart = () => {
+            // Clear the screen to black
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            // Reset the "flower" circle element generations to the first one
             n = 0;
+
+            // Start the timer over for the total runtime of the app
+            totalTime = 0;
         }
 
         // Set up the canvas for drawing, hook up the restart button, and begin the drawing loop
@@ -83,16 +97,34 @@
             //let color = `rgb(${aDegrees},0,255)`;
 
             // Mac spinning wheel of death!
-            let aDegrees = (n * divergence) % 361;
+            let aDegrees = (n * divergence) % 255;
             let color = `hsl(${aDegrees},100%,50%)`;
 
             // Rainbow
             //let color = `hsl(${n/5 % 361},100%,50%)`;
 
-            // Update the radius so it fluctuates with a sine wave
-            radius = (Math.sin(totalTime) + 2) * radiusScale;
+            // Determine which algorithm to use to update the "flower" circle element radius
+            if (document.querySelector("#radius-algorithm").value == "sine") {
+                // Update the radius so it fluctuates with a sine wave
+                radius = (Math.sin(totalTime) + 2) * radiusScale;
+            } else if (document.querySelector("#radius-algorithm").value == "cosine") {
+                // Update the radius so it fluctuates with a cosine wave
+                radius = (Math.cos(totalTime) + 2) * radiusScale;
+            } else {
+                // Update the radius so it fluctuates with a tangent wave
+                radius = (Math.tan(totalTime) + 2) * radiusScale;
 
-            console.log(radius);
+                // Clamp the radius so the near infinite values are never reached
+                // Clamp positive infinity to 3
+                if (radius > 3) {
+                    radius = 3;
+                }
+
+                // Clamp negative infinity to 1
+                if (radius < 0) {
+                    radius = 1;
+                }
+            }
 
             // Draw the current circle element of the "flower"
             drawCircle(ctx, x, y, radius, color);
@@ -128,8 +160,13 @@
 
 <body>
     <canvas id="canvas"></canvas><br><br>
+    <label for="radius-algorithm" id="algorithm-label">Radius Variance Algorithm</label>
+    <select name="radius-algorithm" id="radius-algorithm">
+        <option value="sine">Sin()</option>
+        <option value="cosine">Cos()</option>
+        <option value="tangent">Tan()</option>
+    </select>
     <button id="restart">Restart</button>
-
 </body>
 
 </html>
