@@ -44,6 +44,9 @@
         // Variable to adjust the possible range of trig values for the radius
         let radiusScale = 1;
 
+        // Stores the currently selected trig function
+        let trigFunction;
+
         // Call init when the page loads
         window.onload = init;
 
@@ -59,13 +62,30 @@
             totalTime = 0;
         }
 
-        // Set up the canvas for drawing, hook up the restart button, and begin the drawing loop
+        // Whenever the value of the trig function dropdown menu changes, store the new value to use as the "flower" circle element radius calculation algorithm
+        const getTrigFunction = () => {
+            trigFunction = document.querySelector("#radius-algorithm").value;
+        }
+
+        // Set up the Algorithmic Botany app
         function init() {
+            // Set up the canvas for drawing
             ctx = canvas.getContext("2d");
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            // Hook up the restart button
             document.querySelector("#restart").addEventListener("click", restart);
+
+            // Hook up the trig dropdown menu's onchange event (for getting the new trig function for drawing the "flower" circle element radii, every time the 
+            // dropdown menu's currently selected option changes)
+            document.querySelector("#radius-algorithm").onchange = getTrigFunction;
+
+            // Get an initial algorithm for the "flower" circle element radii
+            trigFunction = document.querySelector("#radius-algorithm").value;
+
+            // Begin the drawing loop
             loop();
         }
 
@@ -104,10 +124,10 @@
             //let color = `hsl(${n/5 % 361},100%,50%)`;
 
             // Determine which algorithm to use to update the "flower" circle element radius
-            if (document.querySelector("#radius-algorithm").value == "sine") {
+            if (trigFunction == "sine") {
                 // Update the radius so it fluctuates with a sine wave
                 radius = (Math.sin(totalTime) + 2) * radiusScale;
-            } else if (document.querySelector("#radius-algorithm").value == "cosine") {
+            } else if (trigFunction == "cosine") {
                 // Update the radius so it fluctuates with a cosine wave
                 radius = (Math.cos(totalTime) + 2) * radiusScale;
             } else {
@@ -168,7 +188,10 @@
     </select>
     <button id="restart">Restart</button><br>
     <h1>About this app</h1>
-    <p>Rather than having a hard coded radius for each "flower" circle element, or replacing the radius with a constant variable, I decided to calculate the radius each frame according to a specific trig function. That way, the radius is always different and follows a wave pattern. My control is a dropdown menu that allows the user to change which trig function is used to calculate the radius. The options are sine, cosine, or tangent.</p>
+    <ul>
+        <li>Rather than having a hard coded radius for each "flower" circle element, or replacing the radius with a constant variable, I decided to calculate the radius each frame according to a specific trig function. That way, the radius is always different and follows a wave pattern.</li>
+        <li>My control is a dropdown menu that allows the user to change which trig function is used to calculate the radius. The options are sine, cosine, or tangent.</li>
+    </ul>
 </body>
 
 </html>
