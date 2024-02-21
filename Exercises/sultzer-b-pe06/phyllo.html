@@ -97,7 +97,7 @@
             //let color = `rgb(${aDegrees},0,255)`;
 
             // Mac spinning wheel of death!
-            let aDegrees = (n * divergence) % 255;
+            let aDegrees = (n * divergence) % 361;
             let color = `hsl(${aDegrees},100%,50%)`;
 
             // Rainbow
@@ -121,7 +121,7 @@
                 }
 
                 // Clamp negative infinity to 1
-                if (radius < 0) {
+                if (radius < 1) {
                     radius = 1;
                 }
             }
@@ -166,7 +166,9 @@
         <option value="cosine">Cos()</option>
         <option value="tangent">Tan()</option>
     </select>
-    <button id="restart">Restart</button>
+    <button id="restart">Restart</button><br>
+    <h1>About this app</h1>
+    <p>Rather than having a hard coded radius for each "flower" circle element, or replacing the radius with a constant variable, I decided to calculate the radius each frame according to a specific trig function. That way, the radius is always different and follows a wave pattern. My control is a dropdown menu that allows the user to change which trig function is used to calculate the radius. The options are sine, cosine, or tangent.</p>
 </body>
 
 </html>
