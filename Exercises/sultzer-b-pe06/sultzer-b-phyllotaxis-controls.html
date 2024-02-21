@@ -18,6 +18,9 @@
         }
     </style>
     <script>
+        // Overview: Practice Exercise 06
+        // Author: Ben Sultzer <bms3902@rit.edu>
+
         "use strict";
         // The canvas size and canvas 2D drawing context variable
         const canvasWidth = 400, canvasHeight = 300;
@@ -51,11 +54,13 @@
         window.onload = init;
 
         // Clears the screen and restarts the "flower"
+        // Parameters: None
+        // Returns: Nothing
         const restart = () => {
             // Clear the screen to black
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Reset the "flower" circle element generations to the first one
+            // Reset the "flower" circle element generations to the first generation
             n = 0;
 
             // Start the timer over for the total runtime of the app
@@ -63,33 +68,48 @@
         }
 
         // Whenever the value of the trig function dropdown menu changes, store the new value to use as the "flower" circle element radius calculation algorithm
+        // Parameters: None
+        // Returns: Nothing
         const getTrigFunction = () => {
             trigFunction = document.querySelector("#radius-algorithm").value;
         }
 
         // Set up the Algorithmic Botany app
+        // Parameters: None
+        // Returns: Nothing
         function init() {
             // Set up the canvas for drawing
             ctx = canvas.getContext("2d");
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Hook up the restart button
-            document.querySelector("#restart").addEventListener("click", restart);
+            // Make sure the 2D drawing context object was created successfully
+            if (ctx == null) {
+                // Indicate there was a problem
+                console.log("There was a problem getting the 2D drawing context!");
+                return 0;
+            } else {
+                // Set the initial background (a black rectangle since no color has been set)
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Hook up the trig dropdown menu's onchange event (for getting the new trig function for drawing the "flower" circle element radii, every time the 
-            // dropdown menu's currently selected option changes)
-            document.querySelector("#radius-algorithm").onchange = getTrigFunction;
+                // Hook up the restart button
+                document.querySelector("#restart").addEventListener("click", restart);
 
-            // Get an initial algorithm for the "flower" circle element radii
-            trigFunction = document.querySelector("#radius-algorithm").value;
+                // Hook up the trig dropdown menu's onchange event (gets the new trig function for drawing the "flower" circle element radii every time the 
+                // dropdown menu's currently selected option changes)
+                document.querySelector("#radius-algorithm").onchange = getTrigFunction;
 
-            // Begin the drawing loop
-            loop();
+                // Get an initial algorithm for the "flower" circle element radii
+                trigFunction = document.querySelector("#radius-algorithm").value;
+
+                // Begin the drawing loop
+                loop();
+            }
         }
 
         // Looping function for drawing the "flower"
+        // Parameters: None
+        // Returns: Nothing
         function loop() {
             // Set the delay between calls to loop() (set the FPS)
             setTimeout(loop, 1000 / fps);
@@ -156,11 +176,19 @@
 
         // Helper functions
         // Converts from degrees to radians
+        // "degrees" parameter: The angle to convert
+        // Returns: The given angle converted to radians
         function dtr(degrees) {
             return degrees * (Math.PI / 180);
         }
 
         // Draws a circle with the specified position, radius, and color
+        // "ctx" parameter: The 2D drawing context
+        // "x" parameter: The x-position of the circle
+        // "y" parameter: The y-position of the circle
+        // "radius" parameter: The radius of the circle
+        // "color" parameter: The color of the circle
+        // Returns: Nothing
         function drawCircle(ctx, x, y, radius, color) {
             // Save the previous drawing state so that this function is pure 
             ctx.save();
@@ -189,11 +217,16 @@
     <button id="restart">Restart</button><br>
     <h1>About this app</h1>
     <ul>
-        <li>The "Restart" button will reset the "flower" circle element generations to 0 and will start the app runtime timer over to refresh the trig values for the circle element radii variance. The button also clears the screen to black for a new drawing.</li>
-        <li>Changes made from starter code: 
+        <li>The "Restart" button will reset the "flower" circle element generations to 0 and will start the app runtime
+            timer over to refresh the trig values for the circle element radii variance. The button also clears the
+            screen to black for a new drawing.</li>
+        <li>Changes made from starter code:
             <ul>
-                <li>Rather than having a hard coded radius for each "flower" circle element, or replacing the radius with a constant variable, I decided to calculate the radius each frame according to a specific trig function. That way, the radius is always different and follows a wave pattern.</li>
-                <li>My control is a dropdown menu that allows the user to change which trig function is used to calculate the radius. The options are sine, cosine, or tangent.</li>
+                <li>Rather than having a hard coded radius for each "flower" circle element, or replacing the radius
+                    with a constant variable, I decided to calculate the radius each frame according to a specific trig
+                    function. That way, the radius is always different and follows a wave pattern.</li>
+                <li>My control is a dropdown menu that allows the user to change which trig function is used to
+                    calculate the radius. The options are sine, cosine, or tangent.</li>
             </ul>
         </li>
     </ul>

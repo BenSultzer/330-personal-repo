@@ -10,6 +10,8 @@
         }
     </style>
     <script>
+        // Followed along with in-class demo
+
         "use strict";
         const canvasWidth = 400, canvasHeight = 300;
         let ctx;
@@ -43,7 +45,7 @@
 
                 // Draw a circle for each point, using canvas width/height to scale the sine wave to the size of the canvas
                 drawCircle(ctx, x * canvasWidth, canvasHeight / 2 + (y * 100), 2, "white");
-                
+
                 angle += increase;
             }
         }

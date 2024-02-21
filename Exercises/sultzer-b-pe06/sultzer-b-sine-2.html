@@ -10,6 +10,8 @@
         }
     </style>
     <script>
+        // Followed along with in-class demo
+
         "use strict";
         const canvasWidth = 400, canvasHeight = 300;
         let ctx;
@@ -43,7 +45,7 @@
             ctx.globalAlpha = 1 / fps;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
             ctx.restore();
-            
+
             // 10 pixels between each point
             x += 10;
 
@@ -72,8 +74,7 @@
             if (x > canvasWidth) {
                 x = 0;
             }
-            
-            
+
             // The angle increment for 100 values between 0 and 2pi
             //let angle = 0;
 
@@ -85,9 +86,9 @@
             //    y = Math.sin(angle) / 2 + 0.5;
             //    console.log(x, y);
 
-                // Draw a circle for each point, using canvas width/height to scale the sine wave to the size of the canvas
+            // Draw a circle for each point, using canvas width/height to scale the sine wave to the size of the canvas
             //    drawCircle(ctx, x * canvasWidth, canvasHeight / 2 + (y * 100), 2, "white");
-                
+
             //    angle += increase;
             //}
         }
