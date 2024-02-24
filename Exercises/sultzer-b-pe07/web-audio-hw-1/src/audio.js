@@ -1,3 +1,6 @@
+// Overview: Practice Exercise 07
+// Author: Ben Sultzer <bms3902@rit.edu>
+
 // 1 - our WebAudio context, **we will export and make this public at the bottom of the file**
 let audioCtx;
 

@@ -1,3 +1,6 @@
+// Overview: Practice Exercise 07
+// Author: Ben Sultzer <bms3902@rit.edu>
+
 import * as main from "./main.js";
 window.onload = () => {
     console.log("window.onload called");

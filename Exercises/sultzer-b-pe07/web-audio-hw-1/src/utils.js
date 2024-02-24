@@ -1,3 +1,6 @@
+// Overview: Practice Exercise 07
+// Author: Ben Sultzer <bms3902@rit.edu>
+
 const makeColor = (red, green, blue, alpha = 1) => {
     return `rgba(${red},${green},${blue},${alpha})`;
 };
