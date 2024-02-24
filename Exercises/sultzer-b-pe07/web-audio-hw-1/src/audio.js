@@ -16,6 +16,38 @@ const DEFAULTS = Object.freeze({
 let audioData = new Uint8Array(DEFAULTS.numSamples / 2);
 
 // **Next are "public" methods - we are going to export all of these at the bottom of this file**
+// Sets the sound file to be used
+// "filePath" parameter: The file path to the desired sound file
+// Returns: Nothing
+const loadSoundFile = (filePath) => {
+    element.src = filePath;
+}
+
+// Plays the currently set sound
+// Parameters: None
+// Returns: Nothing
+const playCurrentSound = () => {
+    element.play();
+}
+
+// Pauses the currently set sound
+// Parameters: None
+// Returns: Nothing
+const pauseCurrentSound = () => {
+    element.pause();
+}
+
+// Changes the volume of the currently set sound
+// "value" parameter: The new volume
+// Returns: Nothing
+const setVolume = (value) => {
+    value = Number(value); // make sure that it's a Number rather than a String
+    gainNode.gain.value = value;
+}
+
+// Sets up the audio graph with the given audio file as the source
+// "filePath" parameter: The file path to the audio file to use as the source
+// Returns: Nothing
 const setUpWebAudio = (filePath) => {
     // 1 - The || is because WebAudio has not been standardized across browsers yet
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -25,13 +57,13 @@ const setUpWebAudio = (filePath) => {
     element = new Audio(); // document.querySelector("audio");
 
     // 3 - have it point at a sound file
+    loadSoundFile(filePath);
 
-
-    // 4 - create an a source node that points at the <audio> element
-
+    // 4 - create a source node that points at the <audio> element
+    sourceNode = audioCtx.createMediaElementSource(element);
 
     // 5 - create an analyser node
-    // note the UK spelling of "Analyser"
+    analyserNode = audioCtx.createAnalyser(); // note the UK spelling of "Analyser"
 
     /*
     // 6
@@ -44,12 +76,17 @@ const setUpWebAudio = (filePath) => {
     */
 
     // fft stands for Fast Fourier Transform
-
+    analyserNode.fftSize = DEFAULTS.numSamples;
 
     // 7 - create a gain (volume) node
-
+    gainNode = audioCtx.createGain();
+    gainNode.gain.value = DEFAULTS.gain;
 
     // 8 - connect the nodes - we now have an audio graph
+    sourceNode.connect(analyserNode);
+    analyserNode.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
 }
 
-// make sure that it's a Number rather than a String
+// Export all of the public functions, the audio context, and the analyser node
+export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, analyserNode };
