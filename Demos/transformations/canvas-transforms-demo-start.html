@@ -45,6 +45,10 @@
             ctx.stroke();
             ctx.restore();
 
+            drawSquare2(ctx, 200, 100, 100, 100, Math.PI / 6.0, "purple", 0.75);
+            drawSquare2(ctx, 350, 100, 100, 100, Math.PI / 6.0, "purple", 1.0);
+            drawSquare2(ctx, 500, 100, 100, 100, Math.PI / 6.0, "purple", 1.25);
+
             // do some transformations?
             ctx.translate(100, 0);
             ctx.rotate(Math.PI / 6);
@@ -94,6 +98,32 @@
             ctx.fillStyle = fillStyle;
             ctx.fillRect(x, y, width, height);
             ctx.restore();
+        }
+
+        // Draws a square in an expected way by saving/restoring the draw state attributes, then
+        // transforming the origin in the correct order (translation, rotation, then scale), and
+        // then drawing the square with its center at the origin
+        // "ctx" parameter: The 2D drawing context variable
+        // "x" parameter: The x-position of the square
+        // "y" parameter: The y-position of the square
+        // "width" parameter: The width of the square
+        // "height" parameter: The height of the square
+        // "rotation" parameter: The orientation of the square
+        // "fillStyle" parameter: The fill color of the square
+        // "scale" parameter: The scale of the square
+        // Returns: Nothing
+        const drawSquare2 = (ctx, x, y, width, height, rotation, fillStyle, scale) => {
+            ctx.save();  // Save the old state attributes
+            ctx.fillStyle = fillStyle;
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.scale(scale, scale);
+            // Now we'll draw from the center to get the rotation right
+            ctx.fillRect(0 - width / 2, 0 - height / 2, width, height);
+            // ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+            // The old state attributes are restored, ctx is
+            // as it was before this function was called
         }
     </script>
 </body>
