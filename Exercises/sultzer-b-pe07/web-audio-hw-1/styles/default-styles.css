@@ -15,7 +15,7 @@ canvas {
     margin-left: 1rem;
 }
 
-#volumeLabel {
+#volume-label {
     margin-left: 1rem;
 }
 
@@ -23,7 +23,7 @@ section {
     margin-bottom: 1rem;
 }
 
-#playButton {
+#play-button {
     font-size: 1.2rem;
     width: 6rem;
 }
@@ -36,7 +36,7 @@ button[data-playing="no"]:after {
     content: "Play";
 }
 
-#fsButton {
+#fs-button {
     font-size: 1.2rem;
     width: 8rem;
 }

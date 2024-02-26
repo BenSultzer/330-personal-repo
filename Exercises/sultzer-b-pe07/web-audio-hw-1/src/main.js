@@ -34,7 +34,7 @@ function init() {
 
 function setupUI(canvasElement) {
     // A - hookup fullscreen button
-    const fsButton = document.querySelector("#fsButton");
+    const fsButton = document.querySelector("#fs-button");
 
     // add .onclick event to button
     fsButton.onclick = e => {
@@ -43,7 +43,7 @@ function setupUI(canvasElement) {
     };
 
     // B - hookup play button
-    const playButton = document.querySelector("#playButton");
+    const playButton = document.querySelector("#play-button");
 
     // add .onclick event to button
     playButton.onclick = e => {
@@ -66,8 +66,8 @@ function setupUI(canvasElement) {
     };
 
     // C - hookup volume slider & label
-    let volumeSlider = document.querySelector("#volumeSlider");
-    let volumeLabel = document.querySelector("#volumeLabel");
+    let volumeSlider = document.querySelector("#volume-slider");
+    let volumeLabel = document.querySelector("#volume-label");
 
     // add .oninput event to slider
     volumeSlider.oninput = e => {
@@ -81,7 +81,7 @@ function setupUI(canvasElement) {
     volumeSlider.dispatchEvent(new Event("input"));
 
     // D - hookup track <select>
-    let trackSelect = document.querySelector("#trackSelect");
+    let trackSelect = document.querySelector("#track-select");
     // add .onchange event to <select>
     trackSelect.onchange = e => {
         audio.loadSoundFile(e.target.value);
