@@ -21,17 +21,26 @@ const DEFAULTS = Object.freeze({
     sound1: "media/New Adventure Theme.mp3"
 });
 
+// Sets up the audio visualizer
+// Parameters: None
+// Returns: Nothing
 function init() {
+    // Starts creation of the audio graph with DEFAULTS.sound1 as the source
     audio.setUpWebAudio(DEFAULTS.sound1);
     console.log("init called");
     console.log(`Testing utils.getRandomColor() import: ${utils.getRandomColor()}`);
     let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
+
+    // Initialize the various UI elements of the audio visualizer
     setupUI(canvasElement);
 
     // Call the loop function for a constant stream of audio data from the analyser node
     loop();
 }
 
+// Hooks up the various UI elements of the audio visualizer
+// "canvasElement" parameter: A reference to the canvas containing the audio visualizer
+// Returns: Nothing
 function setupUI(canvasElement) {
     // A - hookup fullscreen button
     const fsButton = document.querySelector("#fs-button");
@@ -54,12 +63,14 @@ function setupUI(canvasElement) {
             audio.audioCtx.resume();
         }
         console.log(`audioCtx.state after = ${audio.audioCtx.state}`);
+
+        // Toggle playing/pausing
         if (e.target.dataset.playing == "no") {
             // if track is currently paused, play it
             audio.playCurrentSound();
             e.target.dataset.playing = "yes"; // our CSS will set the text to "Pause"
-            // if track IS playing, pause it
         } else {
+            // if track IS playing, pause it
             audio.pauseCurrentSound();
             e.target.dataset.playing = "no"; // our CSS will set the text to "Play"
         }
@@ -84,6 +95,7 @@ function setupUI(canvasElement) {
     let trackSelect = document.querySelector("#track-select");
     // add .onchange event to <select>
     trackSelect.onchange = e => {
+        // Load next sound file
         audio.loadSoundFile(e.target.value);
         // pause the current track if it is playing
         if (playButton.dataset.playing == "yes") {
@@ -92,6 +104,9 @@ function setupUI(canvasElement) {
     };
 } // end setupUI
 
+// Displays data from the analyzer node every frame
+// Parameters: None
+// Returns: Nothing
 function loop() {
     /* NOTE: This is temporary testing code that we will delete in Part II */
     requestAnimationFrame(loop);
@@ -106,6 +121,7 @@ function loop() {
     console.log(audioData);
 
     console.log("-----Audio Stats-----");
+    // Get the data to log
     let totalLoudness = audioData.reduce((total, num) => total + num);
     let averageLoudness = totalLoudness / (audio.analyserNode.fftSize / 2);
     let minLoudness = Math.min(...audioData); // ooh - the ES6 spread operator is handy!
@@ -121,4 +137,5 @@ function loop() {
     console.log("---------------------");
 }
 
+// Make the init function public
 export { init };

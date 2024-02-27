@@ -91,5 +91,5 @@ const setUpWebAudio = (filePath) => {
     gainNode.connect(audioCtx.destination);
 }
 
-// Export all of the public functions, the audio context, and the analyser node
+// Make the web audio setup, playing/pausing sound, sound loading, and volume setting functions public, as well as the audio context and analyser node
 export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, analyserNode };
