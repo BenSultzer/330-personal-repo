@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Canvas Transforms Starter</title>
+    <style>
+        canvas {
+            border: 1px solid gray;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="640" height="480">
+        Get a real browser!
+    </canvas>
+    <script>
+        // Overview: Practice Exercise 07.5
+        // Author: Ben Sultzer <bms3902@rit.edu>
+
+        'use strict';
+        // Draws a square in an expected way by saving/restoring the drawing state attributes, then
+        // transforming the origin in the correct order (translation, rotation, then scale), and
+        // then drawing the square with its center at the origin
+        // "ctx" parameter: The 2D drawing context variable
+        // "x" parameter: The x-position of the square
+        // "y" parameter: The y-position of the square
+        // "width" parameter: The width of the square
+        // "height" parameter: The height of the square
+        // "rotation" parameter: The orientation of the square
+        // "fillStyle" parameter: The fill color of the square
+        // "scale" parameter: The scale of the square
+        // Returns: Nothing
+        const drawSquare2 = (ctx, x, y, width, height, rotation, fillStyle, scale) => {
+            ctx.save();  // Save the old state attributes
+            ctx.fillStyle = fillStyle;
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.scale(scale, scale);
+            // Now we'll draw from the center to get the rotation right
+            ctx.fillRect(0 - width / 2, 0 - height / 2, width, height);
+            // ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+            // The old state attributes are restored, ctx is
+            // as it was before this function was called
+        }
+
+        // Draws a triangle in an expected way by saving/restoring the drawing state attributes, then
+        // transforming the origin in the correct order (translation, rotation, then scale), and
+        // then drawing the triangle with its center at the origin
+        // "ctx" parameter: The 2D drawing context variable
+        // "x" parameter: The x-position of the triangle
+        // "y" parameter: The y-position of the triangle
+        // "rotation" parameter: The orientation of the triangle
+        // "strokeStyle" parameter: The line color of the triangle
+        // "lineWidth" parameter: The thickness of the triangle lines
+        // "x1" parameter: The x-coordinate of the triangle's first point
+        // "x2" parameter: The x-coordinate of the triangle's second point
+        // "x3" parameter: The x-coordinate of the triangle's third point
+        // "y1" parameter: The y-coordinate of the triangle's first point
+        // "y2" parameter: The y-coordinate of the triangle's second point
+        // "y3" parameter: The y-coordinate of the triangle's third point
+        // Returns: Nothing
+        const drawTriangle = (ctx, x, y, rotation, strokeStyle, lineWidth, x1, x2, x3, y1, y2, y3) => {
+            // Save the old state attributes
+            ctx.save();
+
+            // Translate to the intended drawing location and rotate about the triangle's center
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+
+            // Set drawing state attributes
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = lineWidth;
+
+            // Draw the triangle about the origin (which has been moved to the intended drawing location)
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.lineTo(x3, y3);
+            ctx.closePath();
+            ctx.stroke();
+
+            // The old state attributes are restored, ctx is as it was before this function was called
+            ctx.restore();
+        }
+
+        let ctx = document.querySelector('canvas').getContext('2d');
+
+        // Constantly rotate the objects
+        let rotation = 0;
+
+        // Tracks the total running time of the app
+        let totalTime = 0;
+
+        // Begin the drawing loop
+        loop();
+
+        // Draws a bunch of shapes to the screen, all with various transforms applied and methods of transform application
+        // Parameters: None
+        // Returns: Nothing
+        function loop() {
+            // Start the repeated calls to loop()
+            requestAnimationFrame(loop);
+
+            // Update the rotation
+            rotation += 0.03;
+
+            // My laptop's refresh rate is 144 Hz, so every call should update total time by 1 / 144 of a second (matches frequency of call
+            // to requestAnimationFrame() as well)
+            totalTime += 1 / 144;
+
+            // background
+            ctx.fillStyle = 'yellow';
+            ctx.fillRect(0, 0, 640, 480);
+
+            // draw a "better" triangle - why is this better? You'll see!
+            ctx.save();
+            ctx.translate(200, 350);
+            ctx.rotate(rotation);
+            ctx.strokeStyle = "red";
+            ctx.fillStyle = "red";
+            ctx.lineWidth = "5";
+            ctx.beginPath();
+            ctx.moveTo(0, -50);
+            ctx.lineTo(50, 50);
+            ctx.lineTo(-50, 50);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+
+            // Draw a second "better" triangle with the drawTriangle() function
+            drawTriangle(ctx, 475, 325, rotation, "blue", "10", 0, 100, -100, -100, 100, 100);
+
+            // Draw "better" squares
+            drawSquare2(ctx, 200, 100, 100, 100, rotation, "purple", 0.75);
+            drawSquare2(ctx, 350, 100, 100, 100, -rotation, "purple", 1.0);
+            drawSquare2(ctx, 500, 100, 100, 100, rotation, "purple", 1.25);
+
+            // Draw a disgusting magenta square that undulates with a sine wave!
+            drawSquare2(ctx, 320, 240, 100, 100, rotation, "magenta", Math.sin(totalTime) + 2);
+
+            ctx.save(); // Make sure each shape is affected by the constantly updating rotation without adding up all rotation before it
+            // do some transformations?
+            ctx.translate(100, 0);
+            ctx.rotate(rotation);
+            ctx.scale(1.2, 1.2);
+
+            // set a bunch of state attributes
+            ctx.save();
+            ctx.shadowOffsetX = 15;
+            ctx.shadowOffsetY = 15;
+            ctx.shadowColor = "rgba(153,50,204,.6)";
+            ctx.shadowBlur = 5;
+
+            // draw square with fillRect() convenience method
+            ctx.fillStyle = "green";
+            ctx.fillRect(100, 100, 100, 100);
+            ctx.restore();
+
+            // draw square with rect()
+            ctx.fillStyle = "blue";
+            ctx.beginPath();
+            ctx.rect(300, 100, 100, 100);
+            ctx.closePath();
+            ctx.fill();
+
+            // draw squares with original helper function
+            drawSquare1(ctx, 100, 0, 100, 100, "orange");
+            drawSquare1(ctx, 250, 0, 100, 100, "orange");
+            drawSquare1(ctx, 400, 0, 100, 100, "orange");
+
+            // draw a triangle
+            ctx.strokeStyle = "pink";
+            ctx.fillStyle = "green";
+            ctx.lineWidth = "5";
+            ctx.beginPath();
+            ctx.moveTo(500, 100);
+            ctx.lineTo(550, 200);
+            ctx.lineTo(450, 200);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Resets for next round of transforms
+            ctx.restore();
+        }
+
+        // Draws a square right at its intended position, not taking into account that the square has not been centered
+        // at the origin. Any transforms applied to it will be centered around a point offset from the square by the negative values of its
+        // x- and y- coordinates
+        // "ctx" parameter: The 2D drawing context variable
+        // "x" parameter: The x-position of the square
+        // "y" parameter: The y-position of the square
+        // "width" parameter: The width of the square
+        // "height" parameter: The height of the square
+        // "fillStyle" parameter: The fill color of the square
+        // Returns: Nothing
+        function drawSquare1(ctx, x, y, width, height, fillStyle) {
+            // Make sure to draw this square independent of previous drawing states, as always
+            ctx.save();
+            ctx.fillStyle = fillStyle;
+            ctx.fillRect(x, y, width, height);
+            ctx.restore();
+        }
+    </script>
+</body>
+
+</html>
