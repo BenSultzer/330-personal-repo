@@ -34,7 +34,7 @@ function setupCanvas(canvasElement, analyserNodeRef) {
 }
 
 // Draws the audio data to the canvas
-// "params" parameter: A set of drawing options
+// "params" parameter: The set of app options
 // Returns: Nothing
 function draw(params = {}) {
     // 1 - populate the audioData array with the frequency data from the analyserNode

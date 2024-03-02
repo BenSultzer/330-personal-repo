@@ -6,7 +6,7 @@ let audioCtx;
 
 // **These are "private" properties - these will NOT be visible outside of this module (i.e. file)**
 // 2 - WebAudio nodes that are part of our WebAudio audio routing graph
-let element, sourceNode, analyserNode, gainNode, trebleNode;
+let element, sourceNode, analyserNode, gainNode, trebleNode, bassNode;
 
 // 3 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
@@ -48,7 +48,7 @@ const setVolume = (value) => {
     gainNode.gain.value = value;
 }
 
-// Creates a and returns a treble node
+// Creates and returns a treble node
 // "audioCtx" parameter: The audio context object to create the treble node
 // Returns: The treble node
 const makeTrebleNode = (audioCtx) => {
@@ -61,11 +61,44 @@ const makeTrebleNode = (audioCtx) => {
     // The treble node will look for frequency values greater than 1000 Hz
     treble.frequency.setValueAtTime(1000, audioCtx.currentTime);
 
-    // Any frequencies within the given range will be boosted by 25
+    // Any frequencies within the given range will be boosted by the given amount (0 
+    // as default becuase treble checkbox is off by default)
     treble.gain.setValueAtTime(0, audioCtx.currentTime);
 
     // Return the node
     return treble;
+}
+
+// Creates and returns a bass node
+// "audioCtx" parameter: The audio context object to create the bass node
+// Returns: The bass node
+const makeBassNode = (audioCtx) => {
+    // Creates a BiquadFilterNode
+    let bass = audioCtx.createBiquadFilter();
+
+    // Lets the audio system know this BiquadFilterNode is a treble node
+    bass.type = "lowshelf";
+
+    // The bass node will look for frequency values less than 1000 Hz
+    bass.frequency.setValueAtTime(1000, audioCtx.currentTime);
+
+    // Any frequencies within the given range will be boosted by the given amount (0 
+    // as default becuase bass checkbox is off by default)
+    bass.gain.setValueAtTime(0, audioCtx.currentTime);
+
+    // Return the node
+    return bass;
+}
+
+// Toggles the treble node on and off depending on the passed in state of the treble checkbox
+// "params" parameter: The set of app options
+// Returns: Nothing 
+const toggleTreble = (params = {}) => {
+    if (params.useHighshelf) {
+        trebleNode.gain.setValueAtTime(20, audioCtx.currentTime);
+    } else {
+        trebleNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    }
 }
 
 // Sets up the audio graph with the given audio file as the source
@@ -108,12 +141,16 @@ const setUpWebAudio = (filePath) => {
     // 8 - Get the treble node
     trebleNode = makeTrebleNode(audioCtx);
 
-    // 9 - connect the nodes - we now have an audio graph
+    // 9 - Get the bass node
+    bassNode = makeBassNode(audioCtx);
+
+    // 10 - connect the nodes - we now have an audio graph
     sourceNode.connect(trebleNode);
-    trebleNode.connect(analyserNode);
+    trebleNode.connect(bassNode);
+    bassNode.connect(analyserNode);
     analyserNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
 }
 
 // Make the web audio setup, playing/pausing sound, sound loading, and volume setting functions public, as well as the audio context and analyser node
-export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, analyserNode };
+export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, toggleTreble, analyserNode };

@@ -20,13 +20,14 @@ import * as audio from './audio.js';
 import * as utils from './utils.js';
 
 // Drawing options object
-const drawParams = { 
+const appParams = { 
     showGradient : true,
     showBars     : true,
     showCircles  : true,
     showNoise    : false,
     showInvert   : false,
-    showEmboss   : false
+    showEmboss   : false,
+    useHighshelf : false
 };
 
 // here we are faking an enumeration
@@ -57,6 +58,7 @@ function init() {
     document.querySelector("#noise-cb").checked = false;
     document.querySelector("#invert-cb").checked = false;
     document.querySelector("#emboss-cb").checked = false;
+    document.querySelector("#highshelf-cb").checked = false;
 
     // Call the loop function for a constant stream of audio data from the analyser node
     loop();
@@ -128,12 +130,16 @@ function setupUI(canvasElement) {
     };
 
     // E - hookup checkboxes
-    document.querySelector("#gradient-cb").addEventListener("click", (e) => { drawParams.showGradient = e.target.checked; });
-    document.querySelector("#bars-cb").addEventListener("click", (e) => { drawParams.showBars = e.target.checked; });
-    document.querySelector("#circles-cb").addEventListener("click", (e) => { drawParams.showCircles = e.target.checked; });
-    document.querySelector("#noise-cb").addEventListener("click", (e) => { drawParams.showNoise = e.target.checked; });
-    document.querySelector("#invert-cb").addEventListener("click", (e) => { drawParams.showInvert = e.target.checked; });
-    document.querySelector("#emboss-cb").addEventListener("click", (e) => { drawParams.showEmboss = e.target.checked; });
+    document.querySelector("#gradient-cb").addEventListener("click", (e) => { appParams.showGradient = e.target.checked; });
+    document.querySelector("#bars-cb").addEventListener("click", (e) => { appParams.showBars = e.target.checked; });
+    document.querySelector("#circles-cb").addEventListener("click", (e) => { appParams.showCircles = e.target.checked; });
+    document.querySelector("#noise-cb").addEventListener("click", (e) => { appParams.showNoise = e.target.checked; });
+    document.querySelector("#invert-cb").addEventListener("click", (e) => { appParams.showInvert = e.target.checked; });
+    document.querySelector("#emboss-cb").addEventListener("click", (e) => { appParams.showEmboss = e.target.checked; });
+    document.querySelector("#highshelf-cb").addEventListener("click", (e) => { 
+        appParams.useHighshelf = e.target.checked; 
+        audio.toggleTreble(appParams); // Call the toggleTreble function to make sure the treble is turned on and off without making the treble node public
+    });
 } // end setupUI
 
 // Displays data from the analyzer node every frame
@@ -144,7 +150,7 @@ function loop() {
     requestAnimationFrame(loop);
 
     // Visualize the audio data!
-    canvas.draw(drawParams);    
+    canvas.draw(appParams);    
 }
 
 // Make the init function public
