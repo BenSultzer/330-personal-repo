@@ -16,6 +16,9 @@ import * as utils from './utils.js';
 // Define variables for drawing the audio data to the canvas
 let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData;
 
+// A variable to track what kind of analyser data to use for visualization
+let analyserDataType = "frequency"; // Use frequency as a default
+
 // Prepares the canvas for audio data
 // "canvasElement" parameter: The canvas to draw to
 // "analyserNodeRef" parameter: A reference to the analyser node
@@ -33,15 +36,23 @@ function setupCanvas(canvasElement, analyserNodeRef) {
     audioData = new Uint8Array(analyserNode.fftSize / 2);
 }
 
+// Whenever the currently selected analyser data type changes on the page (using the dropdown menu), capture the new data type
+// "dataType" parameter: The new data type
+// Returns: Nothing
+const getAnalyserDataType = (dataType) => {
+    analyserDataType = dataType;
+}
+
 // Draws the audio data to the canvas
 // "params" parameter: The set of app options
 // Returns: Nothing
 function draw(params = {}) {
-    // 1 - populate the audioData array with the frequency data from the analyserNode
-    // notice these arrays are passed "by reference" 
-    analyserNode.getByteFrequencyData(audioData);
-    // OR
-    //analyserNode.getByteTimeDomainData(audioData); // waveform data
+    // 1 - populate the audioData array with data from the analyserNode that corresponds to the currently selected analyser data type
+    if (analyserDataType == "frequency") { // Frequency data
+        analyserNode.getByteFrequencyData(audioData);
+    } else {
+        analyserNode.getByteTimeDomainData(audioData); // Waveform data
+    }
 
     // 2 - draw background
     ctx.save();
@@ -163,5 +174,5 @@ function draw(params = {}) {
     ctx.putImageData(imageData, 0, 0);
 } // end draw()
 
-// make the functions for getting the canvas ready and drawing public
-export { setupCanvas, draw };
+// make the functions for getting the canvas ready, drawing, and saving the current audio data type to use for drawing public
+export { setupCanvas, draw, getAnalyserDataType };

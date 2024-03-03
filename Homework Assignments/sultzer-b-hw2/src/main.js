@@ -13,7 +13,7 @@
 // Import the drawing capabilities
 import * as canvas from './canvas.js';
 
-// Import the audio context, analyzer node, and audio interface functions
+// Import the audio context, analyser node, and audio interface functions
 import * as audio from './audio.js';
 
 // Import helper functions
@@ -27,7 +27,8 @@ const appParams = {
     showNoise    : false,
     showInvert   : false,
     showEmboss   : false,
-    useHighshelf : false
+    useHighshelf : false,
+    useLowshelf : false
 };
 
 // here we are faking an enumeration
@@ -51,6 +52,13 @@ function init() {
     // Get the canvas ready for drawing
     canvas.setupCanvas(canvasElement, audio.analyserNode);
 
+    // The default track should be "New Adventure Theme"
+    document.querySelector("#track-select").value = "media/New Adventure Theme.mp3";
+
+    // The default volume should be 50 (set the label too)
+    document.querySelector("#volume-slider").value = 1;
+    document.querySelector("#volume-label").innerHTML = "50";
+
     // Set the checkboxes to be checked on load
     document.querySelector("#gradient-cb").checked = true;
     document.querySelector("#bars-cb").checked = true;
@@ -59,6 +67,13 @@ function init() {
     document.querySelector("#invert-cb").checked = false;
     document.querySelector("#emboss-cb").checked = false;
     document.querySelector("#highshelf-cb").checked = false;
+    document.querySelector("#lowshelf-cb").checked = false;
+
+    // The default value of the analyser data type should be "frequency"
+    document.querySelector("#analyser-data-type").value = "frequency";
+
+    // Set up the event handler for getting the current analyser data type to use for visualization
+    document.querySelector("#analyser-data-type").onchange = () => { canvas.getAnalyserDataType(document.querySelector("#analyser-data-type").value) };
 
     // Call the loop function for a constant stream of audio data from the analyser node
     loop();
@@ -140,14 +155,18 @@ function setupUI(canvasElement) {
         appParams.useHighshelf = e.target.checked; 
         audio.toggleTreble(appParams); // Call the toggleTreble function to make sure the treble is turned on and off without making the treble node public
     });
+    document.querySelector("#lowshelf-cb").addEventListener("click", (e) => { 
+        appParams.useLowshelf = e.target.checked; 
+        audio.toggleBass(appParams); // Call the toggleBass function to make sure the bass is turned on and off without making the bass node public
+    });
 } // end setupUI
 
-// Displays data from the analyzer node every frame
+// Displays data from the analyser node every frame
 // Parameters: None
 // Returns: Nothing
 function loop() {
-    // Start the animation loop with this function
-    requestAnimationFrame(loop);
+    // Start the animation loop with this function at 60 FPS
+    setTimeout(loop, 1000 / 60);
 
     // Visualize the audio data!
     canvas.draw(appParams);    

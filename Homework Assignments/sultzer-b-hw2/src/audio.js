@@ -101,6 +101,17 @@ const toggleTreble = (params = {}) => {
     }
 }
 
+// Toggles the bass node on and off depending on the passed in state of the bass checkbox
+// "params" parameter: The set of app options
+// Returns: Nothing 
+const toggleBass = (params = {}) => {
+    if (params.useLowshelf) {
+        bassNode.gain.setValueAtTime(15, audioCtx.currentTime);
+    } else {
+        bassNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    }
+}
+
 // Sets up the audio graph with the given audio file as the source
 // "filePath" parameter: The file path to the audio file to use as the source
 // Returns: Nothing
@@ -152,5 +163,5 @@ const setUpWebAudio = (filePath) => {
     gainNode.connect(audioCtx.destination);
 }
 
-// Make the web audio setup, playing/pausing sound, sound loading, and volume setting functions public, as well as the audio context and analyser node
-export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, toggleTreble, analyserNode };
+// Make the web audio setup, playing/pausing sound, sound loading, effect toggling, and volume setting functions public, as well as the audio context and analyser node
+export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, toggleTreble, toggleBass, analyserNode };
