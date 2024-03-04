@@ -13,6 +13,13 @@
 // Get the utilty functions
 import * as utils from './utils.js';
 
+// Import the ParticleSystem class
+import { ParticleSystem } from "./classes/ParticleSystem.js";
+
+let totalTime = 0;
+let preTime = 0;
+let deltaTime = 0;
+
 // Define variables for drawing the audio data to the canvas
 let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData;
 
@@ -47,6 +54,11 @@ const getAnalyserDataType = (dataType) => {
 // "params" parameter: The set of app options
 // Returns: Nothing
 function draw(params = {}) {
+    // Keep track of the total runtime of the app at 60 FPS, calculating delta time for the particle system
+    preTime = totalTime;
+    totalTime += 1 / 60;
+    deltaTime = totalTime - preTime;
+
     // 1 - populate the audioData array with data from the analyserNode that corresponds to the currently selected analyser data type
     if (analyserDataType == "frequency") { // Frequency data
         analyserNode.getByteFrequencyData(audioData);
@@ -84,8 +96,10 @@ function draw(params = {}) {
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.50)';
         // loop through the data and draw!
         for (let i = 0; i < audioData.length; i++) {
-            ctx.fillRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
-            ctx.strokeRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
+            let ps = new ParticleSystem(utils.getRandom(0, canvasWidth), 256 - audioData[i], 10, 3, "red");
+            ps.update(ctx, deltaTime);
+            //ctx.fillRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
+            //ctx.strokeRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
         }
         ctx.restore();
     }

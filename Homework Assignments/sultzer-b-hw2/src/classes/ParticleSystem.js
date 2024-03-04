@@ -32,8 +32,8 @@ class ParticleSystem {
                                              this.positionY, 
                                              this.particleRadius, 
                                              this.particleColor, 
-                                             getRandom(0, 5), 
-                                             new Array(getRandom(0, 1), getRandom(0, 1)));
+                                             utils.getRandom(100, 200), 
+                                             new Array(utils.getRandom(-1, 1), utils.getRandom(-1, 1)));
         }
     }
 

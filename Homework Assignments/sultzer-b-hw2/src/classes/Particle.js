@@ -22,7 +22,7 @@ class Particle {
     // Returns: The normalized direction
     normalize(direction) {
         // Gets the magnitude of the direction
-        let magnitude = MATH.sqrt(Math.pow(direction[0], 2) + Math.pow(direction[1], 2));
+        let magnitude = Math.sqrt(Math.pow(direction[0], 2) + Math.pow(direction[1], 2));
 
         // Divides each component by the magnitude
         direction[0] /= magnitude;
@@ -40,8 +40,8 @@ class Particle {
         this.direction[1] += this.acceleration * deltaTime;
 
         // Update position with speed and direction
-        this.positionX += this.direction[0] * speed * deltaTime;
-        this.positionY += this.direction[1] * speed * deltaTime;
+        this.positionX += this.direction[0] * this.speed * deltaTime;
+        this.positionY += this.direction[1] * this.speed * deltaTime;
     }
 
     // Draws the particle to the canvas
