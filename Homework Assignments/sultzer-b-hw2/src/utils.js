@@ -66,4 +66,4 @@ const goFullscreen = (element) => {
 };
 
 // Make the color formatting, random color, linear gradient creation, and fullscreen functions public
-export { makeColor, getRandomColor, getLinearGradient, goFullscreen };
+export { makeColor, getRandom, getRandomColor, getLinearGradient, goFullscreen };
