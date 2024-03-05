@@ -19,22 +19,55 @@ import * as audio from './audio.js';
 // Import helper functions
 import * as utils from './utils.js';
 
+// Variables to store the app title, audio file paths, track names, and app description
+let title;
+let audioFilePaths;
+let trackNames;
+let appDescription;
+
 // Drawing options object
-const appParams = { 
-    showGradient : true,
-    showBars     : true,
-    showCircles  : true,
-    showNoise    : false,
-    showInvert   : false,
-    showEmboss   : false,
-    useHighshelf : false,
-    useLowshelf : false
+const appParams = {
+    showGradient: true,
+    showBars: true,
+    showCircles: true,
+    showNoise: false,
+    showInvert: false,
+    showEmboss: false,
+    useHighshelf: false,
+    useLowshelf: false
 };
 
 // here we are faking an enumeration
 const DEFAULTS = Object.freeze({
     sound1: "media/New Adventure Theme.mp3"
 });
+
+const loadJson = () => {
+    const url = "../data/av-data.json";
+    const xhr = new XMLHttpRequest();
+    xhr.onload = (e) => {
+        let json;
+        try {
+            json = JSON.parse(e.target.responseText);
+        } catch {
+            document.querySelector("#app-description").innerHTML = "An error occurred loading app set-up data.";
+            return;
+        }
+
+        const keys = Object.keys(json);
+
+        title = keys[0];
+        audioFilePaths = keys[1];
+        trackNames = keys[2];
+        appDescription = keys[3];
+        
+        // Set the title of the app
+        document.querySelector("title").innerHTML = title;
+    };
+    xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
+    xhr.open("GET", url);
+    xhr.send();
+}
 
 // Sets up the audio visualizer
 // Parameters: None
@@ -43,7 +76,6 @@ function init() {
     // Starts creation of the audio graph with DEFAULTS.sound1 as the source
     audio.setUpWebAudio(DEFAULTS.sound1);
     console.log("init called");
-    console.log(`Testing utils.getRandomColor() import: ${utils.getRandomColor()}`);
     let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
 
     // Initialize the various UI elements of the audio visualizer
@@ -51,6 +83,9 @@ function init() {
 
     // Get the canvas ready for drawing
     canvas.setupCanvas(canvasElement, audio.analyserNode);
+
+    // Get initial app data from av-data.json
+    //loadJson();
 
     // The default track should be "New Adventure Theme"
     document.querySelector("#track-select").value = "media/New Adventure Theme.mp3";
@@ -151,12 +186,12 @@ function setupUI(canvasElement) {
     document.querySelector("#noise-cb").addEventListener("click", (e) => { appParams.showNoise = e.target.checked; });
     document.querySelector("#invert-cb").addEventListener("click", (e) => { appParams.showInvert = e.target.checked; });
     document.querySelector("#emboss-cb").addEventListener("click", (e) => { appParams.showEmboss = e.target.checked; });
-    document.querySelector("#highshelf-cb").addEventListener("click", (e) => { 
-        appParams.useHighshelf = e.target.checked; 
+    document.querySelector("#highshelf-cb").addEventListener("click", (e) => {
+        appParams.useHighshelf = e.target.checked;
         audio.toggleTreble(appParams); // Call the toggleTreble function to make sure the treble is turned on and off without making the treble node public
     });
-    document.querySelector("#lowshelf-cb").addEventListener("click", (e) => { 
-        appParams.useLowshelf = e.target.checked; 
+    document.querySelector("#lowshelf-cb").addEventListener("click", (e) => {
+        appParams.useLowshelf = e.target.checked;
         audio.toggleBass(appParams); // Call the toggleBass function to make sure the bass is turned on and off without making the bass node public
     });
 } // end setupUI
@@ -169,7 +204,7 @@ function loop() {
     setTimeout(loop, 1000 / 60);
 
     // Visualize the audio data!
-    canvas.draw(appParams);    
+    canvas.draw(appParams);
 }
 
 // Make the init function public

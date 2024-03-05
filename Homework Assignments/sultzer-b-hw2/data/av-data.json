@@ -1,6 +1,6 @@
 {
-    "c9532dc9": {
-        "title": "Ultimate Audio Visualizer",
-        "audio-files": ["New Adventure Theme.mp3", "Peanuts Theme.mp3", "The Picard Song.mp3"]
-    }
+    "title": "Ultimate Audio Visualizer",
+    "audiofiles": ["New Adventure Theme.mp3", "Peanuts Theme.mp3", "The Picard Song.mp3"],
+    "tracktitles": ["New Adventure Theme", "Peanuts Theme", "The Picard Song"],
+    "appdescription": "This audio visualizer uses very simple custom particle systems that use position, particle size, and particle color data that are driven by the analyzer node's frequency data. Higher frequencies are denoted by particle systems with smaller particles and lighter colors, and that appear higher on the screen. Lower frequencies are denoted by particle systems with larger particles and darker colors, and that appear lower on the screen."
 }

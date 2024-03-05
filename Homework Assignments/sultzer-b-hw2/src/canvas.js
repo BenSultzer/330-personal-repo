@@ -110,7 +110,7 @@ function draw(params = {}) {
             // Create a particle system for the current piece of audio data if the current particle system's life time is over
             secondCounter += 1 / 60;
             if (secondCounter >= 1.3) {
-                particleSystems[i] = new ParticleSystem(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], 5, (256 - audioData[i]) / 15, "rgba(255 - audioData[i], 0.0, 0.0, 1.0)");
+                particleSystems[i] = new ParticleSystem(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], 5, ((256 - audioData[i]) + 20) / 10, "rgba(255 - audioData[i], 0.0, 0.0, 0.5)");
                 secondCounter = 0;
             }
             //ctx.fillRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
