@@ -16,9 +16,16 @@ import * as utils from './utils.js';
 // Import the ParticleSystem class
 import { ParticleSystem } from "./classes/ParticleSystem.js";
 
+// Variables for tracking delta time for the particle systems
 let totalTime = 0;
 let preTime = 0;
 let deltaTime = 0;
+
+// Track time intervals of one second
+let secondCounter = 0;
+
+// The array of particle systems
+let particleSystems;
 
 // Define variables for drawing the audio data to the canvas
 let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData;
@@ -41,6 +48,10 @@ function setupCanvas(canvasElement, analyserNodeRef) {
     analyserNode = analyserNodeRef;
     // this is the array where the analyser data will be stored
     audioData = new Uint8Array(analyserNode.fftSize / 2);
+    particleSystems = new Array(audioData.length);
+    for (let i = 0; i < particleSystems.length; i++) {
+        particleSystems[i] = new ParticleSystem(utils.getRandom(0, canvasWidth), 0, 50, 3, "red");
+    }
 }
 
 // Whenever the currently selected analyser data type changes on the page (using the dropdown menu), capture the new data type
@@ -96,10 +107,19 @@ function draw(params = {}) {
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.50)';
         // loop through the data and draw!
         for (let i = 0; i < audioData.length; i++) {
-            let ps = new ParticleSystem(utils.getRandom(0, canvasWidth), 256 - audioData[i], 10, 3, "red");
-            ps.update(ctx, deltaTime);
+            // Create a particle system for the current piece of audio data if the current particle system's life time is over
+            secondCounter += 1 / 60;
+            if (secondCounter >= 1.3) {
+                particleSystems[i] = new ParticleSystem(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], 5, (256 - audioData[i]) / 15, "rgba(255 - audioData[i], 0.0, 0.0, 1.0)");
+                secondCounter = 0;
+            }
             //ctx.fillRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
             //ctx.strokeRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
+        }
+        if (document.querySelector("#play-button").dataset.playing == "yes") {
+            for (let i = 0; i < particleSystems.length; i++) {
+                particleSystems[i].update(ctx, deltaTime);
+            }
         }
         ctx.restore();
     }
