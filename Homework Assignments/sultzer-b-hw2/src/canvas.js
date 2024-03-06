@@ -63,7 +63,7 @@ function setupCanvas(canvasElement, analyserNodeRef) {
     // Create the array of central particles and initialize each element with a new particle
     centralParticles = new Array(audioData.length);
     for (let i = 0; i < centralParticles.length; i++) {
-        centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, 1, "white", 0, new Array(0, 0));
+        centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, 0, "white", 0, new Array(0, 0));
     }
 }
 
@@ -83,21 +83,21 @@ function draw(params = {}) {
     totalTime += 1 / 60;
     deltaTime = totalTime - preTime;
 
-    // 1 - populate the audioData array with data from the analyserNode that corresponds to the currently selected analyser data type
+    // 1 - Populate the audioData array with data from the analyserNode that corresponds to the currently selected analyser data type
     if (analyserDataType == "frequency") { // Frequency data
         analyserNode.getByteFrequencyData(audioData);
     } else {
         analyserNode.getByteTimeDomainData(audioData); // Waveform data
     }
 
-    // 2 - draw background
+    // 2 - Draw background
     ctx.save();
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     ctx.restore();
 
-    // 4 - draw particles
-    if (params.showParticles) {
+    // 4 - Draw particle systems
+    if (params.showParticleSystems) {
         let particleSystemSpacing = 4;
         let margin = 5;
         let screenWidthForParticleSystems = canvasWidth - (audioData.length * particleSystemSpacing) - margin * 2;
@@ -111,7 +111,7 @@ function draw(params = {}) {
             backgroundPSLifeCounter += 1 / 60; // Update the lifetime counter
             if (backgroundPSLifeCounter >= 1.3) {
                 // Create a new particle system and reset the lifetime counter
-                particleSystemsBackground[i] = new ParticleSystem(margin + i * (horizontalSpaceForParticleSystem + particleSystemSpacing), topSpacing + 256 - audioData[i], 5, ((256 - audioData[i]) + 20) / 10, "rgba(50, 50, 50, 0.5)");
+                particleSystemsBackground[i] = new ParticleSystem(margin + i * (horizontalSpaceForParticleSystem + particleSystemSpacing), topSpacing + 256 - audioData[i], 5, ((256 - audioData[i]) + 20) / 10, "rgba(50, 50, 50, 0.75)");
                 backgroundPSLifeCounter = 0;
             }
         }
@@ -125,43 +125,17 @@ function draw(params = {}) {
         ctx.restore();
     }
 
-    // 5 - draw circles
-    if (params.showCircles) {
-        let maxRadius = canvasHeight / 4;
+    // 5 - Draw central particles
+    if (params.showParticles) {
         ctx.save();
         for (let i = 0; i < audioData.length; i++) {
             // Create a particle system for the current piece of audio data if the lifetime is over for the previous particle system for that entry
             centralParticleLifeCounter += 1 / 60; // Update the lifetime counter
             if (centralParticleLifeCounter >= 3) {
                 // Create a new particle system and reset the lifetime counter
-                centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, ((256 - audioData[i]) + 20) / 10, "white", ((256 - audioData[i]) + 20), new Array(utils.getRandom(-1, 1), utils.getRandom(-1, 1)));
+                centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, ((256 - audioData[i]) + 20) / 10, `rgba(${175 + audioData[i]}, 0, 0, 0.75)`, 100 + audioData[i], new Array(utils.getRandom(-1, 1), utils.getRandom(-1, 1)));
                 centralParticleLifeCounter = 0;
             }
-            // // red-ish circles
-            // let percent = audioData[i] / 255;
-
-            // let circleRadius = percent * maxRadius;
-            // ctx.beginPath();
-            // ctx.fillStyle = utils.makeColor(255, 111, 111, 0.34 - percent / 3.0);
-            // ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius, 0, 2 * Math.PI, false);
-            // ctx.fill();
-            // ctx.closePath();
-
-            // // blue-ish circles, bigger, more transparent
-            // ctx.beginPath();
-            // ctx.fillStyle = utils.makeColor(0, 0, 255, 0.10 - percent / 10.0);
-            // ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * 1.5, 0, 2 * Math.PI, false);
-            // ctx.fill();
-            // ctx.closePath();
-
-            // // yellow-ish circles, smaller
-            // ctx.save();
-            // ctx.beginPath();
-            // ctx.fillStyle = utils.makeColor(200, 200, 0, 0.50 - percent / 5.0);
-            // ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * 0.50, 0, 2 * Math.PI, false);
-            // ctx.fill();
-            // ctx.closePath();
-            // ctx.restore();
         }
 
         // If the current song is playing, update and draw each particle
@@ -189,18 +163,8 @@ function draw(params = {}) {
     let width = imageData.width; // not using here
     // B) Iterate through each pixel, stepping 4 elements at a time (which is the RGBA for 1 pixel)
     for (let i = 0; i < length; i += 4) {
-        // C) randomly change every 20th pixel to red
-        if (params.showNoise && Math.random() < 0.05) {
-            // data[i] is the red channel
-            // data[i+1] is the green channel
-            // data[i+2] is the blue channel
-            // data[i+3] is the alpha channel
-            data[i] = data[i + 1] = data[i + 2] = 0; // zero out the red and green and blue channels
-            data[i] = 10; // Grey noise
-        } // end if
-
         // invert?
-        if (params.showInvert) {
+        if (params.showShift) {
             let red = data[i], green = data[i + 1], blue = data[i + 2];
             data[i] = 255 - red;        // set red
             data[i + 1] = 255 - green;  // set green

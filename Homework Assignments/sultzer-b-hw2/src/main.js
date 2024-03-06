@@ -27,10 +27,9 @@ let appDescription;
 
 // Drawing options object
 const appParams = {
+    showParticleSystems: true,
     showParticles: true,
-    showCircles: true,
-    showNoise: false,
-    showInvert: false,
+    showShift: false,
     showEmboss: false,
     useHighshelf: false,
     useLowshelf: false
@@ -114,15 +113,11 @@ function init() {
     // The default track should be "New Adventure Theme"
     document.querySelector("#track-select").value = "media/New Adventure Theme.mp3";
 
-    // The default volume should be 50 (set the label too)
-    document.querySelector("#volume-slider").value = 1;
-    document.querySelector("#volume-label").innerHTML = "50";
 
     // Set the checkboxes to be checked on load
+    document.querySelector("#particle-systems-cb").checked = true;
     document.querySelector("#particles-cb").checked = true;
-    document.querySelector("#circles-cb").checked = true;
-    document.querySelector("#noise-cb").checked = false;
-    document.querySelector("#invert-cb").checked = false;
+    document.querySelector("#shift-cb").checked = false;
     document.querySelector("#emboss-cb").checked = false;
     document.querySelector("#highshelf-cb").checked = false;
     document.querySelector("#lowshelf-cb").checked = false;
@@ -190,7 +185,7 @@ function setupUI(canvasElement) {
     // set value of label to match initial value of slider
     volumeSlider.dispatchEvent(new Event("input"));
 
-    // D - hookup track <select>
+    // E - hookup track <select>
     let trackSelect = document.querySelector("#track-select");
     // add .onchange event to <select>
     trackSelect.onchange = e => {
@@ -202,11 +197,10 @@ function setupUI(canvasElement) {
         }
     };
 
-    // E - hookup checkboxes
+    // F - hookup checkboxes
+    document.querySelector("#particle-systems-cb").addEventListener("click", (e) => { appParams.showParticleSystems = e.target.checked; });
     document.querySelector("#particles-cb").addEventListener("click", (e) => { appParams.showParticles = e.target.checked; });
-    document.querySelector("#circles-cb").addEventListener("click", (e) => { appParams.showCircles = e.target.checked; });
-    document.querySelector("#noise-cb").addEventListener("click", (e) => { appParams.showNoise = e.target.checked; });
-    document.querySelector("#invert-cb").addEventListener("click", (e) => { appParams.showInvert = e.target.checked; });
+    document.querySelector("#shift-cb").addEventListener("click", (e) => { appParams.showShift = e.target.checked; });
     document.querySelector("#emboss-cb").addEventListener("click", (e) => { appParams.showEmboss = e.target.checked; });
     document.querySelector("#highshelf-cb").addEventListener("click", (e) => {
         appParams.useHighshelf = e.target.checked;
