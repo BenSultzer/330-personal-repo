@@ -52,3 +52,11 @@ span {
 #app-description {    
     margin-left: 1rem;
 }
+
+#app-options {
+    display: flex;
+}
+
+.flex-item {
+    margin: 1rem;
+}

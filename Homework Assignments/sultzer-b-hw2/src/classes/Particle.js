@@ -32,6 +32,18 @@ class Particle {
         return direction;
     }
 
+    
+    exertShockwave(mouseX, mouseY) {
+
+    }
+
+    // Sets the value of gravity for this particle
+    // "value": The new gravity value
+    // Returns: Nothing
+    setGravity(value) {
+        this.acceleration = value;
+    }
+
     // Updates the particle's position with its speed, direction, and acceleration
     // "deltaTime" parameter: The time that has passed since last frame
     // Returns: Nothing

@@ -24,6 +24,12 @@ let totalTime = 0;
 let preTime = 0;
 let deltaTime = 0;
 
+// Variable to store the current value for gravity (-1 to start)
+let currentGravity = -1;
+
+// The emitter type for the central particle emitter (fountain to start)
+let emitterType = "fountain";
+
 // Track the lifetimes of the background particle systems
 let backgroundPSLifeCounter = 0;
 
@@ -67,6 +73,18 @@ function setupCanvas(canvasElement, analyserNodeRef) {
     }
 }
 
+// Gets the current emitter type to be used when rendering the central particle system
+const getEmitterType = (type) => {
+    emitterType = type;
+}
+
+// Gets the gravity from user input on the gravity slider
+// "value" parameter: The new gravity
+// Returns: Nothing
+const getGravityFromInput = (value) => {
+    currentGravity = value;
+}
+
 // Whenever the currently selected analyser data type changes on the page (using the dropdown menu), capture the new data type
 // "dataType" parameter: The new data type
 // Returns: Nothing
@@ -103,7 +121,7 @@ function draw(params = {}) {
         let screenWidthForParticleSystems = canvasWidth - (audioData.length * particleSystemSpacing) - margin * 2;
         let horizontalSpaceForParticleSystem = screenWidthForParticleSystems / audioData.length;
         let topSpacing = 100;
-        
+
         ctx.save();
         // Loop through the data, creating particle systems for each entry
         for (let i = 0; i < audioData.length; i++) {
@@ -133,7 +151,19 @@ function draw(params = {}) {
             centralParticleLifeCounter += 1 / 60; // Update the lifetime counter
             if (centralParticleLifeCounter >= 3) {
                 // Create a new particle system and reset the lifetime counter
-                centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, ((256 - audioData[i]) + 20) / 10, `rgba(${175 + audioData[i]}, 0, 0, 0.75)`, 100 + audioData[i], new Array(utils.getRandom(-1, 1), utils.getRandom(-1, 1)));
+                // The direction the particles move should be random for each particle if the emitter type is "fountain", and the same if the type is "beam"
+                let direction;
+                // Make the speed a little slower for the fountain
+                let speed;
+                if (emitterType == "fountain") {
+                    direction = new Array(utils.getRandom(-1, 1), utils.getRandom(-1, 1));
+                    speed = 100 + audioData[i];
+                } else {
+                    direction = new Array(Math.sin(totalTime * 3), -1); // For the beam, oscillate the direction between up and to the left and up and to the right
+                    speed = 200 + audioData[i];
+                }
+                centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, ((256 - audioData[i]) + 20) / 10, `rgba(${175 + audioData[i]}, 0, 0, 0.75)`, speed, direction);
+                centralParticles[i].setGravity(currentGravity);  // Set the current gravity for the particle
                 centralParticleLifeCounter = 0;
             }
         }
@@ -163,13 +193,20 @@ function draw(params = {}) {
     let width = imageData.width; // not using here
     // B) Iterate through each pixel, stepping 4 elements at a time (which is the RGBA for 1 pixel)
     for (let i = 0; i < length; i += 4) {
-        // invert?
-        if (params.showShift) {
+        // Enter party mode? (Based on Shift RGB bitmap effect)
+        if (params.partyMode) {
+            // Rapidly shift the RGB values up and down with a sine wave
+            data[i] += 100 * Math.sin(totalTime * 10);
+            data[i + 1] += 100 * Math.sin(totalTime);
+            data[i + 2] += 100 * Math.sin(totalTime);
+        }
+
+        // If the current gravity is up, invert the colors
+        if (currentGravity == -1) {
             let red = data[i], green = data[i + 1], blue = data[i + 2];
             data[i] = 255 - red;        // set red
             data[i + 1] = 255 - green;  // set green
             data[i + 2] = 255 - blue;   // set blue
-            // data[i + 3] is the alpha, but we're leaving that alone
         }
     } // end for
 
@@ -188,4 +225,4 @@ function draw(params = {}) {
 } // end draw()
 
 // make the functions for getting the canvas ready, drawing, and saving the current audio data type to use for drawing public
-export { setupCanvas, draw, getAnalyserDataType };
+export { setupCanvas, draw, getAnalyserDataType, getGravityFromInput, getEmitterType, centralParticles };

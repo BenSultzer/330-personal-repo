@@ -29,16 +29,31 @@ let appDescription;
 const appParams = {
     showParticleSystems: true,
     showParticles: true,
-    showShift: false,
-    showEmboss: false,
-    useHighshelf: false,
-    useLowshelf: false
+    partyMode: false,
+    showEmboss: false
 };
 
 // here we are faking an enumeration
 const DEFAULTS = Object.freeze({
     sound1: "media/New Adventure Theme.mp3"
 });
+
+// Function for detecting where the canvas was clicked and generating a shockwave that radiates from that point, pushing the central particles out of the way
+// "e" parameter: The event object sent back by the click event listener
+// Returns: Nothing
+const canvasClicked = (e) => {
+    // Gets information about the clicked area to convert into canvas space
+    let rect = e.target.getBoundingClientRect();
+
+    // Calculates where the canvas was clicked relative to its own top-left corner
+    let mouseX = e.clientX - rect.x;
+    let mouseY = e.clientY - rect.y;
+
+    // Indicates the canvas was clicked, sending the coordinates and triggering the shockwave for each central particle
+    for (let i = 0; i < canvas.centralParticles.length; i++) {
+        utils.centralParticles[i].exertShockwave(mouseX, mouseY);
+    }    
+}
 
 // Loads app data from a JSON file (app title, audio file paths/track titles for the song select element, and an app description)
 // Parameters: None
@@ -117,16 +132,20 @@ function init() {
     // Set the checkboxes to be checked on load
     document.querySelector("#particle-systems-cb").checked = true;
     document.querySelector("#particles-cb").checked = true;
-    document.querySelector("#shift-cb").checked = false;
+    document.querySelector("#party-cb").checked = false;
     document.querySelector("#emboss-cb").checked = false;
-    document.querySelector("#highshelf-cb").checked = false;
-    document.querySelector("#lowshelf-cb").checked = false;
 
     // The default value of the analyser data type should be "frequency"
     document.querySelector("#analyser-data-type").value = "frequency";
 
     // Set up the event handler for getting the current analyser data type to use for visualization
     document.querySelector("#analyser-data-type").onchange = () => { canvas.getAnalyserDataType(document.querySelector("#analyser-data-type").value) };
+
+    // The default value of the emitter type should be "fountain"
+    document.querySelector("#emitter-type").value = "fountain";
+
+    // Set up the event handler for getting the current emitter type to use for the central particle emitter
+    document.querySelector("#emitter-type").onchange = () => { canvas.getEmitterType(document.querySelector("#emitter-type").value) };
 
     // Call the loop function for a constant stream of audio data from the analyser node
     loop();
@@ -185,7 +204,58 @@ function setupUI(canvasElement) {
     // set value of label to match initial value of slider
     volumeSlider.dispatchEvent(new Event("input"));
 
-    // E - hookup track <select>
+    // D - hookup gravity slider & label
+    let gravitySlider = document.querySelector("#gravity-slider");
+    let gravityLabel = document.querySelector("#gravity-label");
+
+    // Add .oninput event to slider
+    gravitySlider.oninput = e => {
+        // Set the gravity value
+        canvas.getGravityFromInput(e.target.value);
+        // Update value of label to match value of slider
+        gravityLabel.innerHTML = e.target.value;
+    };
+
+    // Set value of label to match initial value of slider by firing an input event on start-up
+    // First set the value to -1
+    gravitySlider.value = "1";
+    gravitySlider.dispatchEvent(new Event("input"));
+
+    // E - hookup treble slider & label
+    let trebleSlider = document.querySelector("#treble-slider");
+    let trebleLabel = document.querySelector("#treble-label");
+
+    // Add .oninput event to slider
+    trebleSlider.oninput = e => {
+        // Set the treble boost amount
+        audio.boostTreble(e.target.value);
+        // Update value of label to match value of slider
+        trebleLabel.innerHTML = e.target.value;
+    };
+
+    // Set value of label to match initial value of slider by firing an input event on start-up
+    // First set the value to 0
+    trebleSlider.value = "0";
+    trebleSlider.dispatchEvent(new Event("input"));
+
+    // F - hookup bass slider & label
+    let bassSlider = document.querySelector("#bass-slider");
+    let bassLabel = document.querySelector("#bass-label");
+
+    // Add .oninput event to slider
+    bassSlider.oninput = e => {
+        // Set the bass boost amount
+        audio.boostBass(e.target.value);
+        // Update value of label to match value of slider
+        bassLabel.innerHTML = e.target.value;
+    };
+
+    // Set value of label to match initial value of slider by firing an input event on start-up
+    // First set the value to 0
+    bassSlider.value = "0";
+    bassSlider.dispatchEvent(new Event("input"));
+
+    // G - hookup track <select>
     let trackSelect = document.querySelector("#track-select");
     // add .onchange event to <select>
     trackSelect.onchange = e => {
@@ -197,19 +267,11 @@ function setupUI(canvasElement) {
         }
     };
 
-    // F - hookup checkboxes
+    // H - hookup checkboxes
     document.querySelector("#particle-systems-cb").addEventListener("click", (e) => { appParams.showParticleSystems = e.target.checked; });
     document.querySelector("#particles-cb").addEventListener("click", (e) => { appParams.showParticles = e.target.checked; });
-    document.querySelector("#shift-cb").addEventListener("click", (e) => { appParams.showShift = e.target.checked; });
+    document.querySelector("#party-cb").addEventListener("click", (e) => { appParams.partyMode = e.target.checked; });
     document.querySelector("#emboss-cb").addEventListener("click", (e) => { appParams.showEmboss = e.target.checked; });
-    document.querySelector("#highshelf-cb").addEventListener("click", (e) => {
-        appParams.useHighshelf = e.target.checked;
-        audio.toggleTreble(appParams); // Call the toggleTreble function to make sure the treble is turned on and off without making the treble node public
-    });
-    document.querySelector("#lowshelf-cb").addEventListener("click", (e) => {
-        appParams.useLowshelf = e.target.checked;
-        audio.toggleBass(appParams); // Call the toggleBass function to make sure the bass is turned on and off without making the bass node public
-    });
 } // end setupUI
 
 // Displays data from the analyser node every frame

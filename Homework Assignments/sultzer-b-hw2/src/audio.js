@@ -90,26 +90,18 @@ const makeBassNode = (audioCtx) => {
     return bass;
 }
 
-// Toggles the treble node on and off depending on the passed in state of the treble checkbox
-// "params" parameter: The set of app options
+// Boosts the treble frequencies by the given amount
+// "value" parameter: The amount of boost
 // Returns: Nothing 
-const toggleTreble = (params = {}) => {
-    if (params.useHighshelf) {
-        trebleNode.gain.setValueAtTime(20, audioCtx.currentTime);
-    } else {
-        trebleNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    }
+const boostTreble = (value) => {
+    trebleNode.gain.setValueAtTime(value, audioCtx.currentTime);
 }
 
-// Toggles the bass node on and off depending on the passed in state of the bass checkbox
-// "params" parameter: The set of app options
+// Boosts the bass frequencies by the given amount
+// "value" parameter: The amount of boost
 // Returns: Nothing 
-const toggleBass = (params = {}) => {
-    if (params.useLowshelf) {
-        bassNode.gain.setValueAtTime(15, audioCtx.currentTime);
-    } else {
-        bassNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    }
+const boostBass = (value) => {
+    bassNode.gain.setValueAtTime(value, audioCtx.currentTime);
 }
 
 // Sets up the audio graph with the given audio file as the source
@@ -164,4 +156,4 @@ const setUpWebAudio = (filePath) => {
 }
 
 // Make the web audio setup, playing/pausing sound, sound loading, effect toggling, and volume setting functions public, as well as the audio context and analyser node
-export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, toggleTreble, toggleBass, analyserNode };
+export { audioCtx, setUpWebAudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, boostTreble, boostBass, analyserNode };
