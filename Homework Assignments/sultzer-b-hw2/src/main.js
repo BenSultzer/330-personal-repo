@@ -27,8 +27,7 @@ let appDescription;
 
 // Drawing options object
 const appParams = {
-    showGradient: true,
-    showBars: true,
+    showParticles: true,
     showCircles: true,
     showNoise: false,
     showInvert: false,
@@ -42,11 +41,19 @@ const DEFAULTS = Object.freeze({
     sound1: "media/New Adventure Theme.mp3"
 });
 
+// Loads app data from a JSON file (app title, audio file paths/track titles for the song select element, and an app description)
+// Parameters: None
+// Returns: Nothing
 const loadJson = () => {
-    const url = "../data/av-data.json";
+    // Get the path to the JSON file and create an XHR object
+    const url = "data/av-data.json";
     const xhr = new XMLHttpRequest();
+
+    // Set up the onload event handler with an anonymous function that gets the data and places each data piece in its proper place in the page (takes the event handler's Event object as a parameter and returns nothing)
     xhr.onload = (e) => {
         let json;
+
+        // Attempt to read in the JSON. Display an error in the app description paragraph tag if there was a problem
         try {
             json = JSON.parse(e.target.responseText);
         } catch {
@@ -54,17 +61,34 @@ const loadJson = () => {
             return;
         }
 
+        // Get all the keys from the JSON object
         const keys = Object.keys(json);
 
-        title = keys[0];
-        audioFilePaths = keys[1];
-        trackNames = keys[2];
-        appDescription = keys[3];
-        
+        // Assign each of the key values to the correct variable for the page
+        title = json[keys[0]];
+        audioFilePaths = json[keys[1]];
+        trackNames = json[keys[2]];
+        appDescription = json[keys[3]];
+
         // Set the title of the app
         document.querySelector("title").innerHTML = title;
+
+        // Build the select element for songs
+        for (let i = 0; i < audioFilePaths.length; i++) {
+            if (trackNames[i] == "New Adventure Theme") {   // Make sure the "New Adventure Theme" track is selected by default
+                document.querySelector("#track-select").innerHTML += `<option value="media/${audioFilePaths[i]}" selected>${trackNames[i]}</option>`;
+            } else {
+                document.querySelector("#track-select").innerHTML += `<option value="media/${audioFilePaths[i]}">${trackNames[i]}</option>`;
+            }
+        }
+
+        // Set the app description paragraph
+        document.querySelector("#app-description").innerHTML = appDescription;
     };
+    // Set up the error event handler with an anonymous function that simply logs to the console the HTTP Status Code of the XHR object (takes the event handler's Event object as a parameter and returns nothing)
     xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
+
+    // Open a connection to the JSON file and send the request
     xhr.open("GET", url);
     xhr.send();
 }
@@ -85,7 +109,7 @@ function init() {
     canvas.setupCanvas(canvasElement, audio.analyserNode);
 
     // Get initial app data from av-data.json
-    //loadJson();
+    loadJson();
 
     // The default track should be "New Adventure Theme"
     document.querySelector("#track-select").value = "media/New Adventure Theme.mp3";
@@ -95,8 +119,7 @@ function init() {
     document.querySelector("#volume-label").innerHTML = "50";
 
     // Set the checkboxes to be checked on load
-    document.querySelector("#gradient-cb").checked = true;
-    document.querySelector("#bars-cb").checked = true;
+    document.querySelector("#particles-cb").checked = true;
     document.querySelector("#circles-cb").checked = true;
     document.querySelector("#noise-cb").checked = false;
     document.querySelector("#invert-cb").checked = false;
@@ -180,8 +203,7 @@ function setupUI(canvasElement) {
     };
 
     // E - hookup checkboxes
-    document.querySelector("#gradient-cb").addEventListener("click", (e) => { appParams.showGradient = e.target.checked; });
-    document.querySelector("#bars-cb").addEventListener("click", (e) => { appParams.showBars = e.target.checked; });
+    document.querySelector("#particles-cb").addEventListener("click", (e) => { appParams.showParticles = e.target.checked; });
     document.querySelector("#circles-cb").addEventListener("click", (e) => { appParams.showCircles = e.target.checked; });
     document.querySelector("#noise-cb").addEventListener("click", (e) => { appParams.showNoise = e.target.checked; });
     document.querySelector("#invert-cb").addEventListener("click", (e) => { appParams.showInvert = e.target.checked; });

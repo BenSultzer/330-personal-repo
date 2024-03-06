@@ -48,3 +48,7 @@ button[data-playing="no"]:after {
 span {
     margin-right: 2em;
 }
+
+#app-description {    
+    margin-left: 1rem;
+}

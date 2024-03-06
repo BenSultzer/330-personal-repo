@@ -16,19 +16,28 @@ import * as utils from './utils.js';
 // Import the ParticleSystem class
 import { ParticleSystem } from "./classes/ParticleSystem.js";
 
+// Import the Particle class
+import { Particle } from "./classes/Particle.js";
+
 // Variables for tracking delta time for the particle systems
 let totalTime = 0;
 let preTime = 0;
 let deltaTime = 0;
 
-// Track time intervals of one second
-let secondCounter = 0;
+// Track the lifetimes of the background particle systems
+let backgroundPSLifeCounter = 0;
 
-// The array of particle systems
-let particleSystems;
+// Track the lifetimes of the central particles
+let centralParticleLifeCounter = 0;
+
+// The array of particle systems for the background
+let particleSystemsBackground;
+
+// The array of particles that shoot from the center
+let centralParticles;
 
 // Define variables for drawing the audio data to the canvas
-let ctx, canvasWidth, canvasHeight, gradient, analyserNode, audioData;
+let ctx, canvasWidth, canvasHeight, analyserNode, audioData;
 
 // A variable to track what kind of analyser data to use for visualization
 let analyserDataType = "frequency"; // Use frequency as a default
@@ -42,15 +51,19 @@ function setupCanvas(canvasElement, analyserNodeRef) {
     ctx = canvasElement.getContext("2d");
     canvasWidth = canvasElement.width;
     canvasHeight = canvasElement.height;
-    // create a gradient that runs top to bottom
-    gradient = utils.getLinearGradient(ctx, 0, 0, 0, canvasHeight, [{ percent: 0, color: "rgb(255, 255, 255)" }, { percent: .25, color: "rgb(204, 204, 204)" }, { percent: .5, color: "rgb(153, 153, 153)" }, { percent: .75, color: "rgb(102, 102, 102)" }, { percent: 1, color: "rgb(51, 51, 51)" }]);
     // keep a reference to the analyser node
     analyserNode = analyserNodeRef;
     // this is the array where the analyser data will be stored
     audioData = new Uint8Array(analyserNode.fftSize / 2);
-    particleSystems = new Array(audioData.length);
-    for (let i = 0; i < particleSystems.length; i++) {
-        particleSystems[i] = new ParticleSystem(utils.getRandom(0, canvasWidth), 0, 50, 3, "red");
+    // Create the array of background particle systems and initialize each element with a new particle system
+    particleSystemsBackground = new Array(audioData.length);
+    for (let i = 0; i < particleSystemsBackground.length; i++) {
+        particleSystemsBackground[i] = new ParticleSystem(0, 0, 0, 0, "white");
+    }
+    // Create the array of central particles and initialize each element with a new particle
+    centralParticles = new Array(audioData.length);
+    for (let i = 0; i < centralParticles.length; i++) {
+        centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, 1, "white", 0, new Array(0, 0));
     }
 }
 
@@ -80,45 +93,33 @@ function draw(params = {}) {
     // 2 - draw background
     ctx.save();
     ctx.fillStyle = "black";
-    ctx.globalAlpha = 0.1;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     ctx.restore();
 
-    // 3 - draw gradient
-    if (params.showGradient) {
-        ctx.save();
-        ctx.fillStyle = gradient;
-        ctx.globalAlpha = 0.3;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        ctx.restore();
-    }
-
-    // 4 - draw bars
-    if (params.showBars) {
-        let barSpacing = 4;
+    // 4 - draw particles
+    if (params.showParticles) {
+        let particleSystemSpacing = 4;
         let margin = 5;
-        let screenWidthForBars = canvasWidth - (audioData.length * barSpacing) - margin * 2;
-        let barWidth = screenWidthForBars / audioData.length;
-        let barHeight = 200;
+        let screenWidthForParticleSystems = canvasWidth - (audioData.length * particleSystemSpacing) - margin * 2;
+        let horizontalSpaceForParticleSystem = screenWidthForParticleSystems / audioData.length;
         let topSpacing = 100;
-
+        
         ctx.save();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.50)';
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.50)';
-        // loop through the data and draw!
+        // Loop through the data, creating particle systems for each entry
         for (let i = 0; i < audioData.length; i++) {
-            // Create a particle system for the current piece of audio data if the current particle system's life time is over
-            secondCounter += 1 / 60;
-            if (secondCounter >= 1.3) {
-                particleSystems[i] = new ParticleSystem(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], 5, ((256 - audioData[i]) + 20) / 10, "rgba(255 - audioData[i], 0.0, 0.0, 0.5)");
-                secondCounter = 0;
+            // Create a particle system for the current piece of audio data if the lifetime is over for the previous particle system for that entry
+            backgroundPSLifeCounter += 1 / 60; // Update the lifetime counter
+            if (backgroundPSLifeCounter >= 1.3) {
+                // Create a new particle system and reset the lifetime counter
+                particleSystemsBackground[i] = new ParticleSystem(margin + i * (horizontalSpaceForParticleSystem + particleSystemSpacing), topSpacing + 256 - audioData[i], 5, ((256 - audioData[i]) + 20) / 10, "rgba(50, 50, 50, 0.5)");
+                backgroundPSLifeCounter = 0;
             }
-            //ctx.fillRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
-            //ctx.strokeRect(margin + i * (barWidth + barSpacing), topSpacing + 256 - audioData[i], barWidth, barHeight);
         }
+
+        // If the current song is playing, update and draw each particle system
         if (document.querySelector("#play-button").dataset.playing == "yes") {
-            for (let i = 0; i < particleSystems.length; i++) {
-                particleSystems[i].update(ctx, deltaTime);
+            for (let i = 0; i < particleSystemsBackground.length; i++) {
+                particleSystemsBackground[i].update(ctx, deltaTime);
             }
         }
         ctx.restore();
@@ -128,33 +129,47 @@ function draw(params = {}) {
     if (params.showCircles) {
         let maxRadius = canvasHeight / 4;
         ctx.save();
-        ctx.globalAlpha = 0.5;
         for (let i = 0; i < audioData.length; i++) {
-            // red-ish circles
-            let percent = audioData[i] / 255;
+            // Create a particle system for the current piece of audio data if the lifetime is over for the previous particle system for that entry
+            centralParticleLifeCounter += 1 / 60; // Update the lifetime counter
+            if (centralParticleLifeCounter >= 3) {
+                // Create a new particle system and reset the lifetime counter
+                centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, ((256 - audioData[i]) + 20) / 10, "white", ((256 - audioData[i]) + 20), new Array(utils.getRandom(-1, 1), utils.getRandom(-1, 1)));
+                centralParticleLifeCounter = 0;
+            }
+            // // red-ish circles
+            // let percent = audioData[i] / 255;
 
-            let circleRadius = percent * maxRadius;
-            ctx.beginPath();
-            ctx.fillStyle = utils.makeColor(255, 111, 111, 0.34 - percent / 3.0);
-            ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius, 0, 2 * Math.PI, false);
-            ctx.fill();
-            ctx.closePath();
+            // let circleRadius = percent * maxRadius;
+            // ctx.beginPath();
+            // ctx.fillStyle = utils.makeColor(255, 111, 111, 0.34 - percent / 3.0);
+            // ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius, 0, 2 * Math.PI, false);
+            // ctx.fill();
+            // ctx.closePath();
 
-            // blue-ish circles, bigger, more transparent
-            ctx.beginPath();
-            ctx.fillStyle = utils.makeColor(0, 0, 255, 0.10 - percent / 10.0);
-            ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * 1.5, 0, 2 * Math.PI, false);
-            ctx.fill();
-            ctx.closePath();
+            // // blue-ish circles, bigger, more transparent
+            // ctx.beginPath();
+            // ctx.fillStyle = utils.makeColor(0, 0, 255, 0.10 - percent / 10.0);
+            // ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * 1.5, 0, 2 * Math.PI, false);
+            // ctx.fill();
+            // ctx.closePath();
 
-            // yellow-ish circles, smaller
-            ctx.save();
-            ctx.beginPath();
-            ctx.fillStyle = utils.makeColor(200, 200, 0, 0.50 - percent / 5.0);
-            ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * 0.50, 0, 2 * Math.PI, false);
-            ctx.fill();
-            ctx.closePath();
-            ctx.restore();
+            // // yellow-ish circles, smaller
+            // ctx.save();
+            // ctx.beginPath();
+            // ctx.fillStyle = utils.makeColor(200, 200, 0, 0.50 - percent / 5.0);
+            // ctx.arc(canvasWidth / 2, canvasHeight / 2, circleRadius * 0.50, 0, 2 * Math.PI, false);
+            // ctx.fill();
+            // ctx.closePath();
+            // ctx.restore();
+        }
+
+        // If the current song is playing, update and draw each particle
+        if (document.querySelector("#play-button").dataset.playing == "yes") {
+            for (let i = 0; i < centralParticles.length; i++) {
+                centralParticles[i].update(deltaTime);
+                centralParticles[i].draw(ctx);
+            }
         }
         ctx.restore();
     }
