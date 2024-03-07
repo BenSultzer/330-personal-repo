@@ -1,3 +1,4 @@
+// Overview: Homework 2
 // Author: Ben Sultzer <bms3902@rit.edu>
 // Description: Class that represents a single particle in a particle system
 class Particle {
@@ -15,6 +16,7 @@ class Particle {
         this.direction = new Array(direction[0], direction[1]);
         this.normalize(direction); // Make sure to normalize the direction immediately!
         this.acceleration = 1;
+        this.shockwaveType = "normal";
     }
 
     // Normalizes a vector
@@ -32,9 +34,42 @@ class Particle {
         return direction;
     }
 
-    
+    // Exerts a shockwave force on this particle that originates from the mouse click position
+    // "mouseX" parameter: The x-position of the mouse when the user clicks
+    // "mouseY" parameter: The y-position of the mouse when the user clicks
+    // Returns: Nothing
     exertShockwave(mouseX, mouseY) {
+        // A set amount of force for the shockwave
+        let force = 1.5;
 
+        // Get the distance from the mouse click to the particle
+        let distance = Math.sqrt(Math.pow(this.positionX - mouseX, 2) + Math.pow(this.positionY - mouseY, 2));
+
+        // Get the direction from the mouse click to the particle
+        let shockwaveDirection = new Array(2);
+        shockwaveDirection[0] = this.positionX - mouseX;
+        shockwaveDirection[1] = this.positionY - mouseY;
+
+        // Normalize the shockwave direction
+        let shockwaveDirectionNormalized = this.normalize(shockwaveDirection);
+
+        // Change the particle's direction by the shockwave's direction and scale it's speed by the force of the shockwave
+        this.direction[0] += shockwaveDirectionNormalized[0];
+        this.direction[1] += shockwaveDirectionNormalized[1];
+
+        // If the shockwave type is "freeze", scale the force by the distance from the mouse position
+        if (this.shockwaveType == "freeze") {
+            this.speed *= (force * 10) / distance;
+        } else {
+            this.speed *= force;
+        }
+    }
+
+    // Sets the type of shockwave for this particle
+    // "value": The new shockwave type
+    // Returns: Nothing
+    setShockwaveType(value) {
+        this.shockwaveType = value;
     }
 
     // Sets the value of gravity for this particle

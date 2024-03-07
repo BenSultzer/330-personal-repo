@@ -1,4 +1,4 @@
-// Overview: Practice Exercise 07
+// Overview: Homework 2
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 // Get main.js's init() function

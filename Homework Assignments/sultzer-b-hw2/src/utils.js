@@ -1,4 +1,4 @@
-// Overview: Practice Exercise 07
+// Overview: Homework 2
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 // Returns the given color values formatted as a CSS color

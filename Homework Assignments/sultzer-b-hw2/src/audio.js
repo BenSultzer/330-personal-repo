@@ -1,4 +1,4 @@
-// Overview: Practice Exercise 07
+// Overview: Homework 2
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 // 1 - our WebAudio context, **we will export and make this public at the bottom of the file**
@@ -13,10 +13,6 @@ const DEFAULTS = Object.freeze({
     gain: .5,
     numSamples: 256
 });
-
-// 4 - create a new array of 8-bit integers (0-255)
-// this is a typed array to hold the audio frequency data
-let audioData = new Uint8Array(DEFAULTS.numSamples / 2);
 
 // **Next are "public" methods - we are going to export all of these at the bottom of this file**
 // Sets the sound file to be used

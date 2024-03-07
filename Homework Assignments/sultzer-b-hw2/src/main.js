@@ -1,4 +1,4 @@
-// Overview: Practice Exercise 07
+// Overview: Homework 2
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 /*
@@ -51,7 +51,7 @@ const canvasClicked = (e) => {
 
     // Indicates the canvas was clicked, sending the coordinates and triggering the shockwave for each central particle
     for (let i = 0; i < canvas.centralParticles.length; i++) {
-        utils.centralParticles[i].exertShockwave(mouseX, mouseY);
+        canvas.centralParticles[i].exertShockwave(mouseX, mouseY);
     }    
 }
 
@@ -110,7 +110,7 @@ const loadJson = () => {
 // Sets up the audio visualizer
 // Parameters: None
 // Returns: Nothing
-function init() {
+const init = () => {
     // Starts creation of the audio graph with DEFAULTS.sound1 as the source
     audio.setUpWebAudio(DEFAULTS.sound1);
     console.log("init called");
@@ -121,6 +121,9 @@ function init() {
 
     // Get the canvas ready for drawing
     canvas.setupCanvas(canvasElement, audio.analyserNode);
+
+    // Gets the screen position of a click relative to the top-left corner of the canvas for exerting a shockwave on the central particles
+    canvasElement.addEventListener("click", canvasClicked);
 
     // Get initial app data from av-data.json
     loadJson();
@@ -147,6 +150,12 @@ function init() {
     // Set up the event handler for getting the current emitter type to use for the central particle emitter
     document.querySelector("#emitter-type").onchange = () => { canvas.getEmitterType(document.querySelector("#emitter-type").value) };
 
+    // The default value of the shockwave type should be "normal"
+    document.querySelector("#shockwave-type").value = "normal";
+
+    // Set up the event handler for getting the current shockwave type to use for the central particles
+    document.querySelector("#shockwave-type").onchange = () => { canvas.getShockwaveType(document.querySelector("#shockwave-type").value) };
+
     // Call the loop function for a constant stream of audio data from the analyser node
     loop();
 }
@@ -154,7 +163,7 @@ function init() {
 // Hooks up the various UI elements of the audio visualizer
 // "canvasElement" parameter: A reference to the canvas containing the audio visualizer
 // Returns: Nothing
-function setupUI(canvasElement) {
+const setupUI = (canvasElement) => {
     // A - hookup fullscreen button
     const fsButton = document.querySelector("#fs-button");
 
@@ -221,7 +230,24 @@ function setupUI(canvasElement) {
     gravitySlider.value = "1";
     gravitySlider.dispatchEvent(new Event("input"));
 
-    // E - hookup treble slider & label
+    // E - hookup gravity slider & label
+    let speedSlider = document.querySelector("#speed-slider");
+    let speedLabel = document.querySelector("#speed-label");
+
+    // Add .oninput event to slider
+    speedSlider.oninput = e => {
+        // Set the speed modifier
+        canvas.getSpeedModFromInput(e.target.value);
+        // Update value of label to match value of slider
+        speedLabel.innerHTML = e.target.value;
+    };
+
+    // Set value of label to match initial value of slider by firing an input event on start-up
+    // First set the value to 1
+    speedSlider.value = "1";
+    speedSlider.dispatchEvent(new Event("input"));
+
+    // F - hookup treble slider & label
     let trebleSlider = document.querySelector("#treble-slider");
     let trebleLabel = document.querySelector("#treble-label");
 
@@ -238,7 +264,7 @@ function setupUI(canvasElement) {
     trebleSlider.value = "0";
     trebleSlider.dispatchEvent(new Event("input"));
 
-    // F - hookup bass slider & label
+    // G - hookup bass slider & label
     let bassSlider = document.querySelector("#bass-slider");
     let bassLabel = document.querySelector("#bass-label");
 
@@ -255,7 +281,7 @@ function setupUI(canvasElement) {
     bassSlider.value = "0";
     bassSlider.dispatchEvent(new Event("input"));
 
-    // G - hookup track <select>
+    // H - hookup track <select>
     let trackSelect = document.querySelector("#track-select");
     // add .onchange event to <select>
     trackSelect.onchange = e => {
@@ -267,7 +293,7 @@ function setupUI(canvasElement) {
         }
     };
 
-    // H - hookup checkboxes
+    // I - hookup checkboxes
     document.querySelector("#particle-systems-cb").addEventListener("click", (e) => { appParams.showParticleSystems = e.target.checked; });
     document.querySelector("#particles-cb").addEventListener("click", (e) => { appParams.showParticles = e.target.checked; });
     document.querySelector("#party-cb").addEventListener("click", (e) => { appParams.partyMode = e.target.checked; });
@@ -277,7 +303,7 @@ function setupUI(canvasElement) {
 // Displays data from the analyser node every frame
 // Parameters: None
 // Returns: Nothing
-function loop() {
+const loop = () => {
     // Start the animation loop with this function at 60 FPS
     setTimeout(loop, 1000 / 60);
 

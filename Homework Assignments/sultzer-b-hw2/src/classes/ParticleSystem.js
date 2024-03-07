@@ -4,6 +4,7 @@ import { Particle } from "./Particle.js";
 // Import helper functions
 import * as utils from '../utils.js';
 
+// Overview: Homework 2
 // Author: Ben Sultzer <bms3902@rit.edu>
 // Description: Class that creates an explosion at a point
 class ParticleSystem {

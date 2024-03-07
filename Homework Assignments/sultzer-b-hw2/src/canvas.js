@@ -1,4 +1,4 @@
-// Overview: Practice Exercise 07
+// Overview: Homework 2
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 /*
@@ -30,6 +30,12 @@ let currentGravity = -1;
 // The emitter type for the central particle emitter (fountain to start)
 let emitterType = "fountain";
 
+// The shockwave type for the central particles (normal to start)
+let shockwaveType = "normal";
+
+// The modifier for central particle speed (1 to start, so no effect)
+let speedModifier = 1;
+
 // Track the lifetimes of the background particle systems
 let backgroundPSLifeCounter = 0;
 
@@ -52,7 +58,7 @@ let analyserDataType = "frequency"; // Use frequency as a default
 // "canvasElement" parameter: The canvas to draw to
 // "analyserNodeRef" parameter: A reference to the analyser node
 // Returns: Nothing
-function setupCanvas(canvasElement, analyserNodeRef) {
+const setupCanvas = (canvasElement, analyserNodeRef) => {
     // create drawing context
     ctx = canvasElement.getContext("2d");
     canvasWidth = canvasElement.width;
@@ -73,7 +79,23 @@ function setupCanvas(canvasElement, analyserNodeRef) {
     }
 }
 
-// Gets the current emitter type to be used when rendering the central particle system
+// Gets the current speed modifier to be used on the central particles
+// "value" parameter: The speed modifier
+// Returns: Nothing
+const getSpeedModFromInput = (value) => {
+    speedModifier = value;
+}
+
+// Gets the current shockwave type to be used on the central particles
+// "type" parameter: The type of shockwave to use
+// Returns: Nothing
+const getShockwaveType = (type) => {
+    shockwaveType = type;
+}
+
+// Gets the current emitter type to be used when rendering the central particles
+// "type" parameter: The type of emitter to use
+// Returns: Nothing
 const getEmitterType = (type) => {
     emitterType = type;
 }
@@ -95,7 +117,7 @@ const getAnalyserDataType = (dataType) => {
 // Draws the audio data to the canvas
 // "params" parameter: The set of app options
 // Returns: Nothing
-function draw(params = {}) {
+const draw = (params = {}) => {
     // Keep track of the total runtime of the app at 60 FPS, calculating delta time for the particle system
     preTime = totalTime;
     totalTime += 1 / 60;
@@ -157,10 +179,10 @@ function draw(params = {}) {
                 let speed;
                 if (emitterType == "fountain") {
                     direction = new Array(utils.getRandom(-1, 1), utils.getRandom(-1, 1));
-                    speed = 100 + audioData[i];
+                    speed = (100 + audioData[i]) * speedModifier; // Apply the speed modifier from input
                 } else {
                     direction = new Array(Math.sin(totalTime * 3), -1); // For the beam, oscillate the direction between up and to the left and up and to the right
-                    speed = 200 + audioData[i];
+                    speed = (200 + audioData[i]) * speedModifier; // Apply the speed modifier from input
                 }
                 centralParticles[i] = new Particle(canvasWidth / 2, canvasHeight / 2, ((256 - audioData[i]) + 20) / 10, `rgba(${175 + audioData[i]}, 0, 0, 0.75)`, speed, direction);
                 centralParticles[i].setGravity(currentGravity);  // Set the current gravity for the particle
@@ -171,6 +193,7 @@ function draw(params = {}) {
         // If the current song is playing, update and draw each particle
         if (document.querySelector("#play-button").dataset.playing == "yes") {
             for (let i = 0; i < centralParticles.length; i++) {
+                centralParticles[i].setShockwaveType(shockwaveType);
                 centralParticles[i].update(deltaTime);
                 centralParticles[i].draw(ctx);
             }
@@ -225,4 +248,4 @@ function draw(params = {}) {
 } // end draw()
 
 // make the functions for getting the canvas ready, drawing, and saving the current audio data type to use for drawing public
-export { setupCanvas, draw, getAnalyserDataType, getGravityFromInput, getEmitterType, centralParticles };
+export { setupCanvas, draw, getAnalyserDataType, getGravityFromInput, getEmitterType, getShockwaveType, getSpeedModFromInput, centralParticles };
