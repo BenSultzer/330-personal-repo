@@ -13,8 +13,8 @@ request(url, (err, response, body) => {
     if(!err && response.statusCode == 200){
     	// log out the plain-text joke - no parsing required!
         console.log(cowsay.say({
-		text : body,
-		e : "><"
-	}));
+		    text : body,
+		    e : "><"
+	    }));
     }
 });
