@@ -1,0 +1,71 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotdog Finder</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="src/index.js" type="module"></script>
+</head>
+
+<body>
+    <nav class="navbar has-shadow is-white">
+        <!-- logo-brand -->
+        <div class="navbar-brand">
+            <a class="navbar-item" href="home.html">
+                <i class="fas fa-hotdog"></i>
+            </a>
+            <a class="navbar-burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+
+        <div class="navbar-menu" id="nav-links">
+            <div class="navbar-start">
+                <a class="navbar-item">
+                    Home
+                </a>
+
+                <a class="navbar-item is-hoverable" href="app.html">
+                    App
+                </a>
+
+                <a class="navbar-item is-hoverable" href="favorites.html">
+                    Favorites
+                </a>
+
+                <a class="navbar-item is-hoverable" href="documentation.html">
+                    Documentation
+                </a>
+            </div> <!-- end navbar-start -->
+        </div>
+    </nav>
+
+    <!-- product info -->
+    <section class="section">
+        <div class="container">
+            <div class="columns is-vcentered">
+                <div class="column is-3">
+                    <h1 class="is-size-1 title">Docker</h1>
+                    <h2 class="is-size-2 subtitle">Dark Roast</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga porro reiciendis voluptates officia
+                        commodi nihil incidunt iusto in, earum dolores?</p>
+                </div>
+                <div class="column is-5 has-text-centered">
+                    <img src="assets/product.png" alt="docker coffee image" class="px-6">
+                </div>
+                <div class="column is-4">
+                    <div class="is-size-4 mb-4">$10.95</div>
+                    <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, inventore.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
