@@ -1,5 +1,5 @@
 const meaningOfLife = 42;
-const defaultName = "Mr. X";
+const defaultName = "Unknown Friend";
 let temp = "utils.js temp value"; // does not conflict with `temp` in main.js
 
 const doubleIt = val =>  val * 2;
