@@ -7,10 +7,13 @@ import * as main from "./main.js";
 // Starts up the app
 // Parameters: None
 // Returns: Nothing
-window.onload = () => {
-    console.log("window.onload called");
+const startUp = () => {
+    console.log("startUp() called");
     // 1 - do preload here - load fonts, images, additional sounds, etc...
 
     // 2 - start up app
     main.init();
 }
+
+// Start up the app
+startUp();
