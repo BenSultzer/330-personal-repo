@@ -1,9 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Map Start</title>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="styles/mapbox-start.css">
@@ -12,11 +13,19 @@
 <body>
     <div id='map'></div>
     <script>
+        // Create the map
         mapboxgl.accessToken = 'pk.eyJ1IjoiY2F0b2dyYXBoZXIiLCJhIjoiY2x1ZzFucGE5MjdkdTJrbWZqaWI1ODNveSJ9.U2o3E6ioE1zRpGEmwF5-9Q';
-        var map = new mapboxgl.Map({
+        let map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11'
+            style: 'mapbox://styles/mapbox/dark-v11'
         });
+
+        // Focus the map on the Rochester area!
+        map.setZoom(9);
+        map.setCenter([-77.6799, 43.083848]); // note the order - it's longitude,latitude - which is opposite of Google Maps
+
+        // Add zoom and rotation controls to the map
+        map.addControl(new mapboxgl.NavigationControl());
     </script>
 </body>
 
