@@ -8,52 +8,12 @@
     <title>Add custom markers in Mapbox GL JS</title>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v3.1.0/mapbox-gl.css' rel='stylesheet' />
-    <link rel="stylesheet" href="../styles/custom-marker.css">
+    <link rel="stylesheet" type="text/css" href="styles/default-styles.css">
+    <script src="./src/loader.js" type="module"></script>
 </head>
 
 <body>
     <div id='map'></div>
-
-    <script>
-
-        mapboxgl.accessToken = 'pk.eyJ1IjoiY2F0b2dyYXBoZXIiLCJhIjoiY2x1ZzFucGE5MjdkdTJrbWZqaWI1ODNveSJ9.U2o3E6ioE1zRpGEmwF5-9Q';
-
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/light-v11',
-            center: [-96, 37.8],
-            zoom: 3
-        });
-
-        // code from the next step will go here!
-        const geojson = {
-            type: 'FeatureCollection',
-            features: [
-                {
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [-77.032, 38.913]
-                    },
-                    properties: {
-                        title: 'Mapbox',
-                        description: 'Washington, D.C.'
-                    }
-                },
-                {
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [-122.414, 37.776]
-                    },
-                    properties: {
-                        title: 'Mapbox',
-                        description: 'San Francisco, California'
-                    }
-                }
-            ]
-        };
-    </script>
 </body>
 
 </html>
