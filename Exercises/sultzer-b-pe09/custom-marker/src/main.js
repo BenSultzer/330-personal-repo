@@ -1,5 +1,5 @@
-// Create the map, markers, and popups
-const inti = () => {
+// Create the map, markers (using the created GeoJSON data), and popups, adding the markers to the map and popups to the markers
+function init() {
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2F0b2dyYXBoZXIiLCJhIjoiY2x1ZzFucGE5MjdkdTJrbWZqaWI1ODNveSJ9.U2o3E6ioE1zRpGEmwF5-9Q';
 
     const map = new mapboxgl.Map({
@@ -64,3 +64,6 @@ const inti = () => {
         ).addTo(map);
     }
 }
+
+// Export the init function for loader.js
+export { init };
