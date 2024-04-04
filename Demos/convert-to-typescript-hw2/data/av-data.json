@@ -1,0 +1,6 @@
+{
+    "title": "Ultimate Audio Visualizer",
+    "audiofiles": ["New Adventure Theme.mp3", "Peanuts Theme.mp3", "The Picard Song.mp3"],
+    "tracktitles": ["New Adventure Theme", "Peanuts Theme", "The Picard Song"],
+    "appdescription": "The 'Play' button is used to play and pause the current song, which can be changed using the 'Track' dropdown menu. The 'Volume' slider adjusts volume and the 'Full Screen' button puts the app in full screen. Click anywhere on the canvas to exert a shockwave force according to where you clicked on all centrically emitted particles. Finally, the remaining controls are organized by their effect, and can be used to change various parts of the app, such as colors, particle properties, frequency versus waveform audio data, and more."
+}
