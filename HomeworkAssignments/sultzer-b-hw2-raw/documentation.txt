@@ -1,0 +1,47 @@
+I. I added a treble and bass BiquadFilterNode to the audio graph and hooked up a 
+slider for both that allows the user to boost both kinds of frequencies. The maximum for
+treble is 20 and the maximum for bass is 15.
+
+II. I created a Particle sprite and a ParticleSystem class that contains instances of
+the Particle sprite. A Particle is represented by a circle that has a position, 
+radius, color, speed, and direction, along with an acceleration and type of shockwave. 
+A ParticleSystem has a position, a number of Particle instances, the radius for each
+Particle, and the color for each Particle, as well as an array to hold all the Particles.
+The ParticleSystems are used to visualize the audio in the same way that the bars did
+in PE-07: The ParticleSystem's position and its Particles' radii are driven by the audio
+data, with higher frequencies being denoted by ParticleSystems with higher positions and
+smaller Particles, and lower frequencies being denoted by ParticleSystems with lower
+positions and bigger Particles. In the center of the visualizer is a particle emitter that
+shoots out individual Particle instances. The radii, colors, and speeds of these Particles
+are affected by the audio data, with particles at higher frequencies being brighter, smaller,
+and faster, and lower frequencies being darker, bigger, and slower.
+
+III. In my av-data.json file, I included the title of my app, the audio file names, the audio
+file song titles, and instructions for how to use the various features of the app (placed 
+in a paragraph tag at the bottom of the page).
+
+IV. Aesthetics grade: 15% - I removed the background gradient to be solid black so that the
+viewer could focus on the particles. The particles are by far the most important piece of the whole
+project. I also removed the pulsing circles and replaced them with the central particle 
+emitter mentioned above. The particle systems serve as a background audio visualizer
+to be enhanced by the interesting behavior of the central emitter that can be affected by
+the user. I kept the emboss effect because I thought it looked really interesting already,
+and it looks much cleaner with just the circles of the particles. I also used a modified
+version of the RGB shift bitmap effect from the video demo file to create a disco ball-
+like flash for the whole visualizer. I call this "Party Mode"! I also tied the color
+inversion effect to the direction of gravity for the particles to accentuate when gravity
+is opposite of what it should be. I decided that there was not a good way to work in the 
+use of other drawing context functions like lines and curves, as well as transformations,
+because the particles behaved best if controlled by programmed physics and options that affect
+those physics. Finally, I give the user the option to reverse and change the direction of
+gravity for each particle, and to change the speed of the paricles from very slow to 
+twice as fast. The most interesting user interactions I created was the abilty to change 
+the type of the central emitter, and to exert a shockwave on the central particles. The
+emitter can be changed using the dropdown to a standard "fountain" format, or to a "beam" 
+which oscillates horizontally back and forth according to a sine wave. To exert the
+shockwave, the user can click anywhere in the canvas. I have two options to choose from for
+a shockwave, one that applies a force of a given amount to the particle according to the
+direction from the mouse click to the particle, and one that does the same but scaled by
+distance from the mouse click. The second option, called "freeze", quickly reduces the speed
+of the particle as the distance increases, creating an interesting effect that makes the
+particles appear as though they've been temporarily slowed by ice.

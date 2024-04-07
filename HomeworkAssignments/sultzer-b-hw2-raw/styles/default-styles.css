@@ -1,0 +1,77 @@
+* {
+    font-family: "Philosopher", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    background: #eeeeee;
+}
+
+canvas {
+    margin-left: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    background: #fafafa;
+}
+
+#controls {
+    margin-left: 1rem;
+}
+
+#volume-label {
+    margin-left: 1rem;
+}
+
+section {
+    margin-bottom: 1rem;
+}
+
+#play-button {
+    font-size: 1.2rem;
+    width: 6rem;
+}
+
+button[data-playing="yes"]:after {
+    content: "Pause";
+}
+
+button[data-playing="no"]:after {
+    content: "Play";
+}
+
+#fs-button {
+    font-size: 1.2rem;
+    width: 8rem;
+}
+
+span {
+    margin-right: 2em;
+}
+
+#app-description {
+    margin-left: 1rem;
+}
+
+#app-options {
+    display: flex;
+}
+
+.flex-item {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
+
+#display-and-instructions {
+    display: flex;
+}
+
+.control {
+    margin-top: .4rem;
+}
+
+#volume-section {
+    margin-bottom: 0rem;
+}
