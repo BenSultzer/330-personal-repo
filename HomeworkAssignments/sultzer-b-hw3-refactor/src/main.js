@@ -128,10 +128,6 @@ const init = () => {
     // Get initial app data from av-data.json
     loadJson();
 
-    // The default track should be "New Adventure Theme"
-    document.querySelector("#track-select").value = "media/New Adventure Theme.mp3";
-
-
     // Set the checkboxes to be checked on load
     document.querySelector("#particle-systems-cb").checked = true;
     document.querySelector("#particles-cb").checked = true;
@@ -226,11 +222,11 @@ const setupUI = (canvasElement) => {
     };
 
     // Set value of label to match initial value of slider by firing an input event on start-up
-    // First set the value to -1
+    // First set the value to 1
     gravitySlider.value = "1";
     gravitySlider.dispatchEvent(new Event("input"));
 
-    // E - hookup gravity slider & label
+    // E - hookup speed slider & label
     let speedSlider = document.querySelector("#speed-slider");
     let speedLabel = document.querySelector("#speed-label");
 
@@ -283,6 +279,7 @@ const setupUI = (canvasElement) => {
 
     // H - hookup track <select>
     let trackSelect = document.querySelector("#track-select");
+    
     // add .onchange event to <select>
     trackSelect.onchange = e => {
         // Load next sound file

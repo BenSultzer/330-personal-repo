@@ -136,7 +136,7 @@ const draw = (params = {}) => {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     ctx.restore();
 
-    // 4 - Draw particle systems
+    // 3 - Draw particle systems
     if (params.showParticleSystems) {
         let particleSystemSpacing = 4;
         let margin = 5;
@@ -147,7 +147,7 @@ const draw = (params = {}) => {
         ctx.save();
         // Loop through the data, creating particle systems for each entry
         for (let i = 0; i < audioData.length; i++) {
-            // Create a particle system for the current piece of audio data if the lifetime is over for the previous particle system for that entry
+            // Create a particle system for the current piece of audio data if the lifetime is over for the previous particle system of that entry
             backgroundPSLifeCounter += 1 / 60; // Update the lifetime counter
             if (backgroundPSLifeCounter >= 1.3) {
                 // Create a new particle system and reset the lifetime counter
@@ -165,15 +165,15 @@ const draw = (params = {}) => {
         ctx.restore();
     }
 
-    // 5 - Draw central particles
+    // 4 - Draw central particles
     if (params.showParticles) {
         ctx.save();
         for (let i = 0; i < audioData.length; i++) {
-            // Create a particle system for the current piece of audio data if the lifetime is over for the previous particle system for that entry
+            // Create a particle for the current piece of audio data if the lifetime is over for the previous particle of that entry
             centralParticleLifeCounter += 1 / 60; // Update the lifetime counter
             if (centralParticleLifeCounter >= 3) {
-                // Create a new particle system and reset the lifetime counter
-                // The direction the particles move should be random for each particle if the emitter type is "fountain", and the same if the type is "beam"
+                // Create a new particle and reset the lifetime counter
+                // The direction the particle moves should be random if the emitter type is "fountain" and oscillate according to a sine wave if the type is "beam"
                 let direction;
                 // Make the speed a little slower for the fountain
                 let speed;
@@ -201,7 +201,7 @@ const draw = (params = {}) => {
         ctx.restore();
     }
 
-    // 6 - bitmap manipulation
+    // 5 - bitmap manipulation
     // TODO: right now. we are looping though every pixel of the canvas (320,000 of them!), 
     // regardless of whether or not we are applying a pixel effect
     // At some point, refactor this code so that we are looping though the image data only if
