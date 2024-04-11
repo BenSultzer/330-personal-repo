@@ -1,28 +1,22 @@
-import { useState } from "react";
+import { useMemo, useEffect, useState } from "react";
+import { loadXHR } from "./ajax";
+import { readFromLocalStorage, writeToLocalStorage } from "./storage";
 import './App.css'
+import Footer from "./Footer";
 
 // app "globals" and utils
 const baseurl = "https://www.amiiboapi.com/api/amiibo/?name=";
-
-const loadXHR = (url, callback) => {
-  // set up the connection
-  // when the data loads, invoke the callback function and pass it the `xhr` object
-  const xhr = new XMLHttpRequest();
-  xhr.onload = () => callback(xhr);
-  xhr.open("GET", url);
-  xhr.send();
-};
-
-const searchAmiibo = (name, callback) => {
-  loadXHR(`${baseurl}${name}`, callback);
-};
 
 // call searchAmiibo() with "mario" and our callback function
 // searchAmiibo("kirby", parseAmiiboResult);
 
 const App = () => {
-  const [term, setTerm] = useState("link");
+  const savedTerm = useMemo(() => readFromLocalStorage("term") || "", []);
+  const [term, setTerm] = useState(savedTerm);
   const [results, setResults] = useState([]);
+  useEffect(() => {
+    writeToLocalStorage("term", term);
+  }, [term]);
 
   const parseAmiiboResult = xhr => {
     // get the `.responseText` string
@@ -49,6 +43,10 @@ const App = () => {
     setResults(json.amiibo);
   };
 
+  const searchAmiibo = (name, callback) => {
+    loadXHR(`${baseurl}${name}`, callback);
+  };
+
   return <>
     <header>
       <h1>Amiibo Finder</h1>
@@ -72,9 +70,10 @@ const App = () => {
       ))}
     </main>
     <hr />
-    <footer>
-      <p>&copy; 2023 Ace Coder</p>
-    </footer>
+    <Footer
+      name="Ben Sultzer"
+      year={new Date().getFullYear()}
+    />
   </>;
 };
 
