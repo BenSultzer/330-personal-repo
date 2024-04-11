@@ -100,16 +100,16 @@ const boostTreble = (value:number): void => {
 // Boosts the bass frequencies by the given amount
 // "value" parameter: The amount of boost
 // Returns: Nothing 
-const boostBass = (value) => {
+const boostBass = (value:number): void => {
     bassNode.gain.setValueAtTime(value, audioCtx.currentTime);
 }
 
 // Sets up the audio graph with the given audio file as the source
 // "filePath" parameter: The file path to the audio file to use as the source
 // Returns: Nothing
-const setUpWebAudio = (filePath) => {
+const setUpWebAudio = (filePath:string): void => {
     // 1 - The || is because WebAudio has not been standardized across browsers yet
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const AudioContext = window.AudioContext;
     audioCtx = new AudioContext();
 
     // 2 - this creates an <audio> element
