@@ -14,7 +14,7 @@
 import * as canvas from './canvas.js';
 
 // Import the audio context, analyser node, and audio interface functions
-import * as audio from './audio.js';
+import * as audio from './audio';
 
 // Import helper functions
 import * as utils from './utils.js';

@@ -1,19 +1,28 @@
-// Overview: Homework 2
+// Overview: Homework 3
 // Author: Ben Sultzer <bms3902@rit.edu>
 // Description: Class that represents a single particle in a particle system
 class Particle {
+    positionX:number;
+    positionY:number;
+    radius:number;
+    color:string;
+    speed:number;
+    direction:number[];
+    acceleration:number;
+    shockwaveType:string;
+
     // Initializes the data necessary for a particle
     // "positionX" parameter: The x-coordinate of the particle system's origin
     // "positionY" parameter: The y-coordinate of the particle system's origin
     // "numParticles" parameter: The number of particles in this particle system
     // Returns: Nothing
-    constructor(positionX, positionY, radius, color, speed, direction) {
+    constructor(positionX:number, positionY:number, radius:number, color:string, speed:number, direction:number[]) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.radius = radius;
         this.color = color;
         this.speed = speed;
-        this.direction = new Array(direction[0], direction[1]);
+        this.direction = direction;
         this.normalize(direction); // Make sure to normalize the direction immediately!
         this.acceleration = 1;
         this.shockwaveType = "normal";
@@ -22,9 +31,9 @@ class Particle {
     // Normalizes a vector
     // "direction" parameter: The direction to normalize
     // Returns: The normalized direction
-    normalize(direction) {
+    normalize(direction:number[]): number[] {
         // Gets the magnitude of the direction
-        let magnitude = Math.sqrt(Math.pow(direction[0], 2) + Math.pow(direction[1], 2));
+        let magnitude:number = Math.sqrt(Math.pow(direction[0], 2) + Math.pow(direction[1], 2));
 
         // Divides each component by the magnitude
         direction[0] /= magnitude;
@@ -38,20 +47,20 @@ class Particle {
     // "mouseX" parameter: The x-position of the mouse when the user clicks
     // "mouseY" parameter: The y-position of the mouse when the user clicks
     // Returns: Nothing
-    exertShockwave(mouseX, mouseY) {
+    exertShockwave(mouseX:number, mouseY:number): void {
         // A set amount of force for the shockwave
-        let force = 1.5;
+        let force:number = 1.5;
 
         // Get the distance from the mouse click to the particle
-        let distance = Math.sqrt(Math.pow(this.positionX - mouseX, 2) + Math.pow(this.positionY - mouseY, 2));
+        let distance:number = Math.sqrt(Math.pow(this.positionX - mouseX, 2) + Math.pow(this.positionY - mouseY, 2));
 
         // Get the direction from the mouse click to the particle
-        let shockwaveDirection = new Array(2);
+        let shockwaveDirection:number[] = new Array(2);
         shockwaveDirection[0] = this.positionX - mouseX;
         shockwaveDirection[1] = this.positionY - mouseY;
 
         // Normalize the shockwave direction
-        let shockwaveDirectionNormalized = this.normalize(shockwaveDirection);
+        let shockwaveDirectionNormalized:number[] = this.normalize(shockwaveDirection);
 
         // Change the particle's direction by the shockwave's direction and scale it's speed by the force of the shockwave
         this.direction[0] += shockwaveDirectionNormalized[0];
@@ -68,21 +77,21 @@ class Particle {
     // Sets the type of shockwave for this particle
     // "value": The new shockwave type
     // Returns: Nothing
-    setShockwaveType(value) {
+    setShockwaveType(value:string): void {
         this.shockwaveType = value;
     }
 
     // Sets the value of gravity for this particle
     // "value": The new gravity value
     // Returns: Nothing
-    setGravity(value) {
+    setGravity(value:number): void {
         this.acceleration = value;
     }
 
     // Updates the particle's position with its speed, direction, and acceleration
     // "deltaTime" parameter: The time that has passed since last frame
     // Returns: Nothing
-    update(deltaTime) {
+    update(deltaTime:number): void {
         // Update vertical direction with acceleration
         this.direction[1] += this.acceleration * deltaTime;
 
@@ -94,7 +103,7 @@ class Particle {
     // Draws the particle to the canvas
     // "ctx" parameter: The 2D drawing context to use for drawing
     // Returns: Nothing
-    draw(ctx) {
+    draw(ctx:CanvasRenderingContext2D): void {
         // Draw a circle to represent the particle
         this.drawCircle(ctx, this.positionX, this.positionY, this.radius, this.color);
     }
@@ -106,7 +115,7 @@ class Particle {
     // "radius" parameter: The radius of the circle
     // "color" parameter: The color of the circle
     // Returns: Nothing
-    drawCircle(ctx, x, y, radius, color) {
+    drawCircle(ctx:CanvasRenderingContext2D, x:number, y:number, radius:number, color:string): void {
         // Save the previous drawing state so that this function is pure 
         ctx.save();
 

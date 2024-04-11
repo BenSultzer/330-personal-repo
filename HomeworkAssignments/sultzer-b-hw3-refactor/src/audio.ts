@@ -1,55 +1,59 @@
-// Overview: Homework 2
+// Overview: Homework 3
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 // 1 - our WebAudio context, **we will export and make this public at the bottom of the file**
-let audioCtx;
+let audioCtx:AudioContext;
 
 // **These are "private" properties - these will NOT be visible outside of this module (i.e. file)**
 // 2 - WebAudio nodes that are part of our WebAudio audio routing graph
-let element, sourceNode, analyserNode, gainNode, trebleNode, bassNode;
+let element:HTMLAudioElement;
+let sourceNode:MediaElementAudioSourceNode;
+let analyserNode:AnalyserNode;
+let gainNode:GainNode;
+let trebleNode:BiquadFilterNode;
+let bassNode:BiquadFilterNode;
 
-// 3 - here we are faking an enumeration
-const DEFAULTS = Object.freeze({
-    gain: .5,
-    numSamples: 256
-});
+// 3 - Use an enum to represent default values for the amount of gain and audio samples to take
+enum DEFAULTS {
+    gain = .5,
+    numSamples = 256
+}
 
 // **Next are "public" methods - we are going to export all of these at the bottom of this file**
 // Sets the sound file to be used
 // "filePath" parameter: The file path to the desired sound file
 // Returns: Nothing
-const loadSoundFile = (filePath) => {
+const loadSoundFile = (filePath:string): void => {
     element.src = filePath;
 }
 
 // Plays the currently set sound
 // Parameters: None
 // Returns: Nothing
-const playCurrentSound = () => {
+const playCurrentSound = (): void => {
     element.play();
 }
 
 // Pauses the currently set sound
 // Parameters: None
 // Returns: Nothing
-const pauseCurrentSound = () => {
+const pauseCurrentSound = (): void => {
     element.pause();
 }
 
 // Changes the volume of the currently set sound
 // "value" parameter: The new volume
 // Returns: Nothing
-const setVolume = (value) => {
-    value = Number(value); // make sure that it's a Number rather than a String
+const setVolume = (value:number): void => {
     gainNode.gain.value = value;
 }
 
 // Creates and returns a treble node
 // "audioCtx" parameter: The audio context object to create the treble node
 // Returns: The treble node
-const makeTrebleNode = (audioCtx) => {
+const makeTrebleNode = (audioCtx:AudioContext): BiquadFilterNode => {
     // Creates a BiquadFilterNode
-    let treble = audioCtx.createBiquadFilter();
+    let treble:BiquadFilterNode = audioCtx.createBiquadFilter();
 
     // Lets the audio system know this BiquadFilterNode is a treble node
     treble.type = "highshelf";
@@ -68,9 +72,9 @@ const makeTrebleNode = (audioCtx) => {
 // Creates and returns a bass node
 // "audioCtx" parameter: The audio context object to create the bass node
 // Returns: The bass node
-const makeBassNode = (audioCtx) => {
+const makeBassNode = (audioCtx:AudioContext): BiquadFilterNode => {
     // Creates a BiquadFilterNode
-    let bass = audioCtx.createBiquadFilter();
+    let bass:BiquadFilterNode = audioCtx.createBiquadFilter();
 
     // Lets the audio system know this BiquadFilterNode is a treble node
     bass.type = "lowshelf";
@@ -89,7 +93,7 @@ const makeBassNode = (audioCtx) => {
 // Boosts the treble frequencies by the given amount
 // "value" parameter: The amount of boost
 // Returns: Nothing 
-const boostTreble = (value) => {
+const boostTreble = (value:number): void => {
     trebleNode.gain.setValueAtTime(value, audioCtx.currentTime);
 }
 

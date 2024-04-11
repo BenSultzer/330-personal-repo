@@ -14,10 +14,10 @@
 import * as utils from './utils.js';
 
 // Import the ParticleSystem class
-import { ParticleSystem } from "./classes/ParticleSystem.js";
+import { ParticleSystem } from "./classes/ParticleSystem";
 
 // Import the Particle class
-import { Particle } from "./classes/Particle.js";
+import { Particle } from "./classes/Particle";
 
 // Variables for tracking delta time for the particle systems
 let totalTime = 0;
