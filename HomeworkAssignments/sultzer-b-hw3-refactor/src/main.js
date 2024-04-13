@@ -11,7 +11,7 @@
 // If you want to re-write these as ES6 arrow functions, to be consistent with the other files, go ahead!
 
 // Import the drawing capabilities
-import * as canvas from './canvas.js';
+import * as canvas from './canvas';
 
 // Import the audio context, analyser node, and audio interface functions
 import * as audio from './audio';
@@ -26,12 +26,14 @@ let trackNames;
 let appDescription;
 
 // Drawing options object
-const appParams = {
-    showParticleSystems: true,
-    showParticles: true,
-    partyMode: false,
-    showEmboss: false
-};
+interface AppParams {
+    showParticleSystems: boolean,
+    showParticles: boolean,
+    partyMode: boolean,
+    showEmboss: boolean
+}
+
+const appParams: AppParams = { showParticleSystems: true, showParticles: true, partyMode: false, showEmboss: false };
 
 // here we are faking an enumeration
 const DEFAULTS = Object.freeze({
@@ -309,4 +311,4 @@ const loop = () => {
 }
 
 // Make the init function public
-export { init };
+export { init, AppParams };
