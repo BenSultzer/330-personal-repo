@@ -1,4 +1,4 @@
-// Overview: Homework 2
+// Overview: Homework 3
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 /*
@@ -20,10 +20,10 @@ import * as audio from './audio';
 import * as utils from './utils';
 
 // Variables to store the app title, audio file paths, track names, and app description
-let title;
-let audioFilePaths;
-let trackNames;
-let appDescription;
+let title:string;
+let audioFilePaths:string[];
+let trackNames:string[];
+let appDescription:string;
 
 // Drawing options object
 interface AppParams {
@@ -33,26 +33,26 @@ interface AppParams {
     showEmboss: boolean
 }
 
-const appParams: AppParams = { showParticleSystems: true, showParticles: true, partyMode: false, showEmboss: false };
+// Create an object of the AppParams type to represent the options for this app
+const appParams:AppParams = { showParticleSystems: true, showParticles: true, partyMode: false, showEmboss: false };
 
-// here we are faking an enumeration
-const DEFAULTS = Object.freeze({
-    sound1: "media/New Adventure Theme.mp3"
-});
+// The default song to play
+let defaultTrack:string = "media/New Adventure Theme.mp3";
 
 // Function for detecting where the canvas was clicked and generating a shockwave that radiates from that point, pushing the central particles out of the way
 // "e" parameter: The event object sent back by the click event listener
 // Returns: Nothing
-const canvasClicked = (e) => {
+const canvasClicked = (e:PointerEvent): void => {
     // Gets information about the clicked area to convert into canvas space
-    let rect = e.target.getBoundingClientRect();
+    let rectTarget = e.target as HTMLCanvasElement;         // Gets the element that was clicked as a canvas element
+    let rect:DOMRect = rectTarget.getBoundingClientRect();  // Gets position and size information of the canvas element relative to the viewport
 
-    // Calculates where the canvas was clicked relative to its own top-left corner
-    let mouseX = e.clientX - rect.x;
-    let mouseY = e.clientY - rect.y;
+    // Calculates where the canvas was clicked relative to its own top-left corner rather than the viewport
+    let mouseX:number = e.clientX - rect.x;
+    let mouseY:number = e.clientY - rect.y;
 
     // Indicates the canvas was clicked, sending the coordinates and triggering the shockwave for each central particle
-    for (let i = 0; i < canvas.centralParticles.length; i++) {
+    for (let i:number = 0; i < canvas.centralParticles.length; i++) {
         canvas.centralParticles[i].exertShockwave(mouseX, mouseY);
     }    
 }
@@ -60,25 +60,29 @@ const canvasClicked = (e) => {
 // Loads app data from a JSON file (app title, audio file paths/track titles for the song select element, and an app description)
 // Parameters: None
 // Returns: Nothing
-const loadJson = () => {
+const loadJson = (): void => {
     // Get the path to the JSON file and create an XHR object
-    const url = "data/av-data.json";
-    const xhr = new XMLHttpRequest();
+    const url:string = "data/av-data.json";
+    const xhr:XMLHttpRequest = new XMLHttpRequest();
 
     // Set up the onload event handler with an anonymous function that gets the data and places each data piece in its proper place in the page (takes the event handler's Event object as a parameter and returns nothing)
-    xhr.onload = (e) => {
-        let json;
+    xhr.onload = (e:ProgressEvent<EventTarget>): void => {
+        // Get the XHR object that triggered the onload event
+        let xhrTarget = e.target as XMLHttpRequest;
+
+        // Variable to store the resulting JSON data
+        let json:Object;
 
         // Attempt to read in the JSON. Display an error in the app description paragraph tag if there was a problem
         try {
-            json = JSON.parse(e.target.responseText);
+            json = JSON.parse(xhrTarget.responseText);
         } catch {
             document.querySelector("#app-description").innerHTML = "An error occurred loading app set-up data.";
             return;
         }
 
         // Get all the keys from the JSON object
-        const keys = Object.keys(json);
+        const keys:string[] = Object.keys(json);
 
         // Assign each of the key values to the correct variable for the page
         title = json[keys[0]];
@@ -90,7 +94,7 @@ const loadJson = () => {
         document.querySelector("title").innerHTML = title;
 
         // Build the select element for songs
-        for (let i = 0; i < audioFilePaths.length; i++) {
+        for (let i:number = 0; i < audioFilePaths.length; i++) {
             if (trackNames[i] == "New Adventure Theme") {   // Make sure the "New Adventure Theme" track is selected by default
                 document.querySelector("#track-select").innerHTML += `<option value="media/${audioFilePaths[i]}" selected>${trackNames[i]}</option>`;
             } else {
@@ -113,8 +117,8 @@ const loadJson = () => {
 // Parameters: None
 // Returns: Nothing
 const init = () => {
-    // Starts creation of the audio graph with DEFAULTS.sound1 as the source
-    audio.setUpWebAudio(DEFAULTS.sound1);
+    // Starts creation of the audio graph with defaultTrack as the source
+    audio.setUpWebAudio(defaultTrack);
     console.log("init called");
     let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
 
