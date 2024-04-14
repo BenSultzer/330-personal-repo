@@ -2,7 +2,7 @@
 import { Particle } from "./Particle";
 
 // Import helper functions
-import * as utils from '../utils.js';
+import * as utils from '../utils';
 
 // Overview: Homework 3
 // Author: Ben Sultzer <bms3902@rit.edu>

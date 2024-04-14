@@ -2,7 +2,7 @@
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 /*
-    main.js is primarily responsible for hooking up the UI to the rest of the application 
+    main.ts is primarily responsible for hooking up the UI to the rest of the application 
     and setting up the main event loop
 */
 
@@ -17,7 +17,7 @@ import * as canvas from './canvas';
 import * as audio from './audio';
 
 // Import helper functions
-import * as utils from './utils.js';
+import * as utils from './utils';
 
 // Variables to store the app title, audio file paths, track names, and app description
 let title;
@@ -310,5 +310,5 @@ const loop = () => {
     canvas.draw(appParams);
 }
 
-// Make the init function public
+// Make the init function and AppParams interface public
 export { init, AppParams };

@@ -14,7 +14,7 @@
 import { AppParams } from "./main";
 
 // Get the utilty functions
-import * as utils from './utils.js';
+import * as utils from './utils';
 
 // Import the ParticleSystem class
 import { ParticleSystem } from "./classes/ParticleSystem";
