@@ -106,7 +106,13 @@ const loadJson = (): void => {
         document.querySelector("#app-description").innerHTML = appDescription;
     };
     // Set up the error event handler with an anonymous function that simply logs to the console the HTTP Status Code of the XHR object (takes the event handler's Event object as a parameter and returns nothing)
-    xhr.onerror = e => console.log(`In onerror - HTTP Status Code = ${e.target.status}`);
+    xhr.onerror = (e:ProgressEvent<EventTarget>): void => {
+        // Get the XHR object that triggered the onload event
+        let xhrTarget = e.target as XMLHttpRequest;
+
+        // Print that there was an error
+        console.log(`In onerror - HTTP Status Code = ${xhrTarget.status}`);
+    };
 
     // Open a connection to the JSON file and send the request
     xhr.open("GET", url);
@@ -116,11 +122,11 @@ const loadJson = (): void => {
 // Sets up the audio visualizer
 // Parameters: None
 // Returns: Nothing
-const init = () => {
+const init = (): void => {
     // Starts creation of the audio graph with defaultTrack as the source
     audio.setUpWebAudio(defaultTrack);
     console.log("init called");
-    let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
+    let canvasElement:HTMLCanvasElement = document.querySelector("canvas"); // hookup <canvas> element
 
     // Initialize the various UI elements of the audio visualizer
     setupUI(canvasElement);
@@ -134,29 +140,38 @@ const init = () => {
     // Get initial app data from av-data.json
     loadJson();
 
+    // Create variables for all elements to get from the DOM
+    let particleSysCB = document.querySelector("#particle-systems-cb") as HTMLInputElement;
+    let particlesCB = document.querySelector("#particles-cb") as HTMLInputElement;
+    let partyCB = document.querySelector("#party-cb") as HTMLInputElement;
+    let embossCB = document.querySelector("#emboss-cb") as HTMLInputElement;
+    let analyserDataTypeDropdown = document.querySelector("#analyser-data-type") as HTMLSelectElement;
+    let emitterTypeDropdown = document.querySelector("#emitter-type") as HTMLSelectElement;
+    let shockwaveTypeDropdown = document.querySelector("#shockwave-type") as HTMLSelectElement;
+
     // Set the checkboxes to be checked on load
-    document.querySelector("#particle-systems-cb").checked = true;
-    document.querySelector("#particles-cb").checked = true;
-    document.querySelector("#party-cb").checked = false;
-    document.querySelector("#emboss-cb").checked = false;
+    particleSysCB.checked = true;
+    particlesCB.checked = true;
+    partyCB.checked = false;
+    embossCB.checked = false;
 
     // The default value of the analyser data type should be "frequency"
-    document.querySelector("#analyser-data-type").value = "frequency";
+    analyserDataTypeDropdown.value = "frequency";
 
     // Set up the event handler for getting the current analyser data type to use for visualization
-    document.querySelector("#analyser-data-type").onchange = () => { canvas.getAnalyserDataType(document.querySelector("#analyser-data-type").value) };
+    analyserDataTypeDropdown.onchange = (): void => { canvas.getAnalyserDataType(analyserDataTypeDropdown.value) };
 
     // The default value of the emitter type should be "fountain"
-    document.querySelector("#emitter-type").value = "fountain";
+    emitterTypeDropdown.value = "fountain";
 
     // Set up the event handler for getting the current emitter type to use for the central particle emitter
-    document.querySelector("#emitter-type").onchange = () => { canvas.getEmitterType(document.querySelector("#emitter-type").value) };
+    emitterTypeDropdown.onchange = (): void => { canvas.getEmitterType(emitterTypeDropdown.value) };
 
     // The default value of the shockwave type should be "normal"
-    document.querySelector("#shockwave-type").value = "normal";
+    shockwaveTypeDropdown.value = "normal";
 
     // Set up the event handler for getting the current shockwave type to use for the central particles
-    document.querySelector("#shockwave-type").onchange = () => { canvas.getShockwaveType(document.querySelector("#shockwave-type").value) };
+    shockwaveTypeDropdown.onchange = (): void => { canvas.getShockwaveType(shockwaveTypeDropdown.value) };
 
     // Call the loop function for a constant stream of audio data from the analyser node
     loop();
@@ -165,9 +180,9 @@ const init = () => {
 // Hooks up the various UI elements of the audio visualizer
 // "canvasElement" parameter: A reference to the canvas containing the audio visualizer
 // Returns: Nothing
-const setupUI = (canvasElement) => {
+const setupUI = (canvasElement:HTMLCanvasElement): void => {
     // A - hookup fullscreen button
-    const fsButton = document.querySelector("#fs-button");
+    const fsButton = document.querySelector("#fs-button") as HTMLButtonElement;
 
     // add .onclick event to button
     fsButton.onclick = e => {
