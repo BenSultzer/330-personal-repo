@@ -253,11 +253,11 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     let speedLabel = document.querySelector("#speed-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    speedSlider.oninput = e => {
+    speedSlider.oninput = (e:InputEvent): void => {
         // Set the speed modifier
-        canvas.getSpeedModFromInput(e.target.value);
+        canvas.getSpeedModFromInput(Number(speedSlider.value));
         // Update value of label to match value of slider
-        speedLabel.innerHTML = e.target.value;
+        speedLabel.innerHTML = speedSlider.value;
     };
 
     // Set value of label to match initial value of slider by firing an input event on start-up
@@ -266,15 +266,15 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     speedSlider.dispatchEvent(new Event("input"));
 
     // F - hookup treble slider & label
-    let trebleSlider = document.querySelector("#treble-slider");
-    let trebleLabel = document.querySelector("#treble-label");
+    let trebleSlider = document.querySelector("#treble-slider") as HTMLInputElement;
+    let trebleLabel = document.querySelector("#treble-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    trebleSlider.oninput = e => {
+    trebleSlider.oninput = (e:InputEvent): void => {
         // Set the treble boost amount
-        audio.boostTreble(e.target.value);
+        audio.boostTreble(Number(trebleSlider.value));
         // Update value of label to match value of slider
-        trebleLabel.innerHTML = e.target.value;
+        trebleLabel.innerHTML = trebleSlider.value;
     };
 
     // Set value of label to match initial value of slider by firing an input event on start-up
@@ -283,15 +283,15 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     trebleSlider.dispatchEvent(new Event("input"));
 
     // G - hookup bass slider & label
-    let bassSlider = document.querySelector("#bass-slider");
-    let bassLabel = document.querySelector("#bass-label");
+    let bassSlider = document.querySelector("#bass-slider") as HTMLInputElement;
+    let bassLabel = document.querySelector("#bass-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    bassSlider.oninput = e => {
+    bassSlider.oninput = (e:InputEvent): void => {
         // Set the bass boost amount
-        audio.boostBass(e.target.value);
+        audio.boostBass(Number(bassSlider.value));
         // Update value of label to match value of slider
-        bassLabel.innerHTML = e.target.value;
+        bassLabel.innerHTML = bassSlider.value;
     };
 
     // Set value of label to match initial value of slider by firing an input event on start-up
@@ -300,7 +300,7 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     bassSlider.dispatchEvent(new Event("input"));
 
     // H - hookup track <select>
-    let trackSelect = document.querySelector("#track-select");
+    let trackSelect = document.querySelector("#track-select") as HTMLSelectElement;
     
     // add .onchange event to <select>
     trackSelect.onchange = e => {
