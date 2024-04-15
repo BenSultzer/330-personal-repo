@@ -20,10 +20,10 @@ import * as audio from './audio';
 import * as utils from './utils';
 
 // Variables to store the app title, audio file paths, track names, and app description
-let title:string;
-let audioFilePaths:string[];
-let trackNames:string[];
-let appDescription:string;
+let title: string;
+let audioFilePaths: string[];
+let trackNames: string[];
+let appDescription: string;
 
 // Drawing options object
 interface AppParams {
@@ -34,27 +34,33 @@ interface AppParams {
 }
 
 // Create an object of the AppParams type to represent the options for this app
-const appParams:AppParams = { showParticleSystems: true, showParticles: true, partyMode: false, showEmboss: false };
+const appParams: AppParams = { showParticleSystems: true, showParticles: true, partyMode: false, showEmboss: false };
 
 // The default song to play
-let defaultTrack:string = "media/New Adventure Theme.mp3";
+let defaultTrack: string = "media/New Adventure Theme.mp3";
+
+// Create variables for all elements to get from the DOM
+let particleSysCB = document.querySelector("#particle-systems-cb") as HTMLInputElement;
+let particlesCB = document.querySelector("#particles-cb") as HTMLInputElement;
+let partyCB = document.querySelector("#party-cb") as HTMLInputElement;
+let embossCB = document.querySelector("#emboss-cb") as HTMLInputElement;
 
 // Function for detecting where the canvas was clicked and generating a shockwave that radiates from that point, pushing the central particles out of the way
 // "e" parameter: The event object sent back by the click event listener
 // Returns: Nothing
-const canvasClicked = (e:PointerEvent): void => {
+const canvasClicked = (e: PointerEvent): void => {
     // Gets information about the clicked area to convert into canvas space
     let rectTarget = e.target as HTMLCanvasElement;         // Gets the element that was clicked as a canvas element
-    let rect:DOMRect = rectTarget.getBoundingClientRect();  // Gets position and size information of the canvas element relative to the viewport
+    let rect: DOMRect = rectTarget.getBoundingClientRect();  // Gets position and size information of the canvas element relative to the viewport
 
     // Calculates where the canvas was clicked relative to its own top-left corner rather than the viewport
-    let mouseX:number = e.clientX - rect.x;
-    let mouseY:number = e.clientY - rect.y;
+    let mouseX: number = e.clientX - rect.x;
+    let mouseY: number = e.clientY - rect.y;
 
     // Indicates the canvas was clicked, sending the coordinates and triggering the shockwave for each central particle
-    for (let i:number = 0; i < canvas.centralParticles.length; i++) {
+    for (let i: number = 0; i < canvas.centralParticles.length; i++) {
         canvas.centralParticles[i].exertShockwave(mouseX, mouseY);
-    }    
+    }
 }
 
 // Loads app data from a JSON file (app title, audio file paths/track titles for the song select element, and an app description)
@@ -62,16 +68,16 @@ const canvasClicked = (e:PointerEvent): void => {
 // Returns: Nothing
 const loadJson = (): void => {
     // Get the path to the JSON file and create an XHR object
-    const url:string = "data/av-data.json";
-    const xhr:XMLHttpRequest = new XMLHttpRequest();
+    const url: string = "data/av-data.json";
+    const xhr: XMLHttpRequest = new XMLHttpRequest();
 
     // Set up the onload event handler with an anonymous function that gets the data and places each data piece in its proper place in the page (takes the event handler's Event object as a parameter and returns nothing)
-    xhr.onload = (e:ProgressEvent<EventTarget>): void => {
+    xhr.onload = (e: ProgressEvent<EventTarget>): void => {
         // Get the XHR object that triggered the onload event
         let xhrTarget = e.target as XMLHttpRequest;
 
         // Variable to store the resulting JSON data
-        let json:Object;
+        let json: Object;
 
         // Attempt to read in the JSON. Display an error in the app description paragraph tag if there was a problem
         try {
@@ -82,7 +88,7 @@ const loadJson = (): void => {
         }
 
         // Get all the keys from the JSON object
-        const keys:string[] = Object.keys(json);
+        const keys: string[] = Object.keys(json);
 
         // Assign each of the key values to the correct variable for the page
         title = json[keys[0]];
@@ -94,7 +100,7 @@ const loadJson = (): void => {
         document.querySelector("title").innerHTML = title;
 
         // Build the select element for songs
-        for (let i:number = 0; i < audioFilePaths.length; i++) {
+        for (let i: number = 0; i < audioFilePaths.length; i++) {
             if (trackNames[i] == "New Adventure Theme") {   // Make sure the "New Adventure Theme" track is selected by default
                 document.querySelector("#track-select").innerHTML += `<option value="media/${audioFilePaths[i]}" selected>${trackNames[i]}</option>`;
             } else {
@@ -106,7 +112,7 @@ const loadJson = (): void => {
         document.querySelector("#app-description").innerHTML = appDescription;
     };
     // Set up the error event handler with an anonymous function that simply logs to the console the HTTP Status Code of the XHR object (takes the event handler's Event object as a parameter and returns nothing)
-    xhr.onerror = (e:ProgressEvent<EventTarget>): void => {
+    xhr.onerror = (e: ProgressEvent<EventTarget>): void => {
         // Get the XHR object that triggered the onload event
         let xhrTarget = e.target as XMLHttpRequest;
 
@@ -126,7 +132,7 @@ const init = (): void => {
     // Starts creation of the audio graph with defaultTrack as the source
     audio.setUpWebAudio(defaultTrack);
     console.log("init called");
-    let canvasElement:HTMLCanvasElement = document.querySelector("canvas"); // hookup <canvas> element
+    let canvasElement: HTMLCanvasElement = document.querySelector("canvas"); // hookup <canvas> element
 
     // Initialize the various UI elements of the audio visualizer
     setupUI(canvasElement);
@@ -141,10 +147,6 @@ const init = (): void => {
     loadJson();
 
     // Create variables for all elements to get from the DOM
-    let particleSysCB = document.querySelector("#particle-systems-cb") as HTMLInputElement;
-    let particlesCB = document.querySelector("#particles-cb") as HTMLInputElement;
-    let partyCB = document.querySelector("#party-cb") as HTMLInputElement;
-    let embossCB = document.querySelector("#emboss-cb") as HTMLInputElement;
     let analyserDataTypeDropdown = document.querySelector("#analyser-data-type") as HTMLSelectElement;
     let emitterTypeDropdown = document.querySelector("#emitter-type") as HTMLSelectElement;
     let shockwaveTypeDropdown = document.querySelector("#shockwave-type") as HTMLSelectElement;
@@ -180,12 +182,12 @@ const init = (): void => {
 // Hooks up the various UI elements of the audio visualizer
 // "canvasElement" parameter: A reference to the canvas containing the audio visualizer
 // Returns: Nothing
-const setupUI = (canvasElement:HTMLCanvasElement): void => {
+const setupUI = (canvasElement: HTMLCanvasElement): void => {
     // A - hookup fullscreen button
     const fsButton = document.querySelector("#fs-button") as HTMLButtonElement;
 
     // add .onclick event to button
-    fsButton.onclick = (e:MouseEvent): void => {
+    fsButton.onclick = (e: MouseEvent): void => {
         console.log("goFullscreen() called");
         utils.goFullscreen(canvasElement);
     };
@@ -194,7 +196,7 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     const playButton = document.querySelector("#play-button") as HTMLButtonElement;
 
     // add .onclick event to button
-    playButton.onclick = (e:MouseEvent): void => {
+    playButton.onclick = (e: MouseEvent): void => {
         console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
 
         // check if context is in suspended state (autoplay policy)
@@ -220,11 +222,11 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     let volumeLabel = document.querySelector("#volume-label") as HTMLLabelElement;
 
     // add .oninput event to slider
-    volumeSlider.oninput = (e:InputEvent): void => {
+    volumeSlider.oninput = (e: InputEvent): void => {
         // set the gain
         audio.setVolume(Number(volumeSlider.value));
         // update value of label to match value of slider
-        let newValue:number = Math.round((Number(volumeSlider.value) / 2 * 100));
+        let newValue: number = Math.round((Number(volumeSlider.value) / 2 * 100));
         volumeLabel.innerHTML = newValue.toString();
     };
 
@@ -236,7 +238,7 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     let gravityLabel = document.querySelector("#gravity-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    gravitySlider.oninput = (e:InputEvent): void => {
+    gravitySlider.oninput = (e: InputEvent): void => {
         // Set the gravity value
         canvas.getGravityFromInput(Number(gravitySlider.value));
         // Update value of label to match value of slider
@@ -253,7 +255,7 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     let speedLabel = document.querySelector("#speed-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    speedSlider.oninput = (e:InputEvent): void => {
+    speedSlider.oninput = (e: InputEvent): void => {
         // Set the speed modifier
         canvas.getSpeedModFromInput(Number(speedSlider.value));
         // Update value of label to match value of slider
@@ -270,7 +272,7 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     let trebleLabel = document.querySelector("#treble-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    trebleSlider.oninput = (e:InputEvent): void => {
+    trebleSlider.oninput = (e: InputEvent): void => {
         // Set the treble boost amount
         audio.boostTreble(Number(trebleSlider.value));
         // Update value of label to match value of slider
@@ -287,7 +289,7 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     let bassLabel = document.querySelector("#bass-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    bassSlider.oninput = (e:InputEvent): void => {
+    bassSlider.oninput = (e: InputEvent): void => {
         // Set the bass boost amount
         audio.boostBass(Number(bassSlider.value));
         // Update value of label to match value of slider
@@ -301,11 +303,11 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
 
     // H - hookup track <select>
     let trackSelect = document.querySelector("#track-select") as HTMLSelectElement;
-    
+
     // add .onchange event to <select>
-    trackSelect.onchange = e => {
+    trackSelect.onchange = (): void => {
         // Load next sound file
-        audio.loadSoundFile(e.target.value);
+        audio.loadSoundFile(trackSelect.value);
         // pause the current track if it is playing
         if (playButton.dataset.playing == "yes") {
             playButton.dispatchEvent(new MouseEvent("click"));
@@ -313,16 +315,16 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     };
 
     // I - hookup checkboxes
-    document.querySelector("#particle-systems-cb").addEventListener("click", (e) => { appParams.showParticleSystems = e.target.checked; });
-    document.querySelector("#particles-cb").addEventListener("click", (e) => { appParams.showParticles = e.target.checked; });
-    document.querySelector("#party-cb").addEventListener("click", (e) => { appParams.partyMode = e.target.checked; });
-    document.querySelector("#emboss-cb").addEventListener("click", (e) => { appParams.showEmboss = e.target.checked; });
+    particleSysCB.addEventListener("click", (e:MouseEvent): void => { appParams.showParticleSystems = particleSysCB.checked; });
+    particlesCB.addEventListener("click", (e:MouseEvent): void => { appParams.showParticles = particlesCB.checked; });
+    partyCB.addEventListener("click", (e:MouseEvent): void => { appParams.partyMode = partyCB.checked; });
+    embossCB.addEventListener("click", (e:MouseEvent): void => { appParams.showEmboss = embossCB.checked; });
 } // end setupUI
 
 // Displays data from the analyser node every frame
 // Parameters: None
 // Returns: Nothing
-const loop = () => {
+const loop = (): void => {
     // Start the animation loop with this function at 60 FPS
     setTimeout(loop, 1000 / 60);
 
