@@ -185,16 +185,16 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     const fsButton = document.querySelector("#fs-button") as HTMLButtonElement;
 
     // add .onclick event to button
-    fsButton.onclick = e => {
+    fsButton.onclick = (e:MouseEvent): void => {
         console.log("goFullscreen() called");
         utils.goFullscreen(canvasElement);
     };
 
     // B - hookup play button
-    const playButton = document.querySelector("#play-button");
+    const playButton = document.querySelector("#play-button") as HTMLButtonElement;
 
     // add .onclick event to button
-    playButton.onclick = e => {
+    playButton.onclick = (e:MouseEvent): void => {
         console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
 
         // check if context is in suspended state (autoplay policy)
@@ -204,42 +204,43 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
         console.log(`audioCtx.state after = ${audio.audioCtx.state}`);
 
         // Toggle playing/pausing
-        if (e.target.dataset.playing == "no") {
+        if (playButton.dataset.playing == "no") {
             // if track is currently paused, play it
             audio.playCurrentSound();
-            e.target.dataset.playing = "yes"; // our CSS will set the text to "Pause"
+            playButton.dataset.playing = "yes"; // our CSS will set the text to "Pause"
         } else {
             // if track IS playing, pause it
             audio.pauseCurrentSound();
-            e.target.dataset.playing = "no"; // our CSS will set the text to "Play"
+            playButton.dataset.playing = "no"; // our CSS will set the text to "Play"
         }
     };
 
     // C - hookup volume slider & label
-    let volumeSlider = document.querySelector("#volume-slider");
-    let volumeLabel = document.querySelector("#volume-label");
+    let volumeSlider = document.querySelector("#volume-slider") as HTMLInputElement;
+    let volumeLabel = document.querySelector("#volume-label") as HTMLLabelElement;
 
     // add .oninput event to slider
-    volumeSlider.oninput = e => {
+    volumeSlider.oninput = (e:InputEvent): void => {
         // set the gain
-        audio.setVolume(e.target.value);
+        audio.setVolume(Number(volumeSlider.value));
         // update value of label to match value of slider
-        volumeLabel.innerHTML = Math.round((e.target.value / 2 * 100));
+        let newValue:number = Math.round((Number(volumeSlider.value) / 2 * 100));
+        volumeLabel.innerHTML = newValue.toString();
     };
 
     // set value of label to match initial value of slider
     volumeSlider.dispatchEvent(new Event("input"));
 
     // D - hookup gravity slider & label
-    let gravitySlider = document.querySelector("#gravity-slider");
-    let gravityLabel = document.querySelector("#gravity-label");
+    let gravitySlider = document.querySelector("#gravity-slider") as HTMLInputElement;
+    let gravityLabel = document.querySelector("#gravity-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
-    gravitySlider.oninput = e => {
+    gravitySlider.oninput = (e:InputEvent): void => {
         // Set the gravity value
-        canvas.getGravityFromInput(e.target.value);
+        canvas.getGravityFromInput(Number(gravitySlider.value));
         // Update value of label to match value of slider
-        gravityLabel.innerHTML = e.target.value;
+        gravityLabel.innerHTML = gravitySlider.value;
     };
 
     // Set value of label to match initial value of slider by firing an input event on start-up
@@ -248,8 +249,8 @@ const setupUI = (canvasElement:HTMLCanvasElement): void => {
     gravitySlider.dispatchEvent(new Event("input"));
 
     // E - hookup speed slider & label
-    let speedSlider = document.querySelector("#speed-slider");
-    let speedLabel = document.querySelector("#speed-label");
+    let speedSlider = document.querySelector("#speed-slider") as HTMLInputElement;
+    let speedLabel = document.querySelector("#speed-label") as HTMLLabelElement;
 
     // Add .oninput event to slider
     speedSlider.oninput = e => {
