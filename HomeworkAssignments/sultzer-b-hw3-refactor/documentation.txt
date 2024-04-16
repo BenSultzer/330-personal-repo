@@ -1,3 +1,9 @@
+I refactored the code for my project using TypeScript. I made sure to change all of the
+variable types, function parameters, and function return types (doing more research for arrow functions)
+to the most logical data types. I used an interface for the app params and an enum for the default volume 
+and sampling amount. I went through all code of all my files and made sure every possible change to TypeScript 
+was made.
+
 I. I added a treble and bass BiquadFilterNode to the audio graph and hooked up a 
 slider for both that allows the user to boost both kinds of frequencies. The maximum for
 treble is 20 and the maximum for bass is 15.
