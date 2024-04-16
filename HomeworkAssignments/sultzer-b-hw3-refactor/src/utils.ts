@@ -32,7 +32,7 @@ const getRandomColor = (): string => {
 // Attempts to make the given element fullscreen
 // "element" parameter: The element to make fullscreen
 // Returns: Nothing
-const goFullscreen = (element): void => {
+const goFullscreen = (element:any): void => {
     // Tests for the various possible contexts for going fullscreen, allowing the element to go fullscreen if the current context can handle it
     if (element.requestFullscreen) {
         element.requestFullscreen();
@@ -46,5 +46,5 @@ const goFullscreen = (element): void => {
     // .. and do nothing if the method is not supported
 };
 
-// Make the color formatting, random color, linear gradient creation, and fullscreen functions public
+// Make the color formatting, random color and number, and fullscreen functions public
 export { makeColor, getRandom, getRandomColor, goFullscreen };

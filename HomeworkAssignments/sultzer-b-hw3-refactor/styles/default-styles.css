@@ -24,10 +24,6 @@ canvas {
     margin-left: 1rem;
 }
 
-.section {
-    margin-bottom: 1rem;
-}
-
 #play-button {
     font-size: 1.2rem;
     width: 6rem;
@@ -51,7 +47,7 @@ span {
 }
 
 #app-description {
-    margin-left: 1rem;
+    font-size: large;
 }
 
 #app-options {

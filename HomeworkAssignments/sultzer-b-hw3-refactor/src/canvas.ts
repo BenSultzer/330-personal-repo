@@ -10,8 +10,8 @@
       - maybe a better name for this file/module would be *visualizer.js* ?
 */
 
-// Get the AppParams interface from main.ts
-import { AppParams } from "./main";
+// Import the AppParams interface
+import { AppParams } from './interfaces/appParams.interface';
 
 // Get the utilty functions
 import * as utils from './utils';

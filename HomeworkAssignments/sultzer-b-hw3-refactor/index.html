@@ -4,67 +4,104 @@
 <head>
     <meta charset="utf-8">
     <title>...</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link href="./styles/default-styles.css" type="text/css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Philosopher&display=swap" rel="stylesheet">
-    <script src="./src/loader.js" type="module"></script>
+    <!-- <script src="./src/loader.js" type="module"></script> -->
 </head>
 
 <body>
+    <!-- Navigation -->
+    <nav class="navbar has-shadow is-white">
+        <div class="navbar-brand has-background-info">
+            <a class="navbar-item" href="index.html">
+                <i class="fas fa-music"></i>
+            </a>
+            <a class="navbar-burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+
+        <div class="navbar-menu" id="nav-links">
+            <div class="navbar-start">
+                <a class="navbar-item" href="about.html">
+                    About
+                </a>
+
+                <a class="navbar-item is-hoverable" href="index.html">
+                    App
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Functionality -->
     <main>
-        <div class="section" id="display-and-instructions">
+        <div class="section has-background-info mt-6 p-3" id="display-and-instructions">
             <canvas width="800" height="400" class="flex-item"></canvas>
-            <p id="app-description" class="flex-item"></p>
+            <p id="app-description" class="flex-item has-text-light mt-3"></p>
         </div>
         <div id="controls">
-            <div class="section">
+            <div class="section p-3 mt-4">
                 <button id="play-button" data-playing="no"></button>
-                <button id="fs-button">Full Screen</button>
-                <label>Track:
-                    <select id="track-select"></select>
+                <button id="fs-button" class="ml-1">Full Screen</button>
+                <label class="ml-1">Track:
+                    <select id="track-select" class="ml-1" ></select>
                 </label>
             </div>
-            <div class="section" id="volume-section">
-                Volume: <input type="range" id="volume-slider" min="0" max="2" value="1" step="0.01">
-                <label for="volume-slider" id="volume-label">???</label>
+            <div class="section p-3" id="volume-section">
+                Volume: <input type="range" id="volume-slider" min="0" max="2" value="1" step="0.01" class="ml-1">
+                <label for="volume-slider" id="volume-label" class="ml-1">???</label>
             </div>
-            <div class="section" id="app-options">
-                <div id="display-options" class="flex-item section">
+            <div class="section p-3" id="app-options">
+                <div id="display-options" class="flex-item section p-3">
                     <h3>Display Options</h3>
-                    <span class="control"><input type="checkbox" id="particle-systems-cb"><label for="particle-systems-cb">Show Particle Systems (Background)</label></span><br>
-                    <span class="control"><input type="checkbox" id="particles-cb"><label for="particles-cb">Show Particles (Center)</label></span><br>
-                    <label for="analyser-data-type" id="data-type-label" class="control">Visualization Data Type:</label>
-                    <select name="analyser-data-type" id="analyser-data-type" class="control">
+                    <span class="control"><input type="checkbox" id="particle-systems-cb"><label
+                            for="particle-systems-cb" class="ml-1">Show Particle Systems (Background)</label></span><br>
+                    <span class="control"><input type="checkbox" id="particles-cb"><label for="particles-cb" class="ml-1">Show
+                            Particles (Center)</label></span><br>
+                    <label for="analyser-data-type" id="data-type-label" class="control">Visualization Data
+                        Type:</label>
+                    <select name="analyser-data-type" id="analyser-data-type" class="control ml-1">
                         <option value="frequency">Frequency</option>
                         <option value="waveform">Waveform</option>
                     </select>
                 </div>
-                <div id="drawing-options" class="flex-item section">
+                <div id="drawing-options" class="flex-item section p-3">
                     <h3>Drawing Options</h3>
-                    <span class="control"><input type="checkbox" id="party-cb"><label for="party-cb">Party Mode?</label></span><br>
-                    <span class="control"><input type="checkbox" id="emboss-cb"><label for="emboss-cb">Emboss</label></span>
+                    <span class="control"><input type="checkbox" id="party-cb"><label for="party-cb" class="ml-1">Party
+                            Mode?</label></span><br>
+                    <span class="control"><input type="checkbox" id="emboss-cb"><label
+                            for="emboss-cb" class="ml-1">Emboss</label></span>
                 </div>
-                <div id="audio-options" class="flex-item section">
+                <div id="audio-options" class="flex-item section p-3">
                     <h3>Audio Options</h3>
-                    Treble Boost: <input type="range" id="treble-slider" min="0" max="20" value="0" step="1" class="control">
-                    <label for="treble-slider" id="treble-label" class="control">???</label><br>
-                    Bass Boost: <input type="range" id="bass-slider" min="0" max="15" value="0" step="1" class="control">
-                    <label for="bass-slider" id="bass-label" class="control">???</label>
+                    Treble Boost: <input type="range" id="treble-slider" min="0" max="20" value="0" step="1"
+                        class="control ml-1">
+                    <label for="treble-slider" id="treble-label" class="control ml-1">???</label><br>
+                    Bass Boost: <input type="range" id="bass-slider" min="0" max="15" value="0" step="1"
+                        class="control ml-1">
+                    <label for="bass-slider" id="bass-label" class="control ml-1">???</label>
                 </div>
-                <div id="ps-options" class="flex-item section">
+                <div id="ps-options" class="flex-item section p-3">
                     <h3>Particle Options</h3>
-                    Gravity Direction: <input type="range" id="gravity-slider" min="-1" max="1" value="-1" step="0.01" class="control">
-                    <label for="gravity-slider" id="gravity-label" class="control">???</label><br>
-                    Particle Speed Modifier: <input type="range" id="speed-slider" min="0.1" max="2" value="1" step="0.1" class="control">
-                    <label for="speed-slider" id="speed-label" class="control">???</label><br>
+                    Gravity Direction: <input type="range" id="gravity-slider" min="-1" max="1" value="-1" step="0.01"
+                        class="control ml-1">
+                    <label for="gravity-slider" id="gravity-label" class="control ml-1">???</label><br>
+                    Particle Speed Modifier: <input type="range" id="speed-slider" min="0.1" max="2" value="1"
+                        step="0.1" class="control ml-1">
+                    <label for="speed-slider" id="speed-label" class="control ml-1">???</label><br>
                     <label for="emitter-type" id="emitter-type-label" class="control">Emitter Type: </label>
-                    <select name="emitter-type" id="emitter-type" class="control">
+                    <select name="emitter-type" id="emitter-type" class="control ml-1">
                         <option value="fountain">Fountain</option>
                         <option value="beam">Beam</option>
                     </select><br>
                     <label for="shockwave-type" id="shockwave-type-label" class="control">Shockwave Type: </label>
-                    <select name="shockwave-type" id="shockwave-type" class="control">
+                    <select name="shockwave-type" id="shockwave-type" class="control ml-1">
                         <option value="normal">Normal</option>
                         <option value="freeze">Freeze</option>
                     </select>
@@ -72,6 +109,7 @@
             </div>
         </div>
     </main>
+    <script src="./dist/bundle.js"></script>
 </body>
 
 </html>

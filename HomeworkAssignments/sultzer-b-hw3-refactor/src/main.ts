@@ -19,19 +19,14 @@ import * as audio from './audio';
 // Import helper functions
 import * as utils from './utils';
 
+// Import the AppParams interface
+import { AppParams } from './interfaces/appParams.interface';
+
 // Variables to store the app title, audio file paths, track names, and app description
 let title: string;
 let audioFilePaths: string[];
 let trackNames: string[];
 let appDescription: string;
-
-// Drawing options object
-interface AppParams {
-    showParticleSystems: boolean,
-    showParticles: boolean,
-    partyMode: boolean,
-    showEmboss: boolean
-}
 
 // Create an object of the AppParams type to represent the options for this app
 const appParams: AppParams = { showParticleSystems: true, showParticles: true, partyMode: false, showEmboss: false };
@@ -183,6 +178,14 @@ const init = (): void => {
 // "canvasElement" parameter: A reference to the canvas containing the audio visualizer
 // Returns: Nothing
 const setupUI = (canvasElement: HTMLCanvasElement): void => {
+    // Set up hamburger menu
+    const burgerIcon = document.querySelector("#burger") as HTMLAnchorElement;
+    const navbarMenu = document.querySelector("#nav-links") as HTMLDivElement;
+
+    burgerIcon.addEventListener("click", (): void => {
+        navbarMenu.classList.toggle("is-active");
+    });
+
     // A - hookup fullscreen button
     const fsButton = document.querySelector("#fs-button") as HTMLButtonElement;
 
@@ -315,10 +318,10 @@ const setupUI = (canvasElement: HTMLCanvasElement): void => {
     };
 
     // I - hookup checkboxes
-    particleSysCB.addEventListener("click", (e:MouseEvent): void => { appParams.showParticleSystems = particleSysCB.checked; });
-    particlesCB.addEventListener("click", (e:MouseEvent): void => { appParams.showParticles = particlesCB.checked; });
-    partyCB.addEventListener("click", (e:MouseEvent): void => { appParams.partyMode = partyCB.checked; });
-    embossCB.addEventListener("click", (e:MouseEvent): void => { appParams.showEmboss = embossCB.checked; });
+    particleSysCB.addEventListener("click", (e: MouseEvent): void => { appParams.showParticleSystems = particleSysCB.checked; });
+    particlesCB.addEventListener("click", (e: MouseEvent): void => { appParams.showParticles = particlesCB.checked; });
+    partyCB.addEventListener("click", (e: MouseEvent): void => { appParams.partyMode = partyCB.checked; });
+    embossCB.addEventListener("click", (e: MouseEvent): void => { appParams.showEmboss = embossCB.checked; });
 } // end setupUI
 
 // Displays data from the analyser node every frame
@@ -332,5 +335,5 @@ const loop = (): void => {
     canvas.draw(appParams);
 }
 
-// Make the init function and AppParams interface public
-export { init, AppParams };
+// Make the init function public
+export { init };

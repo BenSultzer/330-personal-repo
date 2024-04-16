@@ -1,6 +1,8 @@
 // Overview: Homework 3
 // Author: Ben Sultzer <bms3902@rit.edu>
 
+import { DEFAULTS } from "./enums/audio-defaults.enum";
+
 // 1 - our WebAudio context, **we will export and make this public at the bottom of the file**
 let audioCtx:AudioContext;
 
@@ -12,12 +14,6 @@ let analyserNode:AnalyserNode;
 let gainNode:GainNode;
 let trebleNode:BiquadFilterNode;
 let bassNode:BiquadFilterNode;
-
-// 3 - Use an enum to represent default values for the amount of gain and audio samples to take
-enum DEFAULTS {
-    gain = .5,
-    numSamples = 256
-}
 
 // **Next are "public" methods - we are going to export all of these at the bottom of this file**
 // Sets the sound file to be used
