@@ -8,7 +8,7 @@
 
 <body>
     <h1>High Scores</h1>
-    <ul id="scoresList">
+    <ul id="scores-list">
         <li>No data yet!</li>
     </ul>
 
@@ -41,11 +41,18 @@
         const scoresRef = ref(db, 'scores');
 
         const scoresChanged = (snapshot) => {
+            // The list of user scores as a string
+            let userScores = "";
+
             snapshot.forEach(score => {
                 const childKey = score.key;
                 const childData = score.val();
+                userScores += `<li>${childData.userId} - ${childData.game} - ${childData.score}</li>`;
                 console.log(childKey, childData);
             });
+
+            // Display the score data
+            document.querySelector("#scores-list").innerHTML = userScores;
         }
 
         onValue(scoresRef, scoresChanged);
