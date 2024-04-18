@@ -13,7 +13,7 @@
     </ul>
 
     <script type="module">
-        /* #1 - The Firebase setup code goes here  - both imports, `firebaseConfig` and `app` */
+        /* #1 - The Firebase setup code goes here  - both imports, `firebaseConfig` and `app` */ 
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
@@ -35,7 +35,7 @@
 
         // Print the app to make sure firebase is loaded
         console.log(app);
-        
+
         // #2 NEW STUFF
         const db = getDatabase();
         const scoresRef = ref(db, 'scores');
