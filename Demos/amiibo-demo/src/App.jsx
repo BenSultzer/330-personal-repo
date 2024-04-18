@@ -3,6 +3,9 @@ import { loadXHR } from "./ajax";
 import { readFromLocalStorage, writeToLocalStorage } from "./storage";
 import './App.css'
 import Footer from "./Footer";
+import Header from "./Header";
+import AmiiboList from "./AmiiboList";
+import AmiiboSearchUI from "./AmiiboSearchUI";
 
 // app "globals" and utils
 const baseurl = "https://www.amiiboapi.com/api/amiibo/?name=";
@@ -48,32 +51,19 @@ const App = () => {
   };
 
   return <>
-    <header>
-      <h1>Amiibo Finder</h1>
-    </header>
+    <Header title="Amiibo Finder"/>
     <hr />
     <main>
-      <button onClick={() => { searchAmiibo(term, parseAmiiboResult) }}>Search</button>
-      <label>
-        Name:
-        <input value={term} onChange={e => setTerm(e.target.value.trim())} />
-      </label>
-      {results.map(amiibo => (
-        <span key={amiibo.head + amiibo.tail} style={{ color: "green" }}>
-          <h4>{amiibo.name}</h4>
-          <img
-            width="100"
-            alt={amiibo.character}
-            src={amiibo.image}
-          />
-        </span>
-      ))}
+      <AmiiboSearchUI
+        term={term}
+        setTermFunc={setTerm}
+        searchFunc={searchAmiibo}
+        callbackFunc={parseAmiiboResult}
+      />
+      <AmiiboList results={results}/>
     </main>
     <hr />
-    <Footer
-      name="Ben Sultzer"
-      year={new Date().getFullYear()}
-    />
+    <Footer name="Ben Sultzer" year={new Date().getFullYear()}/>
   </>;
 };
 
