@@ -87,18 +87,39 @@ const addMarker = (feature, className, clickHandler) => {
 
 
 // III. "public" - will be exported
+// Adds all location markers to the map
+// "json" parameter: The set of markers to add in GeoJSON format
+// "clickHandler" parameter: The function to call if a marker is clicked
+// Returns: Nothing
+const addMarkersToMap = (json, clickHandler) => {
+	geojson = json; // Replace the default hard-coded JSON data
 
+	// Loop through the features array and for each one, add a marker to the map
+	for (const feature of geojson.features) {
+		addMarker(feature, "poi", clickHandler);
+	}
+};
 
+// Focuses the map on a particular location
+// "center" parameter: The location to focus on
+// Returns: Nothing
 const flyTo = (center = [0, 0]) => {
 	//https://docs.mapbox.com/mapbox-gl-js/api/#map#flyto
 	map.flyTo({ center: center });
 };
 
+// Sets the current zoom of the map
+// "value" parameter: The new zoom level
+// Returns: Nothing
 const setZoomLevel = (value = 0) => {
 	// https://docs.mapbox.com/help/glossary/zoom-level/
 	map.setZoom(value);
 };
 
+// Sets the angle of view (tilt of the Earth's surface), and sets the rotation of the map relative to looking at the Earth's surface straight on
+// "pitch" parameter: The viewing angle
+// "bearing" parameter: The rotation of the map
+// Returns: Nothing
 const setPitchAndBearing = (pitch = 0, bearing = 0) => {
 	// https://docs.mapbox.com/mapbox-gl-js/example/live-update-feature/
 	// https://docs.mapbox.com/mapbox-gl-js/example/set-perspective/
@@ -106,4 +127,5 @@ const setPitchAndBearing = (pitch = 0, bearing = 0) => {
 	map.setBearing(bearing);
 };
 
-export { initMap, flyTo, setZoomLevel, setPitchAndBearing };
+// Export the various map functionalities and init function
+export { initMap, flyTo, setZoomLevel, setPitchAndBearing, addMarkersToMap };
