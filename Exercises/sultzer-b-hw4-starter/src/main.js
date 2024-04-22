@@ -39,11 +39,36 @@ const setupUI = () => {
 	};
 }
 
-// Displays the details of a Point of Interest (POI) when that POI is clicked
-// "id" parameter: The POI's ID number
+// Searches through the GeoJSON data and retrieves the POI object that corresponds with the passed in ID
+// "id" parameter: The ID of the POI to search for
+// Returns: The POI object that corresponds to the ID
+const getFeatureById = (id) => {
+	// The POI to return when it is found
+	let targetPOI = undefined;
+
+	// Attempt to find the POI with the correct ID
+	for (let i = 0; i < geojson.features.length; i++) {
+		if (geojson.features[i].id == id) {
+			targetPOI = geojson.features[i];
+		}
+	}
+
+	// Return the results of the search
+	return targetPOI;
+};
+
+// Displays the details of a Point of Interest (POI) in the "Info" section of the page when that POI is clicked
+// "id" parameter: The POI's GeoJSON ID number
 // Returns: Nothing
 const showFeatureDetails = (id) => {
 	console.log(`showFeatureDetails - id=${id}`);
+	const feature = getFeatureById(id);
+	document.querySelector("#details-1").innerHTML = `Info for ${feature.properties.title}`;
+	document.querySelector("#details-2").innerHTML = `
+		<b>Address: </b>${feature.properties.address}<br>
+		<b>Phone: </b><a href="tel:+${feature.properties.phone}">${feature.properties.phone}</a><br>
+		<b>Website: </b><a href="${feature.properties.url}">${feature.properties.url}</a>
+	`;
 };
 
 // Sets up the map, loads GeoJSON data, and prepares the UI
