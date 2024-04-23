@@ -51,9 +51,9 @@ const initMap = (center) => {
 	map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
 };
 
-// Adds a marker to the map on a "Point of Interest" (POI)
-// "feature" parameter: Contains info about the POI
-// "className" parameter: The HTML class name for POIs (for CSS formatting)
+// Adds a marker to the map for a NYS park
+// "feature" parameter: Contains info about the NYS park
+// "className" parameter: The HTML class name for an NYS park (for CSS formatting)
 // "clickHandler" parameter: Function to call if the marker is clicked
 // Returns: Nothing
 const addMarker = (feature, className, clickHandler) => {
