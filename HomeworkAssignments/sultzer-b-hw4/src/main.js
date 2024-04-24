@@ -14,12 +14,28 @@ let favoriteIds = ["p20","p79","p180","p43"]; // The array of the ID's of the us
 let currentParkID; // Stores the ID of the park last selected by the user
 
 // II. Functions
+// Removes a favorite NYS park from the user's list of favorites
+// "id" parameter: The ID of the NYS park to remove
+// Returns: Nothing
 const deleteFavorite = (id) => {
+	// Copy over the current list of favorite NYS parks and skip the element with an ID
+	// that corresponds to the NYS park to remove
+	let tempFavoriteIds;
+	for (let i = 0; i < favoriteIds.length; i++) {
+		if (favoriteIds[i] != id) {
+			tempFavoriteIds.push(favoriteIds[i]);
+		}
+	}
 
+	// Copy the new list back to the original
+	favoriteIds = tempFavoriteIds;
 }
 
+// Adds a NYS park to the user's list of favorites
+// "id" parameter: The ID of the NYS park to add
+// Returns: Nothing
 const addToFavorites = (id) => {
-
+	favoriteIds.push(id);
 }
 
 // Creates a new favorites list element to add to the list
@@ -86,6 +102,16 @@ const setupUI = () => {
 		map.flyTo(lnglatUSA);
 	};
 
+	// "Add To Favorites" button
+	document.querySelector("#add-to-fav").onclick = () => {
+		addToFavorites(currentParkID);
+	}
+
+	// "Remove From Favorites" button
+	document.querySelector("#add-to-fav").onclick = () => {
+		deleteFavorite(currentParkID);
+	}
+
 	// Initialize the favorites list
 	refreshFavorites();
 }
@@ -114,6 +140,9 @@ const getFeatureById = (id) => {
 const showFeatureDetails = (id) => {
 	console.log(`showFeatureDetails - id=${id}`);
 
+	// Store the currently selected NYS park
+	currentParkID = id;
+
 	// Gets the feature
 	const feature = getFeatureById(id);
 
@@ -125,7 +154,7 @@ const showFeatureDetails = (id) => {
 		<p><b>Address: </b>${feature.properties.address}</p>
 		<p><b>Phone: </b><a href="tel:+${feature.properties.phone}">${feature.properties.phone}</a></p>
 		<p><b>Website: </b><a href="${feature.properties.url}">${feature.properties.url}</a></p>
-		<button class="button has-background-success has-text-primary-invert">Add To Favorites</button><button class="button has-background-danger has-text-danger-invert ml-1">Remove From Favorites</button>
+		<button id="add-to-fav" class="button has-background-success has-text-primary-invert mt-1">Add To Favorites</button><button id="del-from-fav" class="button has-background-danger has-text-danger-invert ml-1 mt-1">Remove From Favorites</button>
 	`;
 
 	// Displays a description of the NYS park
