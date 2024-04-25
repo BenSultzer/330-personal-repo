@@ -78,7 +78,7 @@ const addMarker = (feature, className, clickHandler) => {
 	const marker = new mapboxgl.Marker(el)
 		.setLngLat(feature.geometry.coordinates)
 		.setPopup(new mapboxgl.Popup({ offset: 10 })
-			.setHTML(html))
+		.setHTML(html))
 		.addTo(map);
 
 	// D. Call this method when marker is clicked on

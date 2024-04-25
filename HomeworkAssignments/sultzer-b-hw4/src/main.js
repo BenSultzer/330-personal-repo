@@ -10,7 +10,7 @@ import * as ajax from "./ajax.js";
 const lnglatNYS = [-75.71615970715911, 43.025810763917775];
 const lnglatUSA = [-98.5696, 39.8282];
 let geojson; // Stores location data for placing on the map
-let favoriteIds = ["p20","p79","p180","p43"]; // The array of the ID's of the user's favorite NYS parks
+let favoriteIds = []; // The array of the ID's of the user's favorite NYS parks
 let currentParkID; // Stores the ID of the park last selected by the user
 
 // II. Functions
@@ -20,7 +20,7 @@ let currentParkID; // Stores the ID of the park last selected by the user
 const deleteFavorite = (id) => {
 	// Copy over the current list of favorite NYS parks and skip the element with an ID
 	// that corresponds to the NYS park to remove
-	let tempFavoriteIds;
+	let tempFavoriteIds = [];
 	for (let i = 0; i < favoriteIds.length; i++) {
 		if (favoriteIds[i] != id) {
 			tempFavoriteIds.push(favoriteIds[i]);
@@ -29,13 +29,35 @@ const deleteFavorite = (id) => {
 
 	// Copy the new list back to the original
 	favoriteIds = tempFavoriteIds;
+
+	// Rebuild the HTML list of favorites
+	refreshFavorites();
+
+	// Enable the "Add To Favorites" button and disable the "Remove From Favorites" button
+	document.querySelector("#add-to-fav").disabled = false;
+	document.querySelector("#remove-from-fav").disabled = true;
 }
 
 // Adds a NYS park to the user's list of favorites
 // "id" parameter: The ID of the NYS park to add
 // Returns: Nothing
 const addToFavorites = (id) => {
+	// Loop through to make sure the given NYS park has not already been added to the list of favorites
+	for (let i = 0; i < favoriteIds.length; i++) {
+		if (favoriteIds[i] == id) {
+			return;
+		}
+	}
+
+	// If the NYS park is a new favorite, add it to the list
 	favoriteIds.push(id);
+
+	// Rebuild the HTML list of favorites
+	refreshFavorites();
+
+	// Disable the "Add To Favorites" button and enable the "Remove From Favorites" button
+	document.querySelector("#add-to-fav").disabled = true;
+	document.querySelector("#remove-from-fav").disabled = false;
 }
 
 // Creates a new favorites list element to add to the list
@@ -102,15 +124,10 @@ const setupUI = () => {
 		map.flyTo(lnglatUSA);
 	};
 
-	// "Add To Favorites" button
-	document.querySelector("#add-to-fav").onclick = () => {
-		addToFavorites(currentParkID);
-	}
-
-	// "Remove From Favorites" button
-	document.querySelector("#add-to-fav").onclick = () => {
-		deleteFavorite(currentParkID);
-	}
+	document.querySelector("#details-1").innerHTML += `
+		<button id="add-to-fav" class="button has-background-success has-text-primary-invert mt-1">Add To Favorites</button>
+		<button id="remove-from-fav" class="button has-background-danger has-text-danger-invert ml-1 mt-1">Remove From Favorites</button>
+	`;
 
 	// Initialize the favorites list
 	refreshFavorites();
@@ -154,8 +171,18 @@ const showFeatureDetails = (id) => {
 		<p><b>Address: </b>${feature.properties.address}</p>
 		<p><b>Phone: </b><a href="tel:+${feature.properties.phone}">${feature.properties.phone}</a></p>
 		<p><b>Website: </b><a href="${feature.properties.url}">${feature.properties.url}</a></p>
-		<button id="add-to-fav" class="button has-background-success has-text-primary-invert mt-1">Add To Favorites</button><button id="del-from-fav" class="button has-background-danger has-text-danger-invert ml-1 mt-1">Remove From Favorites</button>
+		<button id="add-to-fav" class="button has-background-success has-text-primary-invert mt-1">Add To Favorites</button><button id="remove-from-fav" class="button has-background-danger has-text-danger-invert ml-1 mt-1">Remove From Favorites</button>
 	`;
+
+	// "Add To Favorites" button
+	document.querySelector("#add-to-fav").onclick = () => {
+		addToFavorites(currentParkID);
+	}
+
+	// "Remove From Favorites" button
+	document.querySelector("#remove-from-fav").onclick = () => {
+		deleteFavorite(currentParkID);
+	}
 
 	// Displays a description of the NYS park
 	document.querySelector("#details-3").innerHTML = `${feature.properties.description}`;
