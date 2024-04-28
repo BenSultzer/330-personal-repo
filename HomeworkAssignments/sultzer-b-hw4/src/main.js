@@ -13,6 +13,8 @@ const lnglatUSA = [-98.5696, 39.8282];
 let geojson; // Stores location data for placing on the map
 let favoriteIds = []; // The array of the ID's of the user's favorite NYS parks
 let currentParkID; // Stores the ID of the park last selected by the user
+let markerWasClicked = false; // Tracks whether or not a marker was clicked to differentiate between clicking a marker
+					  		  // and the empty space of the map (for hiding NYS park data when a marker leaves focus)
 
 // II. Functions
 // Checks to see if the currently selected NYS park is in the favorites list
@@ -174,6 +176,9 @@ const getFeatureById = (id) => {
 // "id" parameter: The NYS park's GeoJSON ID number
 // Returns: Nothing
 const showFeatureDetails = (id) => {
+	// Indicate that a marker was clicked
+	markerWasClicked = true;
+
 	console.log(`showFeatureDetails - id=${id}`);
 
 	// Store the currently selected NYS park
@@ -239,6 +244,21 @@ const init = () => {
 	if (parkLocalStorageData != undefined) {
 		favoriteIds = parkLocalStorageData;
 	}
+
+	// Set up an event handler so that when the map is clicked anywhere that isn't a marker, data for the currently selected
+	// NYS park disappears
+	document.querySelector("#map").onclick = () => {
+		if (!markerWasClicked) {
+			document.querySelector("#details-1").innerHTML = "Info";
+			document.querySelector("#details-2").innerHTML = "Click on a park to learn about it.";
+			document.querySelector("#details-3").innerHTML = "???";
+		}
+
+		// Marker "click" event handler executes first, so sets click tracker to true, then this event handler receives that value.
+		// Setting the tracker value to false after clicking in either case ensures marker clicks are treated as unique and all
+		// other clicks are treated as regular map clicks
+		markerWasClicked = false;
+	};
 };
 
 // Start up the app
