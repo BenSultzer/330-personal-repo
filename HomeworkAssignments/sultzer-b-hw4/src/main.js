@@ -4,6 +4,7 @@
 // Import the map and JSON loading functionality
 import * as map from "./map.js";
 import * as ajax from "./ajax.js";
+import * as storage from "./storage.js";
 
 // I. Variables & constants
 // NB - it's easy to get [longitude,latitude] coordinates with this tool: http://geojson.io/
@@ -14,6 +15,23 @@ let favoriteIds = []; // The array of the ID's of the user's favorite NYS parks
 let currentParkID; // Stores the ID of the park last selected by the user
 
 // II. Functions
+// Checks to see if the currently selected NYS park is in the favorites list
+// "id" parameter: The ID of the NYS park to check
+// Returns: A Boolean corresponding to whether or not the currently selected NYS park
+// is in the favorites list
+const parkInFavList = (id) => {
+	// Go through the list of favorites
+	for (let i = 0; i < favoriteIds.length; i++) {
+		if (favoriteIds[i] == id) {
+			// The currently selected NYS park was found
+			return true;
+		}
+	}
+
+	// The currently selected NYS park was not found
+	return false;
+};
+
 // Removes a favorite NYS park from the user's list of favorites
 // "id" parameter: The ID of the NYS park to remove
 // Returns: Nothing
@@ -36,7 +54,10 @@ const deleteFavorite = (id) => {
 	// Enable the "Add To Favorites" button and disable the "Remove From Favorites" button
 	document.querySelector("#add-to-fav").disabled = false;
 	document.querySelector("#remove-from-fav").disabled = true;
-}
+
+	// Write the new list of favorited NYS parks to local storage with the un-favorited park removed
+	storage.writeToLocalStorage("favorites", favoriteIds);
+};
 
 // Adds a NYS park to the user's list of favorites
 // "id" parameter: The ID of the NYS park to add
@@ -58,7 +79,10 @@ const addToFavorites = (id) => {
 	// Disable the "Add To Favorites" button and enable the "Remove From Favorites" button
 	document.querySelector("#add-to-fav").disabled = true;
 	document.querySelector("#remove-from-fav").disabled = false;
-}
+
+	// Add the favorited NYS park to local storage
+	storage.writeToLocalStorage("favorites", favoriteIds);
+};
 
 // Creates a new favorites list element to add to the list
 // "id" parameter: The ID of the NYS park for which to create the element
@@ -124,14 +148,9 @@ const setupUI = () => {
 		map.flyTo(lnglatUSA);
 	};
 
-	document.querySelector("#details-1").innerHTML += `
-		<button id="add-to-fav" class="button has-background-success has-text-primary-invert mt-1">Add To Favorites</button>
-		<button id="remove-from-fav" class="button has-background-danger has-text-danger-invert ml-1 mt-1">Remove From Favorites</button>
-	`;
-
 	// Initialize the favorites list
 	refreshFavorites();
-}
+};
 
 // Searches through the GeoJSON data and retrieves the NYS park object that corresponds with the passed in ID
 // "id" parameter: The ID of the NYS park to search for
@@ -186,6 +205,16 @@ const showFeatureDetails = (id) => {
 
 	// Displays a description of the NYS park
 	document.querySelector("#details-3").innerHTML = `${feature.properties.description}`;
+
+	// Set the "disabled" property of the "Add To Favorites" and "Remove From Favorites" buttons so their disabled states persist across selections
+	// of parks from the map or from the favorites list
+	if (parkInFavList(currentParkID)) {
+		document.querySelector("#add-to-fav").disabled = true;
+		document.querySelector("#remove-from-fav").disabled = false;
+	} else {
+		document.querySelector("#add-to-fav").disabled = false;
+		document.querySelector("#remove-from-fav").disabled = true;
+	}
 };
 
 // Sets up the map, loads GeoJSON data, and prepares the UI
@@ -202,6 +231,14 @@ const init = () => {
 		map.addMarkersToMap(geojson, showFeatureDetails); // Set up the map
 		setupUI(); // Set up the app's UI
 	});
+
+	// Load in potential favorites from localStorage
+	let parkLocalStorageData = storage.readFromLocalStorage("favorites");
+
+	// Only assign the park data from localStorage to the favorite IDs array if favorite park IDs data exists in localStorage
+	if (parkLocalStorageData != undefined) {
+		favoriteIds = parkLocalStorageData;
+	}
 };
 
 // Start up the app
