@@ -60,6 +60,10 @@ const deleteFavorite = (id) => {
 
 	// Write the new list of favorited NYS parks to local storage with the un-favorited park removed
 	storage.writeToLocalStorage("favorites", favoriteIds);
+
+	// Remove one like from the entry in the database of the current NYS park, or delete the entry entirely if the number of likes reaches 0
+	// (handled in database module)
+	database.writeParkData(currentParkID, "remove");
 };
 
 // Adds a NYS park to the user's list of favorites
@@ -68,25 +72,6 @@ const deleteFavorite = (id) => {
 const addToFavorites = (id) => {
 	// Get the current NYS park
 	const park = getFeatureById(id);
-
-	// Store the NYS park title to use as the storage location for the NYS park's likes in the database
-	let parkTitle = park.properties.title;
-
-	// Firebase database location names cannot have special characters in them (".", "#", "$", etc.), so remove the period
-	// from "Allan H. Treman State Marine Park" (the only NYS park with a special character in its name)
-	if (parkTitle == "Allan H. Treman State Marine Park") {
-		parkTitle = "Allan H Treman State Marine Park";
-	}
-
-	// Loop through to make sure the given NYS park has not already been added to the list of favorites
-	for (let i = 0; i < favoriteIds.length; i++) {
-		if (favoriteIds[i] == id) {
-			// If the given NYS park is already in the favorites list, it is already in the database as well, so
-			// increment its likes
-			database.writeParkData(parkTitle, 0, true);
-			return;
-		}
-	}
 
 	// If the NYS park is a new favorite, add it to the list
 	favoriteIds.push(id);
@@ -101,8 +86,11 @@ const addToFavorites = (id) => {
 	// Add the favorited NYS park to local storage
 	storage.writeToLocalStorage("favorites", favoriteIds);
 
-	// Write the favorited NYS park to the database with one like (it has been favorited 1 time)
-	database.writeParkData(parkTitle, 1, false);
+	// Indicate that the current park has been added to the favorites list
+	database.setIsInDatabase(currentParkID, true);
+
+	// Write one like to the entry in the database of the current NYS park, or create a new entry
+	database.writeParkData(currentParkID, "add");	
 };
 
 // Creates a new favorites list element to add to the list

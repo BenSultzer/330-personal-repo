@@ -4,6 +4,21 @@ import { getDatabase, ref, set, increment, push, onValue } from "https://www.gst
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+// Stores whether or not each park already exists in the database
+const isInDatabase = {
+    "p79": false,
+    "p20": false,
+    "p180": false,
+    "p35": false,
+    "p118": false,
+    "p142": false,
+    "p62": false,
+    "p84": false,
+    "p43": false,
+    "p200": false,
+    "p112": false
+};
+
 // Firebase web app configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDFVhTEqKBCZyiEO39WCZfnaGGtWicjUpg",
@@ -17,25 +32,68 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Get the database for use in getting references
+const db = getDatabase();
+
 // Writes the number of likes for the given park to the database at node "parks/parkName"
 // "parkName" parameter: The name of the park to write data for (and the name of the location
 // within the "parks/" node to store the data)
-// "likes" parameter: The number of times the given park has been favorited (the data to store in the
-// database)
-// "isInDatabase" parameter: A Boolean indicating whether or not the given park is already in the database
+// "parkID" parameter: The ID of the park being written to the database
+// "buttonClicked" parameter: Indicates if the "Add To Favorites" button or "Remove From Favorites" button was clicked
+// (if the park is already in the database, increment its likes if the "Add To Favorites" button was clicked and decrement
+// the park's likes if the "Remove From Favorites" button was clicked)
 // Returns: Nothing
-const writeParkData = (parkName, likes, isInDatabase) => {
-    const db = getDatabase();
-    if (!isInDatabase) {
-        set(ref(db, "parks/" + parkName), {
-            likes: likes
+const writeParkData = (parkID, buttonClicked) => {
+    if (!isInDatabase[parkID]) {
+        set(ref(db, "parks/" + parkID), {
+            likes: 1
         });
     } else {
-        set(ref(db, "parks/" + parkName), {
-            likes: increment(1)
-        });
+        // Increment the park's likes in the database if the "Add To Favorites" button was clicked
+        if (buttonClicked == "add") {
+            set(ref(db, "parks/" + parkID), {
+                likes: increment(1)
+            });
+        // Decrement the park's likes in the database if the "Remove From Favorites" button was clicked
+        } else {
+            set(ref(db, "parks/" + parkID), {
+                likes: increment(-1)
+            });
+        }
     }
 };
 
+// Allows external code to indicate to the Firebase functionality if the current park is already in the 
+// database
+// "key" parameter: The ID of current park
+// "value" parameter: The Boolean corresponding to whether or not the current park is in the database
+// Returns: Nothing
+const setIsInDatabase = (key, value) => {
+    isInDatabase[key] = value;
+}
+
+// Displays parks and their likes in the favorite-parks-viewer page and removes them from the database
+// if their likes reach 0
+// "snapshot" parameter: The current state of the data at the "parks/" location sent by the onValue Firebase function
+// Returns: Nothing
+//const likesChanged = (snapshot) => {
+    // The list of parks and their likes as a string
+//    let parkLikes = "";
+
+//    snapshot.forEach(park => {
+//        const childKey = park.key;
+//        const childData = park.val();
+//        parkLikes += `<li>${childKey} - Likes: ${childData.likes}</li>`;
+//        console.log(childKey, childData);
+//    });
+
+    // Display the score data
+//    document.querySelector("#scores-list").innerHTML = userScores;
+//}
+
+// Observe changes in the amount of likes for each park (see likesChanged above)
+//const parksRef = ref(db, "parks/"); // Get a reference to the whole "parks/" location
+//onValue(parksRef, likesChanged);
+
 // Export the park data-writing function
-export { writeParkData };
+export { writeParkData, setIsInDatabase };
