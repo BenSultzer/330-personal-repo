@@ -19,6 +19,21 @@ const isInDatabase = {
     "p112": false
 };
 
+// Acts as a look-up table for park names based on their IDs
+const parks = {
+    "p79": "Letchworth State Park",
+    "p20": "Hamlin Beach State Park",
+    "p180": "Brookhaven State Park",
+    "p35": "Allan H. Treman State Marine Park",
+    "p118": "Stony Brook State Park",
+    "p142": "Watkins Glen State Park",
+    "p62": "Taughannock Falls State Park",
+    "p84": "Selkirk Shores State Park",
+    "p43": "Chimney Bluffs State Park",
+    "p200": "Shirley Chisholm State Park",
+    "p112": "Saratoga Spa State Park"
+};
+
 // Firebase web app configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDFVhTEqKBCZyiEO39WCZfnaGGtWicjUpg",
@@ -54,7 +69,7 @@ const writeParkData = (parkID, buttonClicked) => {
             set(ref(db, "parks/" + parkID), {
                 likes: increment(1)
             });
-        // Decrement the park's likes in the database if the "Remove From Favorites" button was clicked
+            // Decrement the park's likes in the database if the "Remove From Favorites" button was clicked
         } else {
             set(ref(db, "parks/" + parkID), {
                 likes: increment(-1)
@@ -76,24 +91,34 @@ const setIsInDatabase = (key, value) => {
 // if their likes reach 0
 // "snapshot" parameter: The current state of the data at the "parks/" location sent by the onValue Firebase function
 // Returns: Nothing
-//const likesChanged = (snapshot) => {
+const likesChanged = (snapshot) => {
     // The list of parks and their likes as a string
-//    let parkLikes = "";
+    let parkLikes = "";
 
-//    snapshot.forEach(park => {
-//        const childKey = park.key;
-//        const childData = park.val();
-//        parkLikes += `<li>${childKey} - Likes: ${childData.likes}</li>`;
-//        console.log(childKey, childData);
-//    });
+    snapshot.forEach(park => {
+        // Get the key and data of the current park
+        const childKey = park.key;
+        const childData = park.val();
 
-    // Display the score data
-//    document.querySelector("#scores-list").innerHTML = userScores;
-//}
+        // Build the ordered list element for each park with likes greater than 0
+        if (childData.likes != 0) {
+            parkLikes += `<li><strong>${parks[childKey]} (${childKey})</strong> - Likes: ${childData.likes}</li>`;
+        // If the number of likes for the current park in the database is zero, remove it from the database by clearing its entry
+        } else {
+            set(ref(db, "parks/" + childKey), {});
+        }
+        
+        // Log out the park key and data that was retrieved
+        console.log(childKey, childData);
+    });
+
+    // Display the park likes data
+    document.querySelector("#park-pop-list").innerHTML = parkLikes;
+};
 
 // Observe changes in the amount of likes for each park (see likesChanged above)
-//const parksRef = ref(db, "parks/"); // Get a reference to the whole "parks/" location
-//onValue(parksRef, likesChanged);
+const parksRef = ref(db, "parks"); // Get a reference to the whole "parks/" location
+onValue(parksRef, likesChanged);
 
 // Export the park data-writing function
 export { writeParkData, setIsInDatabase };
