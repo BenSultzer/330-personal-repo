@@ -5,6 +5,7 @@
 import * as map from "./map.js";
 import * as ajax from "./ajax.js";
 import * as storage from "./storage.js";
+import * as database from "./parks-viewer.js";
 
 // I. Variables & constants
 // NB - it's easy to get [longitude,latitude] coordinates with this tool: http://geojson.io/
@@ -65,9 +66,24 @@ const deleteFavorite = (id) => {
 // "id" parameter: The ID of the NYS park to add
 // Returns: Nothing
 const addToFavorites = (id) => {
+	// Get the current NYS park
+	const park = getFeatureById(id);
+
+	// Store the NYS park title to use as the storage location for the NYS park's likes in the database
+	let parkTitle = park.properties.title;
+
+	// Firebase database location names cannot have special characters in them (".", "#", "$", etc.), so remove the period
+	// from "Allan H. Treman State Marine Park" (the only NYS park with a special character in its name)
+	if (parkTitle == "Allan H. Treman State Marine Park") {
+		parkTitle = "Allan H Treman State Marine Park";
+	}
+
 	// Loop through to make sure the given NYS park has not already been added to the list of favorites
 	for (let i = 0; i < favoriteIds.length; i++) {
 		if (favoriteIds[i] == id) {
+			// If the given NYS park is already in the favorites list, it is already in the database as well, so
+			// increment its likes
+			database.writeParkData(parkTitle, 0, true);
 			return;
 		}
 	}
@@ -84,6 +100,9 @@ const addToFavorites = (id) => {
 
 	// Add the favorited NYS park to local storage
 	storage.writeToLocalStorage("favorites", favoriteIds);
+
+	// Write the favorited NYS park to the database with one like (it has been favorited 1 time)
+	database.writeParkData(parkTitle, 1, false);
 };
 
 // Creates a new favorites list element to add to the list

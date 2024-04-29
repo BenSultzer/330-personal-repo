@@ -9,7 +9,7 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/default-styles.css">
-    <script src="./src/main.js" type="module"></script>
+    <script src="./src/parks-viewer.js" type="module"></script>
 </head>
 
 <body>
@@ -22,9 +22,20 @@
         </div>
     </header>
     <div class="has-background-info p-2 mt-1">
-        <h2 class="subtitle is-underlined has-text-weight-bold">View Park Popularity</h2>
+        <h2 class="subtitle is-underlined has-text-weight-bold">INCREMENT/DECREMENT A PARK COUNT (FOR TESTING PURPOSES
+            ONLY)</h2>
+        <div class="title">
+            Park ID:
+            <input type="text">
+            <button id="send-data">Send Park ID to Server</button>
+            <input type="checkbox" id="decrement-cb">
+            <label for="decrement-cb">Decrement?</label>
+        </div>
+    </div>
+    <div class="has-background-info p-2 mt-1">
+        <h2 class="subtitle is-underlined has-text-weight-bold">VIEW PARK POPULARITY</h2>
         <ol id="park-pop-list"></ol>
-    </div>    
+    </div>
 </body>
 
 </html>
