@@ -1,3 +1,6 @@
+// Overview: HW-4
+// Author: Ben Sultzer <bms3902@rit.edu>
+
 // Import Firebase functions from the Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getDatabase, ref, set, increment, push, onValue } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
@@ -59,17 +62,19 @@ const db = getDatabase();
 // the park's likes if the "Remove From Favorites" button was clicked)
 // Returns: Nothing
 const writeParkData = (parkID, buttonClicked) => {
+    // Adds a new park entry
     if (!isInDatabase[parkID]) {
         set(ref(db, "parks/" + parkID), {
             likes: 1
         });
+    // A park entry already exists
     } else {
         // Increment the park's likes in the database if the "Add To Favorites" button was clicked
         if (buttonClicked == "add") {
             set(ref(db, "parks/" + parkID), {
                 likes: increment(1)
             });
-            // Decrement the park's likes in the database if the "Remove From Favorites" button was clicked
+        // Decrement the park's likes in the database if the "Remove From Favorites" button was clicked
         } else {
             set(ref(db, "parks/" + parkID), {
                 likes: increment(-1)
@@ -95,6 +100,7 @@ const likesChanged = (snapshot) => {
     // The list of parks and their likes as a string
     let parkLikes = "";
 
+    // Go through each of the parks sent back from the database
     snapshot.forEach(park => {
         // Get the key and data of the current park
         const childKey = park.key;
@@ -126,7 +132,7 @@ const likesChanged = (snapshot) => {
 
 // Observe changes in the amount of likes for each park (see likesChanged above)
 const parksRef = ref(db, "parks"); // Get a reference to the whole "parks/" location
-onValue(parksRef, likesChanged);
+onValue(parksRef, likesChanged); // Set up the function to call when a value changes
 
 // Export the park data-writing function
 export { writeParkData, setIsInDatabase };

@@ -1,7 +1,7 @@
-// Overview: HW-4 - NYS Park Buddy
+// Overview: HW-4
 // Author: Ben Sultzer <bms3902@rit.edu>
 
-// Import the map and JSON loading functionality
+// Import the map, JSON loading, localStorage, and Firebase functionality
 import * as map from "./map.js";
 import * as ajax from "./ajax.js";
 import * as storage from "./storage.js";
@@ -26,12 +26,12 @@ const parkInFavList = (id) => {
 	// Go through the list of favorites
 	for (let i = 0; i < favoriteIds.length; i++) {
 		if (favoriteIds[i] == id) {
-			// The currently selected NYS park was found
+			// Indicate the currently selected NYS park was found
 			return true;
 		}
 	}
 
-	// The currently selected NYS park was not found
+	// Indicate the currently selected NYS park was not found
 	return false;
 };
 
@@ -124,9 +124,13 @@ const createFavoriteElement = (id) => {
 // Parameters: None
 // Returns: Nothing
 const refreshFavorites = () => {
-	// Go through the set of favorites and build the HTML to display the current favorites list
+	// Get the favorites list element
 	const favoritesContainer = document.querySelector("#favorites-list");
+
+	// Clear the favorites list element
 	favoritesContainer.innerHTML = "";
+
+	// Go through the set of favorites and build the HTML to display the current favorites list
 	for (const id of favoriteIds) {
 		favoritesContainer.appendChild(createFavoriteElement(id));
 	};
@@ -165,13 +169,13 @@ const setupUI = () => {
 // "id" parameter: The ID of the NYS park to search for
 // Returns: The NYS park object that corresponds to the ID
 const getFeatureById = (id) => {
-	// The NYS park to return if it is found
+	// The NYS park to return if a match is found
 	let targetNYSPark = undefined;
 
 	// Attempt to find the NYS park with a matching ID
 	for (let i = 0; i < geojson.features.length; i++) {
 		if (geojson.features[i].id == id) {
-			targetNYSPark = geojson.features[i];
+			targetNYSPark = geojson.features[i]; // The matching NYS park has been found
 		}
 	}
 
@@ -191,13 +195,14 @@ const showFeatureDetails = (id) => {
 	// Store the currently selected NYS park
 	currentParkID = id;
 
-	// Gets the feature
+	// Gets the NYS park feature
 	const feature = getFeatureById(id);
 
 	// Displays the NYS park's title
 	document.querySelector("#details-1").innerHTML = `Info for ${feature.properties.title}`;
 
-	// Displays the NYS park's address, phone number, and website
+	// Displays the NYS park's address, phone number, and website. Also, display the "Add To Favorites" and "Remove From Favorites" buttons for this
+	// NYS park
 	document.querySelector("#details-2").innerHTML = `
 		<p><b>Address: </b>${feature.properties.address}</p>
 		<p><b>Phone: </b><a href="tel:+${feature.properties.phone}">${feature.properties.phone}</a></p>
@@ -219,7 +224,7 @@ const showFeatureDetails = (id) => {
 	document.querySelector("#details-3").innerHTML = `${feature.properties.description}`;
 
 	// Set the "disabled" property of the "Add To Favorites" and "Remove From Favorites" buttons so their disabled states persist across selections
-	// of parks from the map or from the favorites list
+	// of parks from the map or from the favorites list (showFeatureDetails() is called for both types of selections)
 	if (parkInFavList(currentParkID)) {
 		document.querySelector("#add-to-fav").disabled = true;
 		document.querySelector("#remove-from-fav").disabled = false;

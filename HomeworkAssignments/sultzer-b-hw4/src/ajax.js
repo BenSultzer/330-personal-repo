@@ -1,4 +1,4 @@
-// Overview: HW-4 - NYS Park Buddy - Starter
+// Overview: HW-4
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 // Loads data from a GeoJSON file
@@ -7,7 +7,7 @@
 // Returns: Nothing
 export const downloadFile = (url, callbackRef) => {
 	const xhr = new XMLHttpRequest();
-		// 1. set `onerror` handler
+	// 1. set `onerror` handler
 	xhr.onerror = (e) => console.log("error");
 	
 	// 2. set `onload` handler

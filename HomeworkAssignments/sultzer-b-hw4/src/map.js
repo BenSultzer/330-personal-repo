@@ -1,4 +1,4 @@
-// Overview: HW-4 - NYS Park Buddy - Starter
+// Overview: HW-4
 // Author: Ben Sultzer <bms3902@rit.edu>
 
 // I. Variables & constants
@@ -65,11 +65,11 @@ const addMarker = (feature, className, clickHandler) => {
 	el.className = className;
 	el.id = feature.id;
 
-	// B. This the HTML for the Popup
+	// B. This is the HTML for the Popup
 	const html = `
-		<b>${feature.properties.title}</b>
+		<strong>${feature.properties.title}</strong>
 		<p>${feature.properties.address}</p>
-		<p><b>Phone: </b>${feature.properties.phone}</p>
+		<p><strong>Phone: </strong>${feature.properties.phone}</p>
 	`;
 
 	// C. Make the marker, add a popup, and add to map
