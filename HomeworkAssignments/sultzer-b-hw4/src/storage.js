@@ -12,9 +12,9 @@ const loadJSONFromLocalStorage = () => {
   let json;
   try{
     json = JSON.parse(string);
-    if(!json) throw new Error("json is null!");
+    if(!json) throw new Error();
   }catch(error){
-    console.log(`ERROR: ${error} with string: ${string}`);
+    console.log("Nothing to load from localStorage!");
     json = {};
   }
   return json;

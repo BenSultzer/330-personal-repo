@@ -113,7 +113,15 @@ const likesChanged = (snapshot) => {
     });
 
     // Display the park likes data
-    document.querySelector("#park-pop-list").innerHTML = parkLikes;
+    // Gets the park popularity list to update with the new park data
+    const parkPopList = document.querySelector("#park-pop-list");
+
+    // Make sure to only update the park popularity list if the likesChanged() call is being handled from the favorite-parks-viewer page in
+    // response to user input from index.html. Index.html does not have an id="park-pop-list" ordered list element so an error is thrown
+    // when this line is executed because index.html caused the data to change
+    if (parkPopList != null) {
+        parkPopList.innerHTML = parkLikes;
+    }
 };
 
 // Observe changes in the amount of likes for each park (see likesChanged above)
